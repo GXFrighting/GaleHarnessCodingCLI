@@ -164,16 +164,16 @@ describe("ce-review contract", () => {
         reviewer: "dhh-rails",
       },
       {
-        path: "plugins/galeharness-cli/agents/review/kieran-rails-reviewer.md",
-        reviewer: "kieran-rails",
+        path: "plugins/galeharness-cli/agents/review/gale-rails-reviewer.md",
+        reviewer: "gale-rails",
       },
       {
-        path: "plugins/galeharness-cli/agents/review/kieran-python-reviewer.md",
-        reviewer: "kieran-python",
+        path: "plugins/galeharness-cli/agents/review/gale-python-reviewer.md",
+        reviewer: "gale-python",
       },
       {
-        path: "plugins/galeharness-cli/agents/review/kieran-typescript-reviewer.md",
-        reviewer: "kieran-typescript",
+        path: "plugins/galeharness-cli/agents/review/gale-typescript-reviewer.md",
+        reviewer: "gale-typescript",
       },
       {
         path: "plugins/galeharness-cli/agents/review/julik-frontend-races-reviewer.md",
