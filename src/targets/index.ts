@@ -10,7 +10,6 @@ import { convertClaudeToWindsurf } from "../converters/claude-to-windsurf"
 import { convertClaudeToOpenClaw } from "../converters/claude-to-openclaw"
 import { convertClaudeToQwen } from "../converters/claude-to-qwen"
 import { convertClaudeToQoder } from "../converters/claude-to-qoder"
-import { convertClaudeToClaude, writeClaudeBundle } from "./claude"
 import { writeOpenCodeBundle } from "./opencode"
 import { writeCodexBundle } from "./codex"
 import { writeDroidBundle } from "./droid"
@@ -61,12 +60,6 @@ export type TargetHandler<TBundle = unknown> = {
 }
 
 export const targets: Record<string, TargetHandler> = {
-  claude: {
-    name: "claude",
-    implemented: true,
-    convert: convertClaudeToClaude as TargetHandler["convert"],
-    write: writeClaudeBundle as TargetHandler["write"],
-  },
   opencode: {
     name: "opencode",
     implemented: true,
