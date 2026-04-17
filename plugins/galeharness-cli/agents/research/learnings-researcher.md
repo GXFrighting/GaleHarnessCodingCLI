@@ -151,7 +151,7 @@ For each relevant document, return a summary in this format:
 ## Frontmatter Schema Reference
 
 Use this on-demand schema reference when you need the full contract:
-`../../skills/ce-compound/references/yaml-schema.md`
+`../../skills/gh-compound/references/yaml-schema.md`
 
 Key enum values:
 

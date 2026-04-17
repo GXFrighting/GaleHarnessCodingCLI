@@ -35,7 +35,7 @@ Compare current baseline with upstream HEAD:
 git fetch https://github.com/EveryInc/compound-engineering-plugin.git main
 
 # Show commits since baseline
-git log ee86dc3379a75c859313d3c93c7cba6789957947..FETCH_HEAD --oneline
+git log $(cat .upstream-ref)..FETCH_HEAD --oneline
 ```
 
 ### Step 2: Review Changes
