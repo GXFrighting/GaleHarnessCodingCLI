@@ -38,7 +38,7 @@ After document-review completes, present the options using the platform's blocki
 **Options:**
 1. **Start `/gh:work`** (recommended) - Begin implementing this plan in the current session
 2. **Create Issue** - Create a tracked issue from this plan in your configured issue tracker (GitHub or Linear)
-3. **View & share in Proof** - Open the plan in Proof to read, comment, collaborate, and share a link
+3. **Open in Proof (web app) — review and comment to iterate with the agent** - Open the doc in Every's Proof editor, iterate with the agent via comments, or copy a link to share with others
 4. **Done for now** - Pause; the plan file is saved and can be resumed later
 
 **Surface additional document review contextually, not as a menu fixture:** When the prior document-review pass surfaced residual P0/P1 findings that the user has not addressed, mention them adjacent to the menu and offer another review pass in prose (e.g., "Document review flagged 2 P1 findings you may want to address — want me to run another pass before you pick?"). Do not add it to the option list.
@@ -46,16 +46,7 @@ After document-review completes, present the options using the platform's blocki
 Based on selection:
 - **Start `/gh:work`** -> Call `/gh:work` with the plan path
 - **Create Issue** -> Follow the Issue Creation section below
-- **View & share in Proof** -> Upload the plan:
-  ```bash
-  CONTENT=$(cat docs/plans/<plan_filename>.md)
-  TITLE="Plan: <plan title from frontmatter>"
-  RESPONSE=$(curl -s -X POST https://www.proofeditor.ai/share/markdown \
-    -H "Content-Type: application/json" \
-    -d "$(jq -n --arg title "$TITLE" --arg markdown "$CONTENT" --arg by "ai:compound" '{title: $title, markdown: $markdown, by: $by}')")
-  PROOF_URL=$(echo "$RESPONSE" | jq -r '.tokenUrl')
-  ```
-  Display `View & collaborate in Proof: <PROOF_URL>` if successful, then return to the options
+- **Open in Proof (web app) — review and comment to iterate with the agent** -> Load `references/hitl-review.md` from the `proof` skill and invoke HITL review mode with `localPath` (the plan file), `title` (from frontmatter or H1), and `recommendedNextStep: "Recommended next: /gh:work"`. When HITL returns, handle the result (sync or warn) and return to the options.
 - **Done for now** -> Display a brief confirmation that the plan file is saved and end the turn
 - **If the user asks for another document review** (either from the contextual prompt when P0/P1 findings remain, or by free-form request) -> Load the `document-review` skill with the plan path for another pass, then return to the options
 - **Other** -> Accept free text for revisions and loop back to options
