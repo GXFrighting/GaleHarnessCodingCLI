@@ -9,9 +9,13 @@ Sync GaleHarnessCLI with upstream compound-engineering-plugin changes.
 
 ## Upstream Reference
 
-**Current upstream commit:** `ee86dc3379a75c859313d3c93c7cba6789957947` (2026-04-15)
+**Current baseline:** Read from `.upstream-ref` in repo root.
 
-This is the baseline commit from EveryInc/compound-engineering-plugin that GaleHarnessCLI was forked from. All subsequent changes in GaleHarnessCLI are independent developments.
+```bash
+cat .upstream-ref
+```
+
+GaleHarnessCLI was forked from EveryInc/compound-engineering-plugin at the commit recorded in `.upstream-ref`. All subsequent changes are independent developments.
 
 ## When to Use
 
@@ -66,8 +70,6 @@ After successful sync, update the reference:
 ```bash
 # Update .upstream-ref with new commit
 echo "<new-commit-id>" > .upstream-ref
-
-# Update this SKILL.md upstream commit line
 ```
 
 ## HKTMemory Patches to Re-apply

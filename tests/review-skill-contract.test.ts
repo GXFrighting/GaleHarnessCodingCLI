@@ -15,7 +15,7 @@ describe("ce-review contract", () => {
     expect(content).toContain("mode:autofix")
     expect(content).toContain("mode:report-only")
     expect(content).toContain("mode:headless")
-    expect(content).toContain(".context/galeharness-cli/ce-review/<run-id>/")
+    expect(content).toContain(".context/galeharness-cli/gh-review/<run-id>/")
     expect(content).toContain("Do not create residual todos or `.context` artifacts.")
     expect(content).toContain(
       "Do not start a mutating review round concurrently with browser testing on the same checkout.",
@@ -143,11 +143,11 @@ describe("ce-review contract", () => {
     )
 
     for (const agent of [
-      "galeharness-cli:review:gale-dhh-rails-reviewer",
-      "galeharness-cli:review:gale-rails-reviewer",
-      "galeharness-cli:review:gale-python-reviewer",
-      "galeharness-cli:review:gale-typescript-reviewer",
-      "galeharness-cli:review:gale-julik-frontend-races-reviewer",
+      "galeharness-cli:review:dhh-rails-reviewer",
+      "galeharness-cli:review:kieran-rails-reviewer",
+      "galeharness-cli:review:kieran-python-reviewer",
+      "galeharness-cli:review:kieran-typescript-reviewer",
+      "galeharness-cli:review:julik-frontend-races-reviewer",
     ]) {
       expect(content).toContain(agent)
       expect(catalog).toContain(agent)
@@ -164,16 +164,16 @@ describe("ce-review contract", () => {
         reviewer: "dhh-rails",
       },
       {
-        path: "plugins/galeharness-cli/agents/review/gale-rails-reviewer.md",
-        reviewer: "gale-rails",
+        path: "plugins/galeharness-cli/agents/review/kieran-rails-reviewer.md",
+        reviewer: "kieran-rails",
       },
       {
-        path: "plugins/galeharness-cli/agents/review/gale-python-reviewer.md",
-        reviewer: "gale-python",
+        path: "plugins/galeharness-cli/agents/review/kieran-python-reviewer.md",
+        reviewer: "kieran-python",
       },
       {
-        path: "plugins/galeharness-cli/agents/review/gale-typescript-reviewer.md",
-        reviewer: "gale-typescript",
+        path: "plugins/galeharness-cli/agents/review/kieran-typescript-reviewer.md",
+        reviewer: "kieran-typescript",
       },
       {
         path: "plugins/galeharness-cli/agents/review/julik-frontend-races-reviewer.md",

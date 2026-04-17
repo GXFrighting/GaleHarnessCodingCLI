@@ -1,5 +1,5 @@
 ---
-name: ce-sessions
+name: gh:sessions
 description: "Search and ask questions about your coding agent session history. Use when asking what you worked on, what was tried before, how a problem was investigated across sessions, what happened recently, or any question about past agent sessions. Also use when the user references prior sessions, previous attempts, or past investigations — even without saying 'sessions' explicitly."
 ---
 
@@ -26,7 +26,7 @@ If the lines above resolved to plain values (a folder name like `my-repo` and a 
 
 If no argument is provided, ask what the user wants to know about their session history. Use the platform's blocking question tool (`AskUserQuestion` in Claude Code, `request_user_input` in Codex, `ask_user` in Gemini). If no question tool is available, ask in plain text and wait for a reply.
 
-Dispatch `compound-engineering:research:session-historian` with the user's question as the task prompt. Omit the `mode` parameter so the user's configured permission settings apply. Include in the dispatch prompt:
+Dispatch `galeharness-cli:research:session-historian` with the user's question as the task prompt. Omit the `mode` parameter so the user's configured permission settings apply. Include in the dispatch prompt:
 
 - The user's question
 - The current working directory

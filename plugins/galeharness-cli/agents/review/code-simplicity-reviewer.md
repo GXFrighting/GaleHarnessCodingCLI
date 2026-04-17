@@ -34,7 +34,7 @@ When reviewing code, you will:
    - Eliminate extensibility points without clear use cases
    - Question generic solutions for specific problems
    - Remove "just in case" code
-   - Never flag `docs/plans/*.md` or `docs/solutions/*.md` for removal — these are compound-engineering pipeline artifacts created by `/gh:plan` and used as living documents by `/gh:work`
+   - Never flag `docs/plans/*.md` or `docs/solutions/*.md` for removal — these are galeharness-cli pipeline artifacts created by `/gh:plan` and used as living documents by `/gh:work`
 
 6. **Optimize for Readability**:
    - Prefer self-documenting code over comments

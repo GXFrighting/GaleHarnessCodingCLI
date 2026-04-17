@@ -96,43 +96,43 @@ Use fully-qualified agent names inside Task calls.
 **Deterministic Section-to-Agent Mapping:**
 
 **Requirements Trace / Open Questions classification**
-- `compound-engineering:workflow:spec-flow-analyzer` for missing user flows, edge cases, and handoff gaps
-- `compound-engineering:research:repo-research-analyst` (Scope: `architecture, patterns`) for repo-grounded patterns, conventions, and implementation reality checks
+- `galeharness-cli:workflow:spec-flow-analyzer` for missing user flows, edge cases, and handoff gaps
+- `galeharness-cli:research:repo-research-analyst` (Scope: `architecture, patterns`) for repo-grounded patterns, conventions, and implementation reality checks
 
 **Context & Research / Sources & References gaps**
-- `compound-engineering:research:learnings-researcher` for institutional knowledge and past solved problems
-- `compound-engineering:research:framework-docs-researcher` for official framework or library behavior
-- `compound-engineering:research:best-practices-researcher` for current external patterns and industry guidance
-- Add `compound-engineering:research:git-history-analyzer` only when historical rationale or prior art is materially missing
+- `galeharness-cli:research:learnings-researcher` for institutional knowledge and past solved problems
+- `galeharness-cli:research:framework-docs-researcher` for official framework or library behavior
+- `galeharness-cli:research:best-practices-researcher` for current external patterns and industry guidance
+- Add `galeharness-cli:research:git-history-analyzer` only when historical rationale or prior art is materially missing
 
 **Key Technical Decisions**
-- `compound-engineering:review:architecture-strategist` for design integrity, boundaries, and architectural tradeoffs
-- Add `compound-engineering:research:framework-docs-researcher` or `compound-engineering:research:best-practices-researcher` when the decision needs external grounding beyond repo evidence
+- `galeharness-cli:review:architecture-strategist` for design integrity, boundaries, and architectural tradeoffs
+- Add `galeharness-cli:research:framework-docs-researcher` or `galeharness-cli:research:best-practices-researcher` when the decision needs external grounding beyond repo evidence
 
 **High-Level Technical Design**
-- `compound-engineering:review:architecture-strategist` for validating that the technical design accurately represents the intended approach and identifying gaps
-- `compound-engineering:research:repo-research-analyst` (Scope: `architecture, patterns`) for grounding the technical design in existing repo patterns and conventions
-- Add `compound-engineering:research:best-practices-researcher` when the technical design involves a DSL, API surface, or pattern that benefits from external validation
+- `galeharness-cli:review:architecture-strategist` for validating that the technical design accurately represents the intended approach and identifying gaps
+- `galeharness-cli:research:repo-research-analyst` (Scope: `architecture, patterns`) for grounding the technical design in existing repo patterns and conventions
+- Add `galeharness-cli:research:best-practices-researcher` when the technical design involves a DSL, API surface, or pattern that benefits from external validation
 
 **Implementation Units / Verification**
-- `compound-engineering:research:repo-research-analyst` (Scope: `patterns`) for concrete file targets, patterns to follow, and repo-specific sequencing clues
-- `compound-engineering:review:pattern-recognition-specialist` for consistency, duplication risks, and alignment with existing patterns
-- Add `compound-engineering:workflow:spec-flow-analyzer` when sequencing depends on user flow or handoff completeness
+- `galeharness-cli:research:repo-research-analyst` (Scope: `patterns`) for concrete file targets, patterns to follow, and repo-specific sequencing clues
+- `galeharness-cli:review:pattern-recognition-specialist` for consistency, duplication risks, and alignment with existing patterns
+- Add `galeharness-cli:workflow:spec-flow-analyzer` when sequencing depends on user flow or handoff completeness
 
 **System-Wide Impact**
-- `compound-engineering:review:architecture-strategist` for cross-boundary effects, interface surfaces, and architectural knock-on impact
+- `galeharness-cli:review:architecture-strategist` for cross-boundary effects, interface surfaces, and architectural knock-on impact
 - Add the specific specialist that matches the risk:
-  - `compound-engineering:review:performance-oracle` for scalability, latency, throughput, and resource-risk analysis
-  - `compound-engineering:review:security-sentinel` for auth, validation, exploit surfaces, and security boundary review
-  - `compound-engineering:review:data-integrity-guardian` for migrations, persistent state safety, consistency, and data lifecycle risks
+  - `galeharness-cli:review:performance-oracle` for scalability, latency, throughput, and resource-risk analysis
+  - `galeharness-cli:review:security-sentinel` for auth, validation, exploit surfaces, and security boundary review
+  - `galeharness-cli:review:data-integrity-guardian` for migrations, persistent state safety, consistency, and data lifecycle risks
 
 **Risks & Dependencies / Operational Notes**
 - Use the specialist that matches the actual risk:
-  - `compound-engineering:review:security-sentinel` for security, auth, privacy, and exploit risk
-  - `compound-engineering:review:data-integrity-guardian` for persistent data safety, constraints, and transaction boundaries
-  - `compound-engineering:review:data-migration-expert` for migration realism, backfills, and production data transformation risk
-  - `compound-engineering:review:deployment-verification-agent` for rollout checklists, rollback planning, and launch verification
-  - `compound-engineering:review:performance-oracle` for capacity, latency, and scaling concerns
+  - `galeharness-cli:review:security-sentinel` for security, auth, privacy, and exploit risk
+  - `galeharness-cli:review:data-integrity-guardian` for persistent data safety, constraints, and transaction boundaries
+  - `galeharness-cli:review:data-migration-expert` for migration realism, backfills, and production data transformation risk
+  - `galeharness-cli:review:deployment-verification-agent` for rollout checklists, rollback planning, and launch verification
+  - `galeharness-cli:review:performance-oracle` for capacity, latency, and scaling concerns
 
 **Agent Prompt Shape:**
 
@@ -164,7 +164,7 @@ Signals that justify artifact-backed mode:
 
 If artifact-backed mode is not clearly warranted, stay in direct mode.
 
-Artifact-backed mode uses a per-run scratch directory under `.context/compound-engineering/ce-plan/deepen/`.
+Artifact-backed mode uses a per-run scratch directory under `.context/galeharness-cli/ce-plan/deepen/`.
 
 ## 5.3.6 Run Targeted Research
 

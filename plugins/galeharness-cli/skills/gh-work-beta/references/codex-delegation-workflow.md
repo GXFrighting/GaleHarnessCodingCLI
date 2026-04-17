@@ -91,9 +91,9 @@ Delegate all units in one batch. If the plan exceeds 5 units, split into batches
 
 ## Prompt Template
 
-At the start of delegated execution, generate a short unique run ID (e.g., 8 hex chars from a timestamp or random source). All scratch files for this invocation go under `.context/compound-engineering/codex-delegation/<run-id>/`. Create the directory if it does not exist.
+At the start of delegated execution, generate a short unique run ID (e.g., 8 hex chars from a timestamp or random source). All scratch files for this invocation go under `.context/galeharness-cli/codex-delegation/<run-id>/`. Create the directory if it does not exist.
 
-Before each batch, write a prompt file to `.context/compound-engineering/codex-delegation/<run-id>/prompt-batch-<batch-num>.md`.
+Before each batch, write a prompt file to `.context/galeharness-cli/codex-delegation/<run-id>/prompt-batch-<batch-num>.md`.
 
 Build the prompt from the batch's implementation units using these XML-tagged sections:
 
@@ -169,7 +169,7 @@ Report your result via the --output-schema mechanism. Fill in every field:
 
 ## Result Schema
 
-Write the result schema to `.context/compound-engineering/codex-delegation/<run-id>/result-schema.json` once at the start of delegated execution:
+Write the result schema to `.context/galeharness-cli/codex-delegation/<run-id>/result-schema.json` once at the start of delegated execution:
 
 ```json
 {
@@ -186,7 +186,7 @@ Write the result schema to `.context/compound-engineering/codex-delegation/<run-
 }
 ```
 
-Each batch's result is written to `.context/compound-engineering/codex-delegation/<run-id>/result-batch-<batch-num>.json` via the `-o` flag. On plan failure, files are left in place for debugging.
+Each batch's result is written to `.context/galeharness-cli/codex-delegation/<run-id>/result-batch-<batch-num>.json` via the `-o` flag. On plan failure, files are left in place for debugging.
 
 If the result JSON is absent or malformed after a successful exit code, classify as task failure.
 
@@ -225,9 +225,9 @@ codex exec \
   -m "<delegate_model>" \
   -c 'model_reasoning_effort="<delegate_effort>"' \
   $SANDBOX_FLAG \
-  --output-schema .context/compound-engineering/codex-delegation/<run-id>/result-schema.json \
-  -o .context/compound-engineering/codex-delegation/<run-id>/result-batch-<batch-num>.json \
-  - < .context/compound-engineering/codex-delegation/<run-id>/prompt-batch-<batch-num>.md
+  --output-schema .context/galeharness-cli/codex-delegation/<run-id>/result-schema.json \
+  -o .context/galeharness-cli/codex-delegation/<run-id>/result-batch-<batch-num>.json \
+  - < .context/galeharness-cli/codex-delegation/<run-id>/prompt-batch-<batch-num>.md
 ```
 
 Critical: `run_in_background: true` must be set as a **Bash tool parameter**, not as a shell `&` suffix. The tool parameter is what removes the timeout ceiling. A shell `&` inside a foreground Bash call still hits the 2-minute default timeout.
@@ -241,7 +241,7 @@ Do not improvise CLI flags or modify this invocation template.
 After the launch call returns, make a **new, separate** foreground Bash tool call that polls for the result file. This keeps the agent's turn active so the user cannot interfere with the working tree.
 
 ```bash
-RESULT_FILE=".context/compound-engineering/codex-delegation/<run-id>/result-batch-<batch-num>.json"
+RESULT_FILE=".context/galeharness-cli/codex-delegation/<run-id>/result-batch-<batch-num>.json"
 for i in $(seq 1 6); do
   test -s "$RESULT_FILE" && echo "DONE" && exit 0
   sleep 10
@@ -304,7 +304,7 @@ git commit -m "feat(<scope>): <batch summary>"
 **Scratch cleanup:** After the last batch completes:
 
 ```bash
-rm -rf .context/compound-engineering/codex-delegation/<run-id>/
+rm -rf .context/galeharness-cli/codex-delegation/<run-id>/
 ```
 
 ## Mixed-Model Attribution

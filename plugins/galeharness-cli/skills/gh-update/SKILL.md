@@ -1,5 +1,5 @@
 ---
-name: ce-update
+name: gh:update
 description: |
   Check if the compound-engineering plugin is up to date and fix stale cache if not.
   Use when the user says "update compound engineering", "check compound engineering version",
