@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # GaleHarnessCLI Plugin
 
 AI-powered development tools with **HKTMemory vector knowledge base** — every phase of the workflow reads from and writes to memory, creating a compounding knowledge system that gets smarter with every use.
@@ -24,15 +23,6 @@ After installing, run `/gh-setup` in any project. It:
 - Installs missing tools
 - Bootstraps project config
 - Verifies HKTMemory connection
-=======
-# Compounding Engineering Plugin
-
-AI-powered development tools that get smarter with every use. Make each unit of engineering work easier than the last.
-
-## Getting Started
-
-After installing, run `/gh-setup` in any project. It diagnoses your environment, installs HKTMemory vector knowledge base, configures API credentials, installs missing tools, and bootstraps project config in one interactive flow.
->>>>>>> 912b5ce (feat: GaleHarnessCLI 初始发布)
 
 ## Components
 
@@ -43,7 +33,6 @@ After installing, run `/gh-setup` in any project. It diagnoses your environment,
 
 ## Skills
 
-<<<<<<< HEAD
 ### Core Workflow (Memory-Enabled)
 
 The primary entry points for engineering work, invoked as slash commands. **Every skill automatically retrieves memories before execution and stores new knowledge after completion.**
@@ -61,23 +50,6 @@ The primary entry points for engineering work, invoked as slash commands. **Ever
 | `/gh:optimize` | Run iterative optimization loops with parallel experiments, measurement gates, and LLM-as-judge quality scoring | Optimization strategies | Optimization results |
 
 **Cross-environment sync**: The `memory/` directory is committed to git, allowing knowledge to sync across environments.
-=======
-### Core Workflow
-
-The primary entry points for engineering work, invoked as slash commands:
-
-| Skill | Description |
-|-------|-------------|
-| `/gh:ideate` | Discover high-impact project improvements through divergent ideation and adversarial filtering |
-| `/gh:brainstorm` | Explore requirements and approaches before planning |
-| `/gh:plan` | Create structured plans for any multi-step task -- software features, research workflows, events, study plans -- with automatic confidence checking |
-| `/gh:review` | Structured code review with tiered persona agents, confidence gating, and dedup pipeline |
-| `/gh:work` | Execute work items systematically |
-| `/gh:debug` | Systematically find root causes and fix bugs -- traces causal chains, forms testable hypotheses, and implements test-first fixes |
-| `/gh:compound` | Document solved problems to compound team knowledge |
-| `/gh:compound-refresh` | Refresh stale or drifting learnings and decide whether to keep, update, replace, or archive them |
-| `/gh:optimize` | Run iterative optimization loops with parallel experiments, measurement gates, and LLM-as-judge quality scoring |
->>>>>>> 912b5ce (feat: GaleHarnessCLI 初始发布)
 
 For `/gh:optimize`, see [`skills/gh-optimize/README.md`](./skills/gh-optimize/README.md) for usage guidance, example specs, and links to the schema and workflow docs.
 
@@ -240,7 +212,6 @@ Agents are specialized subagents invoked by skills — you typically don't call 
 claude /plugin install galeharness-cli
 ```
 
-<<<<<<< HEAD
 Then run `/gh-setup` to:
 - Check your environment
 - **Install HKTMemory (required)**
@@ -255,9 +226,6 @@ During setup, you'll be prompted for:
 - `HKT_MEMORY_MODEL` - Embedding model (default: embedding-3)
 
 **File-only mode**: If you don't have an API key, HKTMemory will work in file-only mode using local storage (`memory/` directory).
-=======
-Then run `/ce-setup` to check your environment and install recommended tools.
->>>>>>> 912b5ce (feat: GaleHarnessCLI 初始发布)
 
 ## Version History
 

@@ -1,27 +1,28 @@
-## [1.2.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/galeharness-cli-v1.1.0...galeharness-cli-v1.2.0) (2026-04-17)
+# Changelog
+
+This file is no longer the canonical changelog for compound-engineering releases.
+
+Historical entries are preserved below, but new release history is recorded in the root [`CHANGELOG.md`](../../CHANGELOG.md).
+
+All notable changes to GaleHarnessCLI will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.3.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/galeharness-cli-v1.2.0...galeharness-cli-v1.3.0) (2026-04-17)
 
 
 ### Features
 
 * GaleHarnessCLI 初始发布 ([912b5ce](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/912b5ce6904e6a2871d0bf56e69ac0059e6ba8eb))
 
-## [1.1.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/galeharness-cli-v1.0.0...galeharness-cli-v1.1.0) (2026-04-17)
+## [1.2.0](https://github.com/wangrenzhu-ola/GaleHarnessCLI/compare/galeharness-cli-v1.1.0...galeharness-cli-v1.2.0) (2026-04-17)
 
 
 ### Features
 
-* **gh-setup:** add HKTMemory integration and rename from ce-setup ([de48163](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/de481636085db854d684e872ee7c437c0a1f12b3))
+* GaleHarnessCLI 初始发布 ([912b5ce](https://github.com/wangrenzhu-ola/GaleHarnessCLI/commit/912b5ce6904e6a2871d0bf56e69ac0059e6ba8eb))
 
-## 1.0.0 (2026-04-16)
-
-
-### Miscellaneous Chores
-
-* **galeharness-cli:** Synchronize galeharness-cli versions
-
-
-=======
->>>>>>> 912b5ce (feat: GaleHarnessCLI 初始发布)
 ## [1.1.0](https://github.com/wangrenzhu-ola/GaleHarnessCLI/compare/galeharness-cli-v1.0.0...galeharness-cli-v1.1.0) (2026-04-17)
 
 

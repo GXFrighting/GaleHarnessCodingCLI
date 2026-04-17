@@ -1,15 +1,10 @@
 {
   "name": "coding-tutor",
-<<<<<<< HEAD
-  "version": "1.0.0",
-=======
-  "version": "1.2.1",
->>>>>>> 912b5ce (feat: GaleHarnessCLI 初始发布)
+  "version": "1.1.0",
   "description": "Personalized coding tutorials that use your actual codebase for examples with spaced repetition quizzes",
   "author": {
     "name": "GaleHarnessCLI Team"
   },
-<<<<<<< HEAD
   "keywords": [
     "coding",
     "programming",
@@ -17,7 +12,4 @@
     "learning",
     "spaced-repetition"
   ]
-=======
-  "keywords": ["coding", "programming", "tutorial", "learning", "spaced-repetition"]
->>>>>>> 912b5ce (feat: GaleHarnessCLI 初始发布)
 }
