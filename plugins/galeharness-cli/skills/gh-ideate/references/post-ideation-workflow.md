@@ -96,14 +96,10 @@ focus: <optional focus hint>
 | # | Idea | Reason Rejected |
 |---|------|-----------------|
 | 1 | <Idea> | <Reason rejected> |
-
-## Session Log
-- YYYY-MM-DD: Initial ideation — <candidate count> generated, <survivor count> survived
 ```
 
 If resuming:
 - update the existing file in place
-- append to the session log
 - preserve explored markers
 
 ## Phase 6: Refine or Hand Off
@@ -140,9 +136,11 @@ After each refinement:
 
 ### 6.3 Share to Proof
 
-If requested, share the ideation document using the standard Proof markdown upload pattern already used elsewhere in the plugin.
+If requested, invoke HITL review mode by loading `references/hitl-review.md` from the `proof` skill with:
+- `localPath`: the ideation document path
+- `title`: from the document's H1 or filename
 
-Return to the next-step options after sharing.
+Handle the HITL return (sync or warn) and return to the next-step options.
 
 ### 6.4 End the Session
 
