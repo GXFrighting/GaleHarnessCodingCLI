@@ -67,7 +67,7 @@ function isStorePatch(name: string): boolean {
 
 function extractPhaseContext(content: string, patchName: string): string {
   const lines = content.split("\n")
-  const idx = lines.findIndex((l) => l.includes(`HKT-PATCH:${patchName}`))
+  const idx = lines.findIndex((l) => l.trim() === `<!-- HKT-PATCH:${patchName} -->`)
   if (idx === -1) return ""
   return lines.slice(idx, idx + 60).join("\n")
 }
@@ -83,7 +83,7 @@ function extractBashBlock(content: string, subcommand: "retrieve" | "store"): st
 }
 
 // Map skill -> [retrieve patch name, store patch name]
-const LOOP_PATCHES: Record<string, [string, string]> = {
+const LOOP_PATCHES: Record<CompoundingSkill, readonly [string, string]> = {
   "gh-brainstorm": ["phase-0.4", "phase-3.3"],
   "gh-plan": ["phase-0.7", "phase-5.4b"],
   "gh-work": ["phase-0.6", "phase-4.5"],
@@ -91,6 +91,74 @@ const LOOP_PATCHES: Record<string, [string, string]> = {
   "gh-compound": ["phase-0.4", "phase-2.3"],
   "gh-ideate": ["phase-0.5", "phase-2.5"],
 }
+
+describe("HKTMemory Compounding — Helper Boundary Cases", () => {
+  test("parseHktPatches returns empty array for empty content", () => {
+    expect(parseHktPatches("")).toEqual([])
+  })
+
+  test("parseHktPatches returns empty array when no patches present", () => {
+    expect(parseHktPatches("# Hello\nSome text\nNo patch here")).toEqual([])
+  })
+
+  test("parseHktPatches captures duplicate patches", () => {
+    const content = "<!-- HKT-PATCH:phase-0.1 -->\n<!-- HKT-PATCH:phase-0.1 -->"
+    const patches = parseHktPatches(content)
+    expect(patches.length).toBe(2)
+    expect(patches[0].name).toBe("phase-0.1")
+    expect(patches[1].name).toBe("phase-0.1")
+  })
+
+  test("parseHktPatches ignores malformed patch comments", () => {
+    const content = "<!-- HKT-PATCH:phase-0.1 -->\n<!-- HKT PATCH:phase-0.2 -->\n<!--HKT-PATCH:phase-0.3-->"
+    const patches = parseHktPatches(content)
+    expect(patches.length).toBe(2)
+    expect(patches.map((p) => p.name)).toEqual(["phase-0.1", "phase-0.3"])
+  })
+
+  test("isRetrievePatch matches phase-0.X and stage-0.X", () => {
+    expect(isRetrievePatch("phase-0.1")).toBe(true)
+    expect(isRetrievePatch("stage-0.5")).toBe(true)
+    expect(isRetrievePatch("phase-0.10")).toBe(true)
+  })
+
+  test("isRetrievePatch rejects non-retrieve patterns", () => {
+    expect(isRetrievePatch("phase-1.0")).toBe(false)
+    expect(isRetrievePatch("phase-2.3")).toBe(false)
+    expect(isRetrievePatch("stage-1.0")).toBe(false)
+    expect(isRetrievePatch("gale-task-start")).toBe(false)
+  })
+
+  test("isStorePatch matches phase-X.X (X >= 2) and stage-X.X", () => {
+    expect(isStorePatch("phase-2.3")).toBe(true)
+    expect(isStorePatch("phase-5.4b")).toBe(true)
+    expect(isStorePatch("phase-10.1")).toBe(true)
+    expect(isStorePatch("stage-6.5")).toBe(true)
+    expect(isStorePatch("stage-11.0")).toBe(true)
+  })
+
+  test("isStorePatch rejects non-store patterns", () => {
+    expect(isStorePatch("phase-0.1")).toBe(false)
+    expect(isStorePatch("phase-1.0")).toBe(false)
+    expect(isStorePatch("stage-0.5")).toBe(false)
+    expect(isStorePatch("gale-task-start")).toBe(false)
+  })
+
+  test("extractPhaseContext returns empty string when patch not found", () => {
+    expect(extractPhaseContext("no patch here", "phase-0.1")).toBe("")
+  })
+
+  test("extractPhaseContext distinguishes phase-0.4 from phase-0.4b", () => {
+    // Add 100 blank lines to exceed the 60-line window
+    const content = "line1\n<!-- HKT-PATCH:phase-0.4 -->\ncontext A\n" + "\n".repeat(100) + "<!-- HKT-PATCH:phase-0.4b -->\ncontext B"
+    const ctx1 = extractPhaseContext(content, "phase-0.4")
+    const ctx2 = extractPhaseContext(content, "phase-0.4b")
+    expect(ctx1).toContain("context A")
+    expect(ctx1).not.toContain("context B")
+    expect(ctx2).toContain("context B")
+    expect(ctx2).not.toContain("context A")
+  })
+})
 
 describe("HKTMemory Compounding — Core Contracts", () => {
   for (const skill of COMPOUNDING_SKILLS) {
