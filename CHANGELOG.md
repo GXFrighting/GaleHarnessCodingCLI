@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.8.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v1.7.0...cli-v1.8.0) (2026-04-18)
+
+
+### Features
+
+* **windows:** 4-layer Windows deployment verification ([#16](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/issues/16)) ([fdf6e7e](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/fdf6e7e6497ed3541cd78e4a4062692c0c53115d))
+
+
+### Bug Fixes
+
+* **test:** extend STORE_PATTERNS to support 2-digit phase numbers (P1) ([bfc6ed2](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/bfc6ed2afaac6f0306b3a4971183583c3735113e))
+* **test:** tighten STORE_PATTERNS regex, increase extractPhaseContext window to 60 lines ([5222c14](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/5222c14da9545a8caaf13d19a1431ee611e835cf))
+
 ## [1.7.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v1.6.0...cli-v1.7.0) (2026-04-17)
 
 
