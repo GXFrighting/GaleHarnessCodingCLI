@@ -85,18 +85,22 @@ export function commitKnowledgeChanges(options: CommitOptions): CommitResult {
       return { committed: false, message: "No changes to commit" }
     }
 
-    // 3. 生成 commit message
+    // 3. 配置本地 git 用户身份（CI 环境可能无全局配置）
+    spawnSync("git", ["config", "user.email", "gale-knowledge@local"], { cwd: home, stdio: "ignore", timeout: 15000 })
+    spawnSync("git", ["config", "user.name", "Gale Knowledge"], { cwd: home, stdio: "ignore", timeout: 15000 })
+
+    // 4. 生成 commit message
     const safeTitle = sanitizeTitle(options.title)
     const commitMessage = `docs(${options.project}/${options.type}): ${safeTitle}`
 
-    // 4. 执行 commit
+    // 5. 执行 commit
     const commitResult = spawnSync("git", ["commit", "-m", commitMessage], spawnOpts)
     if (commitResult.status !== 0) {
       const stderr = commitResult.stderr ? commitResult.stderr.toString().trim() : "unknown error"
       return { committed: false, message: `Commit failed: ${stderr}` }
     }
 
-    // 5. 获取 commit hash
+    // 6. 获取 commit hash
     const hashResult = spawnSync("git", ["rev-parse", "--short", "HEAD"], {
       cwd: home,
       stdio: ["ignore", "pipe", "ignore"],

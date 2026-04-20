@@ -51,6 +51,18 @@ export function initKnowledgeRepo(home: string): boolean {
   // 写入 .gitignore
   writeFileSync(join(home, ".gitignore"), GITIGNORE_CONTENT, "utf8")
 
+  // 配置本地 git 用户身份（CI 环境可能无全局配置）
+  execSync('git config user.email "gale-knowledge@local"', {
+    cwd: home,
+    stdio: ["ignore", "ignore", "pipe"],
+    timeout: 15000,
+  })
+  execSync('git config user.name "Gale Knowledge"', {
+    cwd: home,
+    stdio: ["ignore", "ignore", "pipe"],
+    timeout: 15000,
+  })
+
   // 创建初始 commit
   execSync("git add -A", {
     cwd: home,
