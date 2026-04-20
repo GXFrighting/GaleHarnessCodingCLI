@@ -357,13 +357,14 @@ export function rebuildIndex(options?: RebuildIndexOptions): RebuildIndexResult 
     }
   }
 
-  // Save current HEAD commit hash regardless of whether uv was available.
-  // This prevents re-processing on the next run when external tools are unavailable.
-  // We save whenever there were files to process OR when in incremental mode with
-  // no changes (empty diff — still record current HEAD).
-  const currentHead = getCurrentHead(knowledgeHome)
-  if (currentHead) {
-    saveLastRebuildCommit(knowledgeHome, currentHead)
+  // Only save HEAD when all files processed successfully.
+  // When errors > 0, we intentionally do NOT advance the pointer so that
+  // failed files are retried on the next incremental rebuild.
+  if (errors === 0) {
+    const currentHead = getCurrentHead(knowledgeHome)
+    if (currentHead) {
+      saveLastRebuildCommit(knowledgeHome, currentHead)
+    }
   }
 
   return {

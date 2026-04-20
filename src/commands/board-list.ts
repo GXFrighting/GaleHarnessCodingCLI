@@ -2,6 +2,7 @@ import { defineCommand } from "citty"
 import { readAndMergeTasks } from "../board/reader"
 import { formatTable, formatJson, formatQuiet } from "../board/formatter"
 import { readKnowledgeDocuments } from "../board/knowledge-reader"
+import { isValidDocType, VALID_DOC_TYPES } from "../knowledge/types"
 import type { KnowledgeDocType } from "../knowledge/types"
 import type { TaskStatus, FormatOptions } from "../board/types"
 
@@ -86,9 +87,16 @@ export default defineCommand({
 
     // Knowledge-only mode: skip task loading entirely
     if (args["knowledge-only"]) {
+      // Validate knowledge-type if provided
+      const knowledgeType = args["knowledge-type"] as string | undefined
+      if (knowledgeType && !isValidDocType(knowledgeType)) {
+        console.error(`Invalid knowledge type: ${knowledgeType}. Valid types: ${VALID_DOC_TYPES.join(", ")}`)
+        process.exit(1)
+      }
+
       const knowledgeDocs = readKnowledgeDocuments({
         project: (args.project && args.project.trim() !== "") ? args.project : undefined,
-        type: args["knowledge-type"] as KnowledgeDocType | undefined,
+        type: knowledgeType as KnowledgeDocType | undefined,
       })
       console.log(formatKnowledgeOutput(knowledgeDocs, args.project))
       return
@@ -139,9 +147,15 @@ export default defineCommand({
 
     // Knowledge documents section
     if (args["with-knowledge"]) {
+      const knowledgeType = args["knowledge-type"] as string | undefined
+      if (knowledgeType && !isValidDocType(knowledgeType)) {
+        console.error(`Invalid knowledge type: ${knowledgeType}. Valid types: ${VALID_DOC_TYPES.join(", ")}`)
+        process.exit(1)
+      }
+
       const knowledgeDocs = readKnowledgeDocuments({
         project: (args.project && args.project.trim() !== "") ? args.project : undefined,
-        type: args["knowledge-type"] as KnowledgeDocType | undefined,
+        type: knowledgeType as KnowledgeDocType | undefined,
       })
       console.log(formatKnowledgeOutput(knowledgeDocs, args.project))
     }

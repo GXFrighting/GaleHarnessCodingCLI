@@ -8,6 +8,7 @@ import {
   injectProjectFrontmatter,
 } from "../src/knowledge/writer"
 import * as homeModule from "../src/knowledge/home"
+import { resolveKnowledgePath } from "../src/knowledge/home"
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -18,6 +19,52 @@ function makeTmpDir(prefix: string): string {
   mkdirSync(dir, { recursive: true })
   return dir
 }
+
+// ---------------------------------------------------------------------------
+// path traversal protection
+// ---------------------------------------------------------------------------
+
+describe("path traversal protection", () => {
+  let origEnv: string | undefined
+
+  beforeEach(() => {
+    origEnv = process.env.GALE_KNOWLEDGE_HOME
+    // Point to a temp dir so resolveKnowledgeHome doesn't need real config
+    process.env.GALE_KNOWLEDGE_HOME = makeTmpDir("knowledge-traversal")
+  })
+
+  afterEach(() => {
+    if (origEnv === undefined) {
+      delete process.env.GALE_KNOWLEDGE_HOME
+    } else {
+      process.env.GALE_KNOWLEDGE_HOME = origEnv
+    }
+  })
+
+  test("rejects projectName containing ../", () => {
+    expect(() => {
+      resolveKnowledgePath({ type: "brainstorms", projectName: "../../.ssh" })
+    }).toThrow("Invalid path component")
+  })
+
+  test("rejects projectName containing forward slash", () => {
+    expect(() => {
+      resolveKnowledgePath({ type: "brainstorms", projectName: "foo/bar" })
+    }).toThrow("Invalid path component")
+  })
+
+  test("rejects projectName containing backslash", () => {
+    expect(() => {
+      resolveKnowledgePath({ type: "brainstorms", projectName: "foo\\bar" })
+    }).toThrow("Invalid path component")
+  })
+
+  test("accepts valid projectName", () => {
+    expect(() => {
+      resolveKnowledgePath({ type: "brainstorms", projectName: "my-normal-project" })
+    }).not.toThrow()
+  })
+})
 
 // ---------------------------------------------------------------------------
 // injectProjectFrontmatter

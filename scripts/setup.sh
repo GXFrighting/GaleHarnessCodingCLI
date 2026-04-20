@@ -169,6 +169,14 @@ if command -v bun >/dev/null 2>&1; then
   # bun link 创建的 symlink 依赖源文件有可执行权限，需要先 chmod +x
   chmod +x src/index.ts 2>/dev/null || true
   bun link >/dev/null 2>&1 && ok "gale-harness 已全局链接" || warn "bun link 失败，请手动运行"
+
+  # ── 全局知识仓库初始化 ──
+  header "初始化全局知识仓库..."
+  if command -v gale-knowledge &>/dev/null; then
+    gale-knowledge init 2>/dev/null && ok "全局知识仓库已初始化 (~/.galeharness/knowledge/)" || warn "知识仓库初始化失败，可稍后手动运行 gale-knowledge init"
+  else
+    warn "gale-knowledge 不在 PATH 中，请先确保 bun link 成功后重试"
+  fi
 else
   warn "Bun 未就绪，跳过项目依赖安装"
 fi
@@ -299,6 +307,9 @@ ${BOLD}  自检清单 — 配置生效后，依次运行以下命令验证:${NC}
 
   ${CYAN}gale-harness --help${NC}
     → 期望: 显示 CLI 帮助信息
+
+  ${CYAN}gale-knowledge resolve-path --type solutions${NC}
+    → 期望: 输出全局知识仓库路径
 
   ${CYAN}uv run vendor/hkt-memory/scripts/hkt_memory_v5.py stats${NC}
     → 期望: HKTMemory 统计信息

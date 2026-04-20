@@ -10,6 +10,7 @@
 import { defineCommand } from "citty"
 import { spawnSync } from "node:child_process"
 import type { KnowledgeDocType } from "../../src/knowledge/types.js"
+import { isValidDocType, VALID_DOC_TYPES } from "../../src/knowledge/types.js"
 import { resolveKnowledgeHome } from "../../src/knowledge/home.js"
 
 // ---------------------------------------------------------------------------
@@ -149,6 +150,11 @@ const commitCommand = defineCommand({
     },
   },
   run: async ({ args }) => {
+    if (!isValidDocType(args.type as string)) {
+      console.error(`Invalid document type: ${args.type}. Valid types: ${VALID_DOC_TYPES.join(", ")}`)
+      process.exit(1)
+    }
+
     try {
       const result = commitKnowledgeChanges({
         project: args.project as string,

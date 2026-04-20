@@ -8,7 +8,7 @@
  */
 
 import { defineCommand } from "citty"
-import { execSync } from "node:child_process"
+import { spawnSync } from "node:child_process"
 import { existsSync, mkdirSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import { resolveKnowledgeHome } from "../../src/knowledge/home.js"
@@ -42,38 +42,36 @@ export function initKnowledgeRepo(home: string): boolean {
   mkdirSync(home, { recursive: true })
 
   // git init
-  execSync("git init", {
-    cwd: home,
-    stdio: ["ignore", "ignore", "pipe"],
-    timeout: 15000,
-  })
+  const spawnOpts = { cwd: home, stdio: ["ignore", "ignore", "pipe"] as ["ignore", "ignore", "pipe"], timeout: 15000 }
+
+  const initResult = spawnSync("git", ["init"], spawnOpts)
+  if (initResult.status !== 0) {
+    const stderr = initResult.stderr ? initResult.stderr.toString().trim() : "unknown error"
+    throw new Error(`git init failed: ${stderr}`)
+  }
 
   // 写入 .gitignore
   writeFileSync(join(home, ".gitignore"), GITIGNORE_CONTENT, "utf8")
 
   // 配置本地 git 用户身份（CI 环境可能无全局配置）
-  execSync('git config user.email "gale-knowledge@local"', {
-    cwd: home,
-    stdio: ["ignore", "ignore", "pipe"],
-    timeout: 15000,
-  })
-  execSync('git config user.name "Gale Knowledge"', {
-    cwd: home,
-    stdio: ["ignore", "ignore", "pipe"],
-    timeout: 15000,
-  })
+  const emailResult = spawnSync("git", ["config", "user.email", "gale-knowledge@local"], { cwd: home, stdio: ["ignore", "ignore", "pipe"], timeout: 15000 })
+  if (emailResult.status !== 0) throw new Error("git config user.email failed")
+
+  const nameResult = spawnSync("git", ["config", "user.name", "Gale Knowledge"], { cwd: home, stdio: ["ignore", "ignore", "pipe"], timeout: 15000 })
+  if (nameResult.status !== 0) throw new Error("git config user.name failed")
 
   // 创建初始 commit
-  execSync("git add -A", {
-    cwd: home,
-    stdio: ["ignore", "ignore", "pipe"],
-    timeout: 15000,
-  })
-  execSync('git commit -m "chore: init knowledge repo" --allow-empty', {
-    cwd: home,
-    stdio: ["ignore", "ignore", "pipe"],
-    timeout: 15000,
-  })
+  const addResult = spawnSync("git", ["add", "-A"], spawnOpts)
+  if (addResult.status !== 0) {
+    const stderr = addResult.stderr ? addResult.stderr.toString().trim() : "unknown error"
+    throw new Error(`git add failed: ${stderr}`)
+  }
+
+  const commitResult = spawnSync("git", ["commit", "-m", "chore: init knowledge repo", "--allow-empty"], spawnOpts)
+  if (commitResult.status !== 0) {
+    const stderr = commitResult.stderr ? commitResult.stderr.toString().trim() : "unknown error"
+    throw new Error(`git commit failed: ${stderr}`)
+  }
 
   return true
 }

@@ -92,7 +92,7 @@ export function readKnowledgeDocuments(options?: ReadKnowledgeOptions): Knowledg
 
       for (const filename of files) {
         const absolutePath = join(typePath, filename)
-        const relativePath = relative(home, absolutePath)
+        const relativePath = relative(home, absolutePath).replace(/\\/g, '/')
         const doc = parseDocument(absolutePath, relativePath, projectName, docType)
         if (doc) {
           documents.push(doc)

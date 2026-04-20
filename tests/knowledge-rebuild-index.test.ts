@@ -307,17 +307,22 @@ describe("rebuildIndex", () => {
     expect(result.mode).toBe("full")
   })
 
-  it("updates .last-rebuild-commit after processing", () => {
+  it("updates .last-rebuild-commit after processing when no errors", () => {
     const repoDir = createInitializedRepo(testDir)
     addAndCommit(repoDir, { "doc.md": "# Doc\n" }, "initial")
 
     const headBefore = getCurrentHead(repoDir)
 
-    rebuildIndex({ knowledgeHome: repoDir, full: true })
+    const result = rebuildIndex({ knowledgeHome: repoDir, full: true })
 
-    // .last-rebuild-commit should now exist with current HEAD
+    // Only save commit pointer when errors === 0
     const saved = getLastRebuildCommit(repoDir)
-    expect(saved).toBe(headBefore)
+    if (result.errors === 0) {
+      expect(saved).toBe(headBefore)
+    } else {
+      // When there are errors, commit pointer should NOT advance
+      expect(saved).toBeNull()
+    }
   })
 
   it("uv not available: warns but does not fail", () => {

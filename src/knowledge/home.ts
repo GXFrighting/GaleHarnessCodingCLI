@@ -143,9 +143,17 @@ export function extractProjectName(cwd?: string): string {
  * @param options.projectName - 项目名（可选）
  * @returns 路径解析结果
  */
+/** Reject path components containing traversal sequences or separators */
+function sanitizePathComponent(name: string): string {
+  if (/[\/\\]|\.\./g.test(name)) {
+    throw new Error(`Invalid path component: ${name}`)
+  }
+  return name
+}
+
 export function resolveKnowledgePath(options: ResolveKnowledgePathOptions): KnowledgePathResult {
   const home = resolveKnowledgeHome()
-  const projectName = options.projectName || extractProjectName()
+  const projectName = sanitizePathComponent(options.projectName || extractProjectName())
   const projectDir = join(home, projectName)
   const docDir = join(projectDir, options.type)
 

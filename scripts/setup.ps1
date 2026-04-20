@@ -194,6 +194,21 @@ if (Test-Command "bun") {
     } catch {
         warn "bun link 失败，请手动运行"
     }
+
+    # ── 全局知识仓库初始化 ──
+    Write-Host ""
+    Write-Host "=== 初始化全局知识仓库 ===" -ForegroundColor Cyan
+    $gkCmd = Get-Command gale-knowledge -ErrorAction SilentlyContinue
+    if ($gkCmd) {
+        $initResult = & gale-knowledge init 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            ok "全局知识仓库已初始化 (~/.galeharness/knowledge/)"
+        } else {
+            warn "知识仓库初始化失败，可稍后手动运行 gale-knowledge init"
+        }
+    } else {
+        warn "gale-knowledge 不在 PATH 中，请确保 bun link 成功"
+    }
 } else {
     warn "Bun 未就绪，跳过项目依赖安装"
 }
@@ -276,6 +291,9 @@ Write-Host @"
 
   gale-harness --help
     -> 期望: 显示 CLI 帮助信息
+
+  gale-knowledge resolve-path --type solutions
+    -> 期望: 输出全局知识仓库路径
 
   uv run vendor/hkt-memory/scripts/hkt_memory_v5.py stats
     -> 期望: HKTMemory 统计信息

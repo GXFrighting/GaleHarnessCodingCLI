@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Compound Refresh
 
-Maintain the quality of `docs/solutions/` over time. This workflow reviews existing learnings against the current codebase, then refreshes any derived pattern docs that depend on them.
+Maintain the quality of `docs/solutions/`（或全局知识库）over time. This workflow reviews existing learnings against the current codebase, then refreshes any derived pattern docs that depend on them.
 
 **Config (pre-resolved):**
 !`cat "$(git rev-parse --show-toplevel 2>/dev/null)/.compound-engineering/config.local.yaml" 2>/dev/null || cat "$(dirname "$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)")/.compound-engineering/config.local.yaml" 2>/dev/null || echo '__NO_CONFIG__'`
@@ -91,20 +91,31 @@ For each candidate artifact, classify it into one of five outcomes:
 9. **Evaluate document-set design, not just accuracy.** In addition to checking whether each doc is accurate, evaluate whether it is still the right unit of knowledge. If two or more docs overlap heavily, determine whether they should remain separate, be cross-scoped more clearly, or be consolidated into one canonical document. Redundant docs are dangerous because they drift silently — two docs saying the same thing will eventually say different things.
 10. **Delete, don't archive.** There is no `_archived/` directory. When a doc is no longer useful, delete it. Git history preserves every deleted file — that is the archive. A dedicated archive directory creates problems: archived docs accumulate, pollute search results, and nobody reads them. If someone needs a deleted doc, `git log --diff-filter=D -- docs/solutions/` will find it.
 
+## Knowledge Path Resolution
+
+Before scanning for learnings, resolve the actual knowledge directory:
+
+1. Run `gale-knowledge resolve-path --type solutions` to get the solutions directory path
+2. If the command succeeds and the path exists, use that as the base directory for all subsequent operations
+3. If the command fails or `gale-knowledge` is not available, fall back to `docs/solutions/`
+4. Store the resolved path as `$SOLUTIONS_DIR` and use it consistently throughout the workflow
+
+This ensures the skill works with the global knowledge repository when available, while maintaining backward compatibility with project-local `docs/solutions/` as a fallback.
+
 ## Scope Selection
 
-Start by discovering learnings and pattern docs under `docs/solutions/`.
+Start by discovering learnings and pattern docs under the resolved solutions directory (`$SOLUTIONS_DIR`).
 
 Exclude:
 
 - `README.md`
-- `docs/solutions/_archived/` (legacy — if this directory exists, flag it for cleanup in the report)
+- `$SOLUTIONS_DIR/_archived/` (legacy — if this directory exists, flag it for cleanup in the report)
 
-Find all `.md` files under `docs/solutions/`, excluding `README.md` files and anything under `_archived/`. If an `_archived/` directory exists, note it in the report as a legacy artifact that should be cleaned up (files either restored or deleted).
+Find all `.md` files under `$SOLUTIONS_DIR`, excluding `README.md` files and anything under `_archived/`. If an `_archived/` directory exists, note it in the report as a legacy artifact that should be cleaned up (files either restored or deleted).
 
 If `$ARGUMENTS` is provided, use it to narrow scope before proceeding. Try these matching strategies in order, stopping at the first that produces results:
 
-1. **Directory match** — check if the argument matches a subdirectory name under `docs/solutions/` (e.g., `performance-issues`, `database-issues`)
+1. **Directory match** — check if the argument matches a subdirectory name under the resolved solutions directory (e.g., `performance-issues`, `database-issues`)
 2. **Frontmatter match** — search `module`, `component`, or `tags` fields in learning frontmatter for the argument
 3. **Filename match** — match against filenames (partial matches are fine)
 4. **Content search** — search file contents for the argument as a keyword (useful for feature names or feature areas)
@@ -114,7 +125,7 @@ If no matches are found, report that and ask the user to clarify. In autofix mod
 If no candidate docs are found, report:
 
 ```text
-No candidate docs found in docs/solutions/.
+No candidate docs found in the solutions directory (docs/solutions/ or global knowledge repo).
 Run `gh:compound` after solving problems to start building your knowledge base.
 ```
 
@@ -200,7 +211,7 @@ Three guidelines that are easy to get wrong:
 
 ## Phase 1.5: Investigate Pattern Docs
 
-After reviewing the underlying learning docs, investigate any relevant pattern docs under `docs/solutions/patterns/`.
+After reviewing the underlying learning docs, investigate any relevant pattern docs under `$SOLUTIONS_DIR/patterns/` (or `docs/solutions/patterns/` if using fallback path).
 
 Pattern docs are high-leverage — a stale pattern is more dangerous than a stale individual learning because future work may treat it as broadly applicable guidance. Evaluate whether the generalized rule still holds given the refreshed state of the learnings it depends on.
 
@@ -652,7 +663,7 @@ Use **Consolidate** proactively when the document set has grown organically and 
 
 ## Discoverability Check
 
-After the refresh report is generated, check whether the project's instruction files would lead an agent to discover and search `docs/solutions/` before starting work in a documented area. This runs every time — the knowledge store only compounds value when agents can find it. If this check produces edits, they are committed as part of (or immediately after) the Phase 5 commit flow — see step 5 below.
+After the refresh report is generated, check whether the project's instruction files would lead an agent to discover and search the solutions directory (`$SOLUTIONS_DIR`) before starting work in a documented area. This runs every time — the knowledge store only compounds value when agents can find it. If this check produces edits, they are committed as part of (or immediately after) the Phase 5 commit flow — see step 5 below.
 
 1. Identify which root-level instruction files exist (AGENTS.md, CLAUDE.md, or both). Read the file(s) and determine which holds the substantive content — one file may just be a shim that `@`-includes the other (e.g., `CLAUDE.md` containing only `@AGENTS.md`, or vice versa). The substantive file is the assessment and edit target; ignore shims. If neither file exists, skip this check entirely.
 2. Assess whether an agent reading the instruction files would learn three things:
@@ -660,7 +671,7 @@ After the refresh report is generated, check whether the project's instruction f
    - Enough about its structure to search effectively (category organization, YAML frontmatter fields like `module`, `tags`, `problem_type`)
    - When to search it (before implementing features, debugging issues, or making decisions in documented areas — learnings may cover bugs, best practices, workflow patterns, or other institutional knowledge)
 
-   This is a semantic assessment, not a string match. The information could be a line in an architecture section, a bullet in a gotchas section, spread across multiple places, or expressed without ever using the exact path `docs/solutions/`. Use judgment — if an agent would reasonably discover and use the knowledge store after reading the file, the check passes.
+   This is a semantic assessment, not a string match. The information could be a line in an architecture section, a bullet in a gotchas section, spread across multiple places, or expressed without ever using the exact path `docs/solutions/` or the global knowledge repo path. Use judgment — if an agent would reasonably discover and use the knowledge store after reading the file, the check passes.
 
 3. If the spirit is already met, no action needed.
 4. If not:
@@ -673,15 +684,15 @@ After the refresh report is generated, check whether the project's instruction f
 
       When there's an existing directory listing or architecture section — add a line:
       ```
-      docs/solutions/  # documented solutions to past problems (bugs, best practices, workflow patterns), organized by category with YAML frontmatter (module, tags, problem_type)
+      docs/solutions/  # documented solutions to past problems (bugs, best practices, workflow patterns), organized by category with YAML frontmatter (module, tags, problem_type). May also reside in a global knowledge repo — run `gale-knowledge resolve-path --type solutions` to check.
       ```
 
       When nothing in the file is a natural fit — a small headed section is appropriate:
       ```
       ## Documented Solutions
 
-      `docs/solutions/` — documented solutions to past problems (bugs, best practices, workflow patterns), organized by category with YAML frontmatter (`module`, `tags`, `problem_type`). Relevant when implementing or debugging in documented areas.
+      `docs/solutions/` (or global knowledge repo) — documented solutions to past problems (bugs, best practices, workflow patterns), organized by category with YAML frontmatter (`module`, `tags`, `problem_type`). Run `gale-knowledge resolve-path --type solutions` to resolve the actual path. Relevant when implementing or debugging in documented areas.
       ```
-   c. In interactive mode, explain to the user why this matters — agents working in this repo (including fresh sessions, other tools, or collaborators without the plugin) won't know to check `docs/solutions/` unless the instruction file surfaces it. Show the proposed change and where it would go, then use the platform's blocking question tool (`AskUserQuestion` in Claude Code, `request_user_input` in Codex, `ask_user` in Gemini) to get consent before making the edit. If no question tool is available, present the proposal and wait for the user's reply. In autofix mode, include it as a "Discoverability recommendation" line in the report — do not attempt to edit instruction files (autofix scope is doc maintenance, not project config).
+   c. In interactive mode, explain to the user why this matters — agents working in this repo (including fresh sessions, other tools, or collaborators without the plugin) won't know to check the solutions directory (`docs/solutions/` or global knowledge repo) unless the instruction file surfaces it. Show the proposed change and where it would go, then use the platform's blocking question tool (`AskUserQuestion` in Claude Code, `request_user_input` in Codex, `ask_user` in Gemini) to get consent before making the edit. If no question tool is available, present the proposal and wait for the user's reply. In autofix mode, include it as a "Discoverability recommendation" line in the report — do not attempt to edit instruction files (autofix scope is doc maintenance, not project config).
 
 5. **Amend or create a follow-up commit when the check produces edits.** If step 4 resulted in an edit to an instruction file and Phase 5 already committed the refresh changes, stage the newly edited file and either amend the existing commit (if still on the same branch and no push has occurred) or create a small follow-up commit (e.g., `docs: add docs/solutions/ discoverability to AGENTS.md`). If Phase 5 already pushed the branch to a remote (e.g., the branch+PR path), push the follow-up commit as well so the open PR includes the discoverability change. This keeps the working tree clean and the remote in sync at the end of the run. If the user chose "Don't commit" in Phase 5, leave the instruction-file edit unstaged alongside the other uncommitted refresh changes — no separate commit logic needed.
