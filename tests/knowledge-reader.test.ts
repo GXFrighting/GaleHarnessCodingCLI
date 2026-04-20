@@ -47,7 +47,7 @@ describe("readKnowledgeDocuments", () => {
     expect(result[0].type).toBe("plans")
     expect(result[0].title).toBe("Test Plan")
     expect(result[0].date).toBe("2026-04-20")
-    expect(result[0].path).toBe(join("my-project", "plans", "2026-04-20-test-plan.md"))
+    expect(result[0].path).toBe("my-project/plans/2026-04-20-test-plan.md")
   })
 
   test("parses frontmatter title, date, project, topic", () => {
