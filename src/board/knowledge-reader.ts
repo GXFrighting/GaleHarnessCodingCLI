@@ -5,7 +5,7 @@
  */
 
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs"
-import { join, relative } from "node:path"
+import { basename, join, relative } from "node:path"
 
 import { parseFrontmatter } from "../utils/frontmatter.js"
 import { resolveKnowledgeHome } from "../knowledge/home.js"
@@ -158,7 +158,7 @@ function parseDocument(
     const { data } = parseFrontmatter(content)
 
     // 文件名（不含扩展名）
-    const filename = absolutePath.split("/").pop()!.replace(/\.md$/, "")
+    const filename = basename(absolutePath, ".md")
 
     // 从文件名提取日期
     const dateMatch = filename.match(DATE_PREFIX_REGEX)

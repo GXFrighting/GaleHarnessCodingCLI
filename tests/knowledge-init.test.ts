@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "bun:test"
 import { execSync } from "node:child_process"
 import { existsSync, readFileSync, mkdirSync, rmSync } from "node:fs"
-import { join } from "node:path"
+import { join, resolve } from "node:path"
 import { tmpdir } from "node:os"
 
 import { initKnowledgeRepo } from "../cmd/gale-knowledge/init.js"
@@ -99,7 +99,7 @@ describe("initKnowledgeRepo", () => {
 // ---------------------------------------------------------------------------
 
 describe("gale-knowledge CLI", () => {
-  const projectRoot = import.meta.dir.replace("/tests", "")
+  const projectRoot = resolve(import.meta.dir, "..")
 
   it("CLI entry point is loadable and exports main command structure", async () => {
     // Verify the CLI module can be imported without errors

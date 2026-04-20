@@ -271,23 +271,7 @@ export function rebuildIndex(options?: RebuildIndexOptions): RebuildIndexResult 
   const knowledgeHome = options?.knowledgeHome ?? resolveKnowledgeHome()
   const full = options?.full ?? false
 
-  // Check if uv is available
-  if (!isUvAvailable()) {
-    process.stderr.write(
-      "[gale-knowledge] Warning: uv is not available in PATH. Skipping vector index rebuild.\n",
-    )
-    return { processed: 0, skipped: 0, errors: 1, mode: full ? "full" : "incremental" }
-  }
-
-  // Check if hkt_memory_v5.py exists
-  const scriptPath = getHktMemoryScriptPath()
-  if (!scriptPath) {
-    process.stderr.write(
-      "[gale-knowledge] Warning: vendor/hkt-memory/scripts/hkt_memory_v5.py not found. Skipping vector index rebuild.\n",
-    )
-    return { processed: 0, skipped: 0, errors: 1, mode: full ? "full" : "incremental" }
-  }
-
+  // Determine mode and files to process first (before checking uv availability)
   let filesToProcess: string[] = []
   let mode: "full" | "incremental" = full ? "full" : "incremental"
 
@@ -319,49 +303,67 @@ export function rebuildIndex(options?: RebuildIndexOptions): RebuildIndexResult 
     filesToProcess = collectMarkdownFiles(knowledgeHome)
   }
 
+  // Check if uv is available
+  const uvAvailable = isUvAvailable()
+  if (!uvAvailable) {
+    process.stderr.write(
+      "[gale-knowledge] Warning: uv is not available in PATH. Skipping vector index rebuild.\n",
+    )
+  }
+
+  // Check if hkt_memory_v5.py exists
+  const scriptPath = uvAvailable ? getHktMemoryScriptPath() : null
+  if (uvAvailable && !scriptPath) {
+    process.stderr.write(
+      "[gale-knowledge] Warning: vendor/hkt-memory/scripts/hkt_memory_v5.py not found. Skipping vector index rebuild.\n",
+    )
+  }
+
+  const canProcess = uvAvailable && scriptPath != null
+
   // Process files
   let processed = 0
   let errors = 0
   const totalFiles = filesToProcess.length
-  const skipped = 0
 
-  for (const file of filesToProcess) {
-    const fullPath = join(knowledgeHome, file)
+  if (canProcess) {
+    for (const file of filesToProcess) {
+      const fullPath = join(knowledgeHome, file)
 
-    // Skip if file no longer exists (deleted in diff)
-    if (!existsSync(fullPath)) {
-      continue
-    }
+      // Skip if file no longer exists (deleted in diff)
+      if (!existsSync(fullPath)) {
+        continue
+      }
 
-    try {
-      const content = readFileSync(fullPath, "utf8")
-      const title = file // Use relative path as title
+      try {
+        const content = readFileSync(fullPath, "utf8")
+        const title = file // Use relative path as title
 
-      const success = storeToHktMemory(scriptPath, file, content, title)
-      if (success) {
-        processed++
-      } else {
+        const success = storeToHktMemory(scriptPath!, file, content, title)
+        if (success) {
+          processed++
+        } else {
+          errors++
+          process.stderr.write(
+            `[gale-knowledge] Warning: Failed to index ${file}\n`,
+          )
+        }
+      } catch (err) {
         errors++
         process.stderr.write(
-          `[gale-knowledge] Warning: Failed to index ${file}\n`,
+          `[gale-knowledge] Warning: Error processing ${file}: ${err instanceof Error ? err.message : String(err)}\n`,
         )
       }
-    } catch (err) {
-      errors++
-      process.stderr.write(
-        `[gale-knowledge] Warning: Error processing ${file}: ${err instanceof Error ? err.message : String(err)}\n`,
-      )
     }
   }
 
-  // Save current HEAD commit hash if we attempted to process any files,
-  // regardless of individual file success/failure. This prevents re-processing
-  // on the next run when external tools (e.g. uv) are unavailable.
-  if (filesToProcess.length > 0) {
-    const currentHead = getCurrentHead(knowledgeHome)
-    if (currentHead) {
-      saveLastRebuildCommit(knowledgeHome, currentHead)
-    }
+  // Save current HEAD commit hash regardless of whether uv was available.
+  // This prevents re-processing on the next run when external tools are unavailable.
+  // We save whenever there were files to process OR when in incremental mode with
+  // no changes (empty diff — still record current HEAD).
+  const currentHead = getCurrentHead(knowledgeHome)
+  if (currentHead) {
+    saveLastRebuildCommit(knowledgeHome, currentHead)
   }
 
   return {

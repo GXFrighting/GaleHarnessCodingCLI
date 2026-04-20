@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "bun:test"
 import { homedir } from "node:os"
-import { join, resolve, basename } from "node:path"
+import { isAbsolute, join, resolve, basename } from "node:path"
 
 import {
   resolveKnowledgeHome,
@@ -34,7 +34,7 @@ describe("resolveKnowledgeHome", () => {
     const home = resolveKnowledgeHome()
     expect(home).toBe(resolve("relative/path"))
     // 确保是绝对路径
-    expect(home.startsWith("/")).toBe(true)
+    expect(isAbsolute(home)).toBe(true)
   })
 
   it("returns default path when no env and no config", () => {
@@ -44,13 +44,13 @@ describe("resolveKnowledgeHome", () => {
     // 如果没有配置文件，应返回默认路径
     // 注意: 如果用户碰巧有配置文件，这个测试会从配置读取
     // 但我们至少确认返回的是绝对路径
-    expect(home.startsWith("/")).toBe(true)
+    expect(isAbsolute(home)).toBe(true)
   })
 
   it("env takes precedence over default", () => {
     process.env.GALE_KNOWLEDGE_HOME = "/tmp/env-knowledge"
     const home = resolveKnowledgeHome()
-    expect(home).toBe("/tmp/env-knowledge")
+    expect(home).toBe(resolve("/tmp/env-knowledge"))
   })
 })
 
@@ -129,10 +129,11 @@ describe("resolveKnowledgePath", () => {
       projectName: "my-project",
     })
 
-    expect(result.home).toBe("/tmp/test-knowledge")
+    const expectedHome = resolve("/tmp/test-knowledge")
+    expect(result.home).toBe(expectedHome)
     expect(result.projectName).toBe("my-project")
-    expect(result.projectDir).toBe("/tmp/test-knowledge/my-project")
-    expect(result.docDir).toBe("/tmp/test-knowledge/my-project/brainstorms")
+    expect(result.projectDir).toBe(join(expectedHome, "my-project"))
+    expect(result.docDir).toBe(join(expectedHome, "my-project", "brainstorms"))
   })
 
   it("assembles correct paths for plans", () => {
@@ -141,10 +142,11 @@ describe("resolveKnowledgePath", () => {
       projectName: "another-project",
     })
 
-    expect(result.home).toBe("/tmp/test-knowledge")
+    const expectedHome = resolve("/tmp/test-knowledge")
+    expect(result.home).toBe(expectedHome)
     expect(result.projectName).toBe("another-project")
-    expect(result.projectDir).toBe("/tmp/test-knowledge/another-project")
-    expect(result.docDir).toBe("/tmp/test-knowledge/another-project/plans")
+    expect(result.projectDir).toBe(join(expectedHome, "another-project"))
+    expect(result.docDir).toBe(join(expectedHome, "another-project", "plans"))
   })
 
   it("assembles correct paths for solutions", () => {
@@ -153,16 +155,18 @@ describe("resolveKnowledgePath", () => {
       projectName: "test-repo",
     })
 
-    expect(result.docDir).toBe("/tmp/test-knowledge/test-repo/solutions")
+    const expectedHome = resolve("/tmp/test-knowledge")
+    expect(result.docDir).toBe(join(expectedHome, "test-repo", "solutions"))
   })
 
   it("auto-extracts project name when not provided", () => {
     const result = resolveKnowledgePath({ type: "brainstorms" })
 
-    expect(result.home).toBe("/tmp/test-knowledge")
+    const expectedHome = resolve("/tmp/test-knowledge")
+    expect(result.home).toBe(expectedHome)
     expect(result.projectName.length).toBeGreaterThan(0)
     // projectDir 应该是 home + projectName
-    expect(result.projectDir).toBe(join("/tmp/test-knowledge", result.projectName))
+    expect(result.projectDir).toBe(join(expectedHome, result.projectName))
     // docDir 应该是 projectDir + type
     expect(result.docDir).toBe(join(result.projectDir, "brainstorms"))
   })
@@ -173,8 +177,9 @@ describe("resolveKnowledgePath", () => {
       type: "plans",
       projectName: "foo",
     })
-    expect(result.home).toBe("/custom/path")
-    expect(result.docDir).toBe("/custom/path/foo/plans")
+    const expectedHome = resolve("/custom/path")
+    expect(result.home).toBe(expectedHome)
+    expect(result.docDir).toBe(join(expectedHome, "foo", "plans"))
   })
 
   it("all result fields are strings", () => {

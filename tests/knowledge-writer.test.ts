@@ -128,14 +128,17 @@ describe("writeKnowledgeDocument", () => {
   })
 
   test("falls back to docs/ when knowledge repo is not writable", () => {
-    // Make resolveKnowledgePath return an impossible path
+    // Use a path that cannot be created on any OS
+    const impossiblePath = process.platform === "win32"
+      ? "Z:\\nonexistent\\readonly\\path"
+      : "/nonexistent/readonly/path"
     ;(homeModule.resolveKnowledgePath as ReturnType<typeof spyOn>).mockImplementation((opts: { type: string; projectName?: string }) => {
       const projectName = opts.projectName || "test-project"
       return {
-        home: "/nonexistent/readonly/path",
-        projectDir: `/nonexistent/readonly/path/${projectName}`,
+        home: impossiblePath,
+        projectDir: join(impossiblePath, projectName),
         projectName,
-        docDir: `/nonexistent/readonly/path/${projectName}/${opts.type}`,
+        docDir: join(impossiblePath, projectName, opts.type),
       }
     })
 
