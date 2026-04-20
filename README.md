@@ -2,6 +2,26 @@
 
 巨风科技研发团队提效工具 —— 基于 Compound Engineering 工作流与 HKTMemory 向量知识库的 AI 驱动开发套件。
 
+## 目录
+
+- [核心理念](#核心理念)
+- [工程师实战指南](#工程师实战指南)
+- [工作流](#工作流)
+- [系统架构](#系统架构)
+- [核心工作流时序图](#核心工作流时序图)
+- [核心功能](#核心功能)
+- [全局知识仓库](#全局知识仓库)
+- [安装方式](#安装方式)
+- [同步个人配置](#同步个人配置)
+- [快速开始](#快速开始)
+- [目录结构](#目录结构)
+- [开发指南](#开发指南)
+- [环境变量](#环境变量)
+- [贡献指南](#贡献指南)
+- [许可证](#许可证)
+
+---
+
 ## 核心理念
 
 **每一次工程实践都应该让后续工作变得更简单，而不是更复杂。**
@@ -315,6 +335,7 @@ flowchart TB
 
     subgraph Memory["知识底座"]
         HKT[HKTMemory 向量知识库 存储/检索/复用]
+        GKR[全局知识仓库 ~/.galeharness/knowledge/]
     end
 
     subgraph Converter["多平台转换层"]
@@ -328,6 +349,7 @@ flowchart TB
     WF --> HKT
     SK --> HKT
     AG --> HKT
+    GKR --> HKT
 
     SK --> Converter
 ```
@@ -467,6 +489,60 @@ flowchart LR
 
 ---
 
+## 全局知识仓库
+
+### 概述
+
+所有 `gh:` 工作流技能（brainstorm、plan、compound 等）产生的知识文档现在统一存储到全局知识仓库 `~/.galeharness/knowledge/`，按项目和文档类型组织：`~/.galeharness/knowledge/<project>/<type>/`。
+
+项目仓库保持整洁，知识积累在 Git 管理的专属存储中。写入失败时自动回退到项目本地 `docs/` 目录，确保知识不会丢失。
+
+### 路径解析优先级
+
+知识仓库根目录通过三层优先级解析：
+
+1. 环境变量 `GALE_KNOWLEDGE_HOME`（最高优先级）
+2. 配置文件 `~/.galeharness/config.json` 或 `config.yaml` 中的 `knowledge_home` 字段
+3. 默认路径 `~/.galeharness/knowledge/`
+
+### CLI 管理命令
+
+`gale-knowledge` 提供以下子命令管理全局知识仓库：
+
+| 命令 | 功能 |
+|------|------|
+| `gale-knowledge init` | 初始化全局知识仓库（含 Git） |
+| `gale-knowledge resolve-home` | 输出知识仓库根目录路径 |
+| `gale-knowledge resolve-path --type <type>` | 输出指定类型的文档目录路径 |
+| `gale-knowledge extract-project` | 输出当前项目名（从 Git remote 提取） |
+| `gale-knowledge commit --project <p> --type <t> --title <title>` | 批量提交知识文档 |
+| `gale-knowledge rebuild-index` | 重建 HKTMemory 向量索引（支持增量/全量） |
+
+### TaskBoard 集成
+
+`gale-harness board list --knowledge`、`board show`、`board stats` 现在可以查看全局知识文档，将知识仓库纳入统一的任务看板视图。
+
+### 示例
+
+```bash
+# 初始化知识仓库
+gale-knowledge init
+
+# 查看知识仓库路径
+gale-knowledge resolve-home
+
+# 查看当前项目的 brainstorms 目录
+gale-knowledge resolve-path --type brainstorms
+
+# 重建向量索引（增量模式）
+gale-knowledge rebuild-index
+
+# 全量重建
+gale-knowledge rebuild-index --full
+```
+
+---
+
 ## 安装方式
 
 ### 前置要求
@@ -552,11 +628,16 @@ uv --version
 gale-harness --help
 # → 期望: 显示 CLI 帮助信息
 
-# 5. HKTMemory 统计
+# 5. 全局知识仓库
+gale-knowledge init
+gale-knowledge resolve-home
+# → 期望: ~/.galeharness/knowledge/
+
+# 6. HKTMemory 统计
 uv run vendor/hkt-memory/scripts/hkt_memory_v5.py stats
 # → 期望: 数据库和向量存储的统计信息
 
-# 6. 项目测试
+# 7. 项目测试
 bun test
 # → 期望: 测试通过
 ```
@@ -669,6 +750,9 @@ bun run src/index.ts sync --target all
 
 ```
 GaleHarnessCodingCLI/
+├── cmd/
+│   └── gale-knowledge/     # 全局知识仓库 CLI 命令
+├── src/
 │   ├── index.ts             # 主入口
 │   ├── converters/          # 平台转换逻辑
 │   └── targets/             # 目标平台写入器
@@ -752,6 +836,7 @@ bun run src/index.ts sync --target all
 | `HKT_MEMORY_BASE_URL` | HKTMemory 服务端点 | 否（可用文件模式） |
 | `HKT_MEMORY_MODEL` | Embedding 模型 | 否（可用文件模式） |
 | `HKT_MEMORY_FILE_MODE` | 启用纯文件模式（无需 API） | 否 |
+| `GALE_KNOWLEDGE_HOME` | 全局知识仓库路径（覆盖默认的 `~/.galeharness/knowledge/`） | 否 |
 
 **文件模式**：设置 `HKT_MEMORY_FILE_MODE=true` 可在无 API 密钥的情况下使用 HKTMemory，仅使用本地文件存储（L0/L1/L2 层 + 本地索引）。
 

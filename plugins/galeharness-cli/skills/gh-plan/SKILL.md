@@ -67,11 +67,8 @@ A plan is ready when an implementer can start confidently without needing the pl
 
 Before any other action, log the skill start event so this execution appears on the task board:
 
-```bash
-gale-task log skill_started --skill gh:plan --title "${ARGUMENTS:-plan}" 2>/dev/null || true
-```
-
-If `gale-task` is not on PATH, skip silently — this must never block the skill.
+1. Run `gale-task log skill_started --skill gh:plan --title "<plan-topic>"` to register this execution on the task board.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
 
 <!-- /HKT-PATCH:gale-task-start -->
 
@@ -716,6 +713,16 @@ If the plan originated from a requirements document, re-read that document and v
 - Blocking questions were either resolved, explicitly assumed, or sent back to `gh:brainstorm`
 - Every section of the origin document is addressed in the plan — scan each section to confirm nothing was silently dropped
 
+<!-- HKT-PATCH:knowledge-write-path -->
+##### Knowledge Repository Write Path
+
+Before writing the plan file, resolve the target directory:
+
+1. Run `gale-knowledge resolve-path --type plans` to get the target directory path (the command outputs a plain path string). If the command fails or `gale-knowledge` is not available, fall back to `docs/plans`.
+2. Write the plan document to `<resolved-path>/<filename>.md` instead of the hardcoded `docs/plans/` path.
+
+<!-- /HKT-PATCH:knowledge-write-path -->
+
 #### 5.2 Write Plan File
 
 **REQUIRED: Write the plan file to disk before presenting any options.**
@@ -789,12 +796,12 @@ When reaching this phase, read `references/plan-handoff.md` for document review 
 
 After the plan file is finalized and document review has run:
 
-1. Read back the full content of the written plan file
+1. Compose a concise summary (2-4 sentences) covering: the problem, the chosen approach, key decisions, and the repo-relative file path to the plan document
 2. Extract `title` and `type` values from its YAML frontmatter
 3. Run:
    ```bash
    uv run vendor/hkt-memory/scripts/hkt_memory_v5.py store \
-     --content "<full plan file content>" \
+     --content "<summary + repo-relative file path>" \
      --title "<frontmatter title>" \
      --topic "<frontmatter type or 'plan'>" \
      --layer all
@@ -802,14 +809,27 @@ After the plan file is finalized and document review has run:
 4. Log on success: `Stored to HKTMemory: [title]`
 5. On error, note it briefly but do not fail the plan workflow — memory storage is supplementary, not critical path
 
+**Rationale:** The vector database's job is *discovery*, not full-text storage. The document already lives in a git-managed file. Store the summary and path so retrieval can surface it; the agent reads the actual file when details are needed.
+
 **Note:** This enables future plans and brainstorms to discover and build upon this work through their Phase 0 retrieve steps.
+
+<!-- HKT-PATCH:knowledge-commit -->
+##### Knowledge Repository Commit
+
+After the plan file is finalized and stored to HKTMemory:
+
+1. Run `gale-knowledge extract-project` to get the project name. If the command fails or is not available, use the current directory basename as the project name instead.
+2. Run `gale-knowledge commit --project "<project-name>" --type plan --title "<plan-title>"` to commit the knowledge document. If this command fails, log the error but continue — the document has already been written to disk.
+3. If `gale-knowledge` is not on PATH, skip both steps and continue — this must never block the skill.
+
+<!-- /HKT-PATCH:knowledge-commit -->
 
 NEVER CODE! Research, decide, and write the plan.
 
 <!-- HKT-PATCH:gale-task-end -->
 After the plan document is written and all phases are complete, log the completion event:
 
-```bash
-gale-task log skill_completed 2>/dev/null || true
-```
+1. Run `gale-task log skill_completed` to record the completion event.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+
 <!-- /HKT-PATCH:gale-task-end -->

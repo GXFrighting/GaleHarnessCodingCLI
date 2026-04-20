@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Link gale-harness and compound-plugin to local source tree for development.
+# Link gale-harness, compound-plugin, and gale-knowledge to local source tree for development.
 # Creates wrapper scripts that invoke `bun run` on the source, so the commands
 # work the same as the release symlinks (which point to .ts with #!/usr/bin/env bun).
 # Run from repo root or pass the repo path as $1.
@@ -7,14 +7,20 @@ set -euo pipefail
 
 REPO_ROOT="${1:-$(cd "$(dirname "$0")/.." && pwd)}"
 BIN_DIR="$HOME/.bun/bin"
-ENTRY="$REPO_ROOT/src/index.ts"
+DEFAULT_ENTRY="$REPO_ROOT/src/index.ts"
 
-if [ ! -f "$ENTRY" ]; then
-  echo "ERROR: $ENTRY not found. Are you in the GaleHarnessCodingCLI repo?"
+if [ ! -f "$DEFAULT_ENTRY" ]; then
+  echo "ERROR: $DEFAULT_ENTRY not found. Are you in the GaleHarnessCodingCLI repo?"
   exit 1
 fi
 
-for bin in gale-harness compound-plugin; do
+for bin in gale-harness compound-plugin gale-knowledge; do
+  # Select entry file per binary
+  if [ "$bin" = "gale-knowledge" ]; then
+    ENTRY="$REPO_ROOT/cmd/gale-knowledge/index.ts"
+  else
+    ENTRY="$DEFAULT_ENTRY"
+  fi
   LINK="$BIN_DIR/$bin"
   # Save current symlink target so dev-unlink can restore it
   BACKUP="$BIN_DIR/${bin}.release-target"

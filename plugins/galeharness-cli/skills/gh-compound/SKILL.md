@@ -35,11 +35,8 @@ When spawning subagents, pass the relevant file contents into the task prompt so
 <!-- HKT-PATCH:gale-task-start -->
 Before presenting mode options to the user, log the skill start event so this execution appears on the task board:
 
-```bash
-gale-task log skill_started --skill gh:compound --title "${ARGUMENTS:-compound}" 2>/dev/null || true
-```
-
-If `gale-task` is not on PATH, skip silently — this must never block the skill.
+1. Run `gale-task log skill_started --skill gh:compound --title "<compound-topic>"` to register this execution on the task board.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
 
 <!-- /HKT-PATCH:gale-task-start -->
 
@@ -257,6 +254,16 @@ The orchestrating agent (main conversation) performs these steps:
    - Tag session-sourced content with "(session history)" so its origin is clear to future readers
    - If findings are thin or "no relevant prior sessions," proceed without session context
 4. Assemble complete markdown file from the collected pieces, reading `assets/resolution-template.md` for the section structure of new docs
+<!-- HKT-PATCH:knowledge-write-path -->
+### Knowledge Repository Write Path
+
+Before writing the solution document, resolve the target directory:
+
+1. Run `gale-knowledge resolve-path --type solutions` to get the target directory path (the command outputs a plain path string). If the command fails or `gale-knowledge` is not available, fall back to `docs/solutions`.
+2. Use `<resolved-path>/[category]/` as the target directory for the solution document instead of the hardcoded `docs/solutions/[category]/` path.
+
+<!-- /HKT-PATCH:knowledge-write-path -->
+
 5. Validate YAML frontmatter against `references/schema.yaml`
 6. Create directory if needed: `mkdir -p docs/solutions/[category]/`
 7. Write the file: either the updated existing doc or the new `docs/solutions/[category]/[filename].md`
@@ -271,24 +278,34 @@ When creating a new doc, preserve the section order from `assets/resolution-temp
 
 After successfully writing the solution doc to `docs/solutions/`:
 
-1. Read back the full content of the written file
+1. Compose a concise summary (2-4 sentences) covering: the problem, the solution, key decisions, and the repo-relative file path to the solution document
 2. Extract `title` and `category` values from its YAML frontmatter
 3. Run:
    ```bash
    uv run vendor/hkt-memory/scripts/hkt_memory_v5.py store \
-     --content "<full file content>" \
+     --content "<summary + repo-relative file path>" \
      --title "<frontmatter title>" \
      --topic "<frontmatter category>" \
      --layer all
    ```
 4. Log: `Stored to HKTMemory: [title]` on success, or note the error (non-blocking — do not fail the compound workflow if HKTMemory is unavailable).
 
+**Rationale:** The vector database's job is *discovery*, not full-text storage. The document already lives in a git-managed file. Store the summary and path so retrieval can surface it; the agent reads the actual file when details are needed.
+
 <!-- HKT-PATCH:gale-task-memory -->
-5. After a successful HKTMemory store, log the memory_linked event (use the same `<frontmatter title>` as the `--memory-title` value):
-   ```bash
-   gale-task log memory_linked --memory-title "<frontmatter title>" 2>/dev/null || true
-   ```
+5. After a successful HKTMemory store, run `gale-task log memory_linked --memory-title "<frontmatter title>"` to log the memory_linked event. If `gale-task` is not on PATH or the command fails, skip and continue.
 <!-- /HKT-PATCH:gale-task-memory -->
+
+<!-- HKT-PATCH:knowledge-commit -->
+### Knowledge Repository Commit
+
+After the solution document is written and stored to HKTMemory:
+
+1. Run `gale-knowledge extract-project` to get the project name. If the command fails or is not available, use the current directory basename as the project name instead.
+2. Run `gale-knowledge commit --project "<project-name>" --type solution --title "<frontmatter-title>"` to commit the knowledge document. If this command fails, log the error but continue — the document has already been written to disk.
+3. If `gale-knowledge` is not on PATH, skip both steps and continue — this must never block the skill.
+
+<!-- /HKT-PATCH:knowledge-commit -->
 
 ### Phase 2.5: Selective Refresh Check
 
@@ -600,9 +617,6 @@ Based on problem type, these agents can enhance documentation:
 
 After the compound workflow is fully complete (documentation written, discoverability check done), log the completion event:
 
-```bash
-gale-task log skill_completed 2>/dev/null || true
-```
-
-If `gale-task` is not on PATH, skip silently — this must never block the skill.
+1. Run `gale-task log skill_completed` to record the completion event.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
 <!-- /HKT-PATCH:gale-task-end -->
