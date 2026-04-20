@@ -56,10 +56,10 @@ describe("setupCi", () => {
 
     expect(content).toContain("name: Knowledge Index Update")
     expect(content).toContain("actions/checkout@v4")
-    expect(content).toContain("actions/setup-python@v5")
-    expect(content).toContain("pip install httpx numpy")
+    expect(content).toContain("astral-sh/setup-uv@v3")
+    expect(content).toContain("github.event.before")
     expect(content).toContain("HKT_MEMORY_API_KEY")
-    expect(content).toContain("hkt_memory_store.py")
+    expect(content).toContain("hkt_memory_v5.py ingest-artifact")
     expect(content).toContain(".last-rebuild-commit")
   })
 

@@ -7,17 +7,16 @@
  */
 
 import { defineCommand } from "citty"
-import { execSync, spawnSync } from "node:child_process"
+import { spawnSync } from "node:child_process"
 import {
   existsSync,
-  mkdirSync,
   readFileSync,
   readdirSync,
-  statSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs"
 import { join, relative } from "node:path"
-import { homedir, tmpdir } from "node:os"
+import { tmpdir } from "node:os"
 import { resolveKnowledgeHome } from "../../src/knowledge/home.js"
 
 // ---------------------------------------------------------------------------
@@ -29,8 +28,6 @@ export interface RebuildIndexOptions {
   full?: boolean
   /** 知识仓库路径 */
   knowledgeHome?: string
-  /** 向量索引存储路径（默认 ~/.galeharness/vector-index/） */
-  indexPath?: string
 }
 
 export interface RebuildIndexResult {
@@ -49,7 +46,6 @@ export interface RebuildIndexResult {
 // ---------------------------------------------------------------------------
 
 const LAST_REBUILD_COMMIT_FILE = ".last-rebuild-commit"
-const DEFAULT_INDEX_DIR = join(homedir(), ".galeharness", "vector-index")
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -60,8 +56,8 @@ const DEFAULT_INDEX_DIR = join(homedir(), ".galeharness", "vector-index")
  */
 export function isUvAvailable(): boolean {
   try {
-    execSync("uv --version", { stdio: ["ignore", "ignore", "ignore"] })
-    return true
+    const result = spawnSync("uv", ["--version"], { stdio: ["ignore", "ignore", "ignore"], timeout: 15000 })
+    return result.status === 0
   } catch {
     return false
   }
@@ -70,7 +66,7 @@ export function isUvAvailable(): boolean {
 /**
  * 获取 vendor/hkt-memory 脚本路径（相对于项目根目录）
  */
-export function getHktMemoryScriptPath(): string | null {
+function getHktMemoryScriptPath(): string | null {
   // 从当前文件位置向上查找 vendor/hkt-memory
   const candidates = [
     join(__dirname, "..", "..", "vendor", "hkt-memory", "scripts", "hkt_memory_v5.py"),
@@ -100,6 +96,7 @@ export function collectMarkdownFiles(dir: string, baseDir?: string): string[] {
 
   for (const entry of entries) {
     if (entry.name === ".git" || entry.name === "node_modules") continue
+    if (entry.isSymbolicLink()) continue
 
     const fullPath = join(dir, entry.name)
     if (entry.isDirectory()) {
@@ -134,12 +131,15 @@ export function getChangedFiles(
   knowledgeHome: string,
   lastCommit: string,
 ): string[] {
+  if (!/^[0-9a-f]{7,40}$/i.test(lastCommit)) return []
   try {
-    const output = execSync(
-      `git diff --name-only ${lastCommit} HEAD -- '*.md'`,
-      { cwd: knowledgeHome, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    ).trim()
-    if (!output) return []
+    const result = spawnSync(
+      "git",
+      ["diff", "--name-only", lastCommit, "HEAD", "--", "*.md"],
+      { cwd: knowledgeHome, encoding: "utf8", timeout: 15000, stdio: ["ignore", "pipe", "pipe"] },
+    )
+    const output = (result.stdout ?? "").trim()
+    if (result.status !== 0 || !output) return []
     return output.split("\n").filter((f) => f.length > 0)
   } catch {
     // If git diff fails (e.g., invalid commit), return empty
@@ -152,11 +152,14 @@ export function getChangedFiles(
  */
 export function getCurrentHead(knowledgeHome: string): string | null {
   try {
-    return execSync("git rev-parse HEAD", {
+    const result = spawnSync("git", ["rev-parse", "HEAD"], {
       cwd: knowledgeHome,
       encoding: "utf8",
+      timeout: 15000,
       stdio: ["ignore", "pipe", "ignore"],
-    }).trim()
+    })
+    if (result.status !== 0) return null
+    return (result.stdout ?? "").trim() || null
   } catch {
     return null
   }
@@ -167,7 +170,7 @@ export function getCurrentHead(knowledgeHome: string): string | null {
  *
  * 使用临时文件传递内容以避免 shell 转义问题
  */
-export function storeToHktMemory(
+function storeToHktMemory(
   scriptPath: string,
   filePath: string,
   content: string,
@@ -206,6 +209,7 @@ export function storeToHktMemory(
 
     if (result.status !== 0) {
       // Try alternative: pass content via stdin
+      process.stderr.write("[gale-knowledge] First store method failed, retrying with stdin...\n")
       const result2 = spawnSync(
         "uv",
         [
@@ -235,7 +239,6 @@ export function storeToHktMemory(
   } finally {
     // Clean up temp file
     try {
-      const { unlinkSync } = require("node:fs")
       unlinkSync(tmpFile)
     } catch {
       // ignore cleanup errors
@@ -266,20 +269,14 @@ export function saveLastRebuildCommit(
  */
 export function rebuildIndex(options?: RebuildIndexOptions): RebuildIndexResult {
   const knowledgeHome = options?.knowledgeHome ?? resolveKnowledgeHome()
-  const indexPath = options?.indexPath ?? DEFAULT_INDEX_DIR
   const full = options?.full ?? false
-
-  // Ensure index directory exists
-  if (!existsSync(indexPath)) {
-    mkdirSync(indexPath, { recursive: true })
-  }
 
   // Check if uv is available
   if (!isUvAvailable()) {
     process.stderr.write(
       "[gale-knowledge] Warning: uv is not available in PATH. Skipping vector index rebuild.\n",
     )
-    return { processed: 0, skipped: 0, errors: 0, mode: full ? "full" : "incremental" }
+    return { processed: 0, skipped: 0, errors: 1, mode: full ? "full" : "incremental" }
   }
 
   // Check if hkt_memory_v5.py exists
@@ -288,7 +285,7 @@ export function rebuildIndex(options?: RebuildIndexOptions): RebuildIndexResult 
     process.stderr.write(
       "[gale-knowledge] Warning: vendor/hkt-memory/scripts/hkt_memory_v5.py not found. Skipping vector index rebuild.\n",
     )
-    return { processed: 0, skipped: 0, errors: 0, mode: full ? "full" : "incremental" }
+    return { processed: 0, skipped: 0, errors: 1, mode: full ? "full" : "incremental" }
   }
 
   let filesToProcess: string[] = []
@@ -299,6 +296,19 @@ export function rebuildIndex(options?: RebuildIndexOptions): RebuildIndexResult 
     const lastCommit = getLastRebuildCommit(knowledgeHome)
     if (lastCommit) {
       filesToProcess = getChangedFiles(knowledgeHome, lastCommit)
+      // If no changed files but lastCommit exists, verify hash is still reachable
+      if (filesToProcess.length === 0) {
+        const verify = spawnSync("git", ["cat-file", "-t", lastCommit], {
+          cwd: knowledgeHome, encoding: "utf8", timeout: 15000,
+          stdio: ["ignore", "pipe", "pipe"],
+        })
+        if (verify.status !== 0) {
+          // Hash unreachable (e.g. after force push), fall back to full mode
+          process.stderr.write("[gale-knowledge] Last rebuild commit unreachable, falling back to full mode.\n")
+          mode = "full"
+          filesToProcess = collectMarkdownFiles(knowledgeHome)
+        }
+      }
     } else {
       // No last commit file -> fall back to full mode
       mode = "full"
@@ -313,7 +323,7 @@ export function rebuildIndex(options?: RebuildIndexOptions): RebuildIndexResult 
   let processed = 0
   let errors = 0
   const totalFiles = filesToProcess.length
-  const skipped = mode === "incremental" ? 0 : 0 // In full mode, nothing is skipped
+  const skipped = 0
 
   for (const file of filesToProcess) {
     const fullPath = join(knowledgeHome, file)
@@ -344,10 +354,14 @@ export function rebuildIndex(options?: RebuildIndexOptions): RebuildIndexResult 
     }
   }
 
-  // Save current HEAD commit hash
-  const currentHead = getCurrentHead(knowledgeHome)
-  if (currentHead) {
-    saveLastRebuildCommit(knowledgeHome, currentHead)
+  // Save current HEAD commit hash if we attempted to process any files,
+  // regardless of individual file success/failure. This prevents re-processing
+  // on the next run when external tools (e.g. uv) are unavailable.
+  if (filesToProcess.length > 0) {
+    const currentHead = getCurrentHead(knowledgeHome)
+    if (currentHead) {
+      saveLastRebuildCommit(knowledgeHome, currentHead)
+    }
   }
 
   return {

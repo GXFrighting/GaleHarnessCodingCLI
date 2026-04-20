@@ -45,6 +45,7 @@ export function initKnowledgeRepo(home: string): boolean {
   execSync("git init", {
     cwd: home,
     stdio: ["ignore", "ignore", "pipe"],
+    timeout: 15000,
   })
 
   // 写入 .gitignore
@@ -54,10 +55,12 @@ export function initKnowledgeRepo(home: string): boolean {
   execSync("git add -A", {
     cwd: home,
     stdio: ["ignore", "ignore", "pipe"],
+    timeout: 15000,
   })
   execSync('git commit -m "chore: init knowledge repo" --allow-empty', {
     cwd: home,
     stdio: ["ignore", "ignore", "pipe"],
+    timeout: 15000,
   })
 
   return true

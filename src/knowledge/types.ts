@@ -5,6 +5,14 @@
 /** 知识文档类型 */
 export type KnowledgeDocType = 'brainstorms' | 'plans' | 'solutions';
 
+/** 有效文档类型列表 */
+export const VALID_DOC_TYPES: readonly KnowledgeDocType[] = ["brainstorms", "plans", "solutions"] as const
+
+/** 类型守卫：判断字符串是否为有效文档类型 */
+export function isValidDocType(type: string): type is KnowledgeDocType {
+  return (VALID_DOC_TYPES as readonly string[]).includes(type)
+}
+
 /** 知识仓库配置 */
 export interface KnowledgeConfig {
   /** 知识仓库根路径 */

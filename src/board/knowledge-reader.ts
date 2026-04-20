@@ -10,6 +10,7 @@ import { join, relative } from "node:path"
 import { parseFrontmatter } from "../utils/frontmatter.js"
 import { resolveKnowledgeHome } from "../knowledge/home.js"
 import type { KnowledgeDocType } from "../knowledge/types.js"
+import { VALID_DOC_TYPES } from "../knowledge/types.js"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -46,7 +47,6 @@ export interface ReadKnowledgeOptions {
 // Constants
 // ---------------------------------------------------------------------------
 
-const VALID_DOC_TYPES: KnowledgeDocType[] = ["brainstorms", "plans", "solutions"]
 const DATE_PREFIX_REGEX = /^(\d{4}-\d{2}-\d{2})-(.+)$/
 
 // ---------------------------------------------------------------------------

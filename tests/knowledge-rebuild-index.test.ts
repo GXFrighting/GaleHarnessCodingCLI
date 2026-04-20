@@ -367,17 +367,7 @@ describe("rebuildIndex", () => {
     expect(typeof result.errors).toBe("number")
   })
 
-  it("creates index directory if it does not exist", () => {
-    const repoDir = createInitializedRepo(testDir)
-    addAndCommit(repoDir, { "doc.md": "# Doc\n" }, "initial")
-
-    const customIndexPath = join(testDir, "custom-index-dir")
-    expect(existsSync(customIndexPath)).toBe(false)
-
-    rebuildIndex({ knowledgeHome: repoDir, full: true, indexPath: customIndexPath })
-
-    expect(existsSync(customIndexPath)).toBe(true)
-  })
+  // indexPath was removed as dead code — Python script manages its own index path
 })
 
 // ---------------------------------------------------------------------------

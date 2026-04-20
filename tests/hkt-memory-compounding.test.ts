@@ -244,7 +244,7 @@ describe("HKTMemory Compounding — Skill-Specific Contracts", () => {
     test("Phase 3.3 store reads back the written file before storing", async () => {
       const content = await readFile(path.join(PLUGIN_ROOT, "gh-brainstorm", "SKILL.md"), "utf8")
       const ctx = extractPhaseContext(content, "phase-3.3")
-      expect(ctx).toContain("Read back the full content")
+      expect(ctx).toContain("Compose a concise summary")
       expect(ctx).toContain("--content")
     })
 

@@ -18,21 +18,11 @@ import {
   resolveKnowledgePath,
   extractProjectName,
 } from "../../src/knowledge/home.js"
-import type { KnowledgeDocType } from "../../src/knowledge/types.js"
+import { isValidDocType } from "../../src/knowledge/types.js"
 import initCommand from "./init.js"
 import commitCommand from "./git-ops.js"
 import setupCiCommand from "./ci-setup.js"
 import rebuildIndexCommand from "./rebuild-index.js"
-
-// ---------------------------------------------------------------------------
-// Validators
-// ---------------------------------------------------------------------------
-
-const VALID_DOC_TYPES = new Set<string>(["brainstorms", "plans", "solutions"])
-
-function isValidDocType(value: string): value is KnowledgeDocType {
-  return VALID_DOC_TYPES.has(value)
-}
 
 // ---------------------------------------------------------------------------
 // Subcommands
@@ -65,6 +55,10 @@ const resolvePath = defineCommand({
       description: "Project name (optional, auto-detected from git remote)",
       required: false,
     },
+    json: {
+      type: "boolean",
+      description: "Output full JSON object",
+    },
   },
   run: async ({ args }) => {
     const type = args.type as string
@@ -80,7 +74,11 @@ const resolvePath = defineCommand({
       type,
       projectName: args.project as string | undefined,
     })
-    process.stdout.write(JSON.stringify(result, null, 2) + "\n")
+    if (args.json) {
+      process.stdout.write(JSON.stringify(result, null, 2) + "\n")
+    } else {
+      process.stdout.write(result.docDir + "\n")
+    }
   },
 })
 

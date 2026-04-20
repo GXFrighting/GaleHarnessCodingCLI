@@ -27,20 +27,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: pip install httpx numpy
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
 
       - name: Get changed docs
         id: changes
         run: |
-          echo "files=\$(git diff --name-only HEAD~1 HEAD -- '*.md' | tr '\\n' ' ')" >> \$GITHUB_OUTPUT
+          echo "files=\$(git diff --name-only \${{ github.event.before }} HEAD -- '**/*.md' | tr '\\n' ' ')" >> \$GITHUB_OUTPUT
 
       - name: Update vector index
         if: steps.changes.outputs.files != ''
@@ -52,7 +47,7 @@ jobs:
           for file in \${{ steps.changes.outputs.files }}; do
             if [ -f "$file" ]; then
               echo "Indexing: $file"
-              python scripts/hkt_memory_store.py --file "$file"
+              uv run vendor/hkt-memory/scripts/hkt_memory_v5.py ingest-artifact --content-file "$file" --source-mode governed --artifact-type spec --title "$file"
             fi
           done
 
@@ -123,7 +118,7 @@ const setupCiCommand = defineCommand({
         )
       }
 
-      process.stdout.write(
+      process.stderr.write(
         "\nReminder: Add the following secret to your GitHub repository:\n" +
         "  HKT_MEMORY_API_KEY — your HKTMemory API key\n" +
         "\nOptional secrets (have defaults):\n" +

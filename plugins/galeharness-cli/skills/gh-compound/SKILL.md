@@ -35,11 +35,8 @@ When spawning subagents, pass the relevant file contents into the task prompt so
 <!-- HKT-PATCH:gale-task-start -->
 Before presenting mode options to the user, log the skill start event so this execution appears on the task board:
 
-```bash
-gale-task log skill_started --skill gh:compound --title "${ARGUMENTS:-compound}" 2>/dev/null || true
-```
-
-If `gale-task` is not on PATH, skip silently — this must never block the skill.
+1. Run `gale-task log skill_started --skill gh:compound --title "<compound-topic>"` to register this execution on the task board.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
 
 <!-- /HKT-PATCH:gale-task-start -->
 
@@ -262,15 +259,8 @@ The orchestrating agent (main conversation) performs these steps:
 
 Before writing the solution document, resolve the target directory:
 
-```bash
-# Try global knowledge repo first, fall back to project docs/
-KNOWLEDGE_PATH=$(gale-knowledge resolve-path --type solutions 2>/dev/null)
-if [ -z "$KNOWLEDGE_PATH" ] || [ $? -ne 0 ]; then
-  KNOWLEDGE_PATH="docs/solutions"
-fi
-```
-
-Use `$KNOWLEDGE_PATH/[category]/` as the target directory for the solution document instead of the hardcoded `docs/solutions/[category]/` path.
+1. Run `gale-knowledge resolve-path --type solutions` to get the target directory path (the command outputs a plain path string). If the command fails or `gale-knowledge` is not available, fall back to `docs/solutions`.
+2. Use `<resolved-path>/[category]/` as the target directory for the solution document instead of the hardcoded `docs/solutions/[category]/` path.
 
 <!-- /HKT-PATCH:knowledge-write-path -->
 
@@ -303,10 +293,7 @@ After successfully writing the solution doc to `docs/solutions/`:
 **Rationale:** The vector database's job is *discovery*, not full-text storage. The document already lives in a git-managed file. Store the summary and path so retrieval can surface it; the agent reads the actual file when details are needed.
 
 <!-- HKT-PATCH:gale-task-memory -->
-5. After a successful HKTMemory store, log the memory_linked event (use the same `<frontmatter title>` as the `--memory-title` value):
-   ```bash
-   gale-task log memory_linked --memory-title "<frontmatter title>" 2>/dev/null || true
-   ```
+5. After a successful HKTMemory store, run `gale-task log memory_linked --memory-title "<frontmatter title>"` to log the memory_linked event. If `gale-task` is not on PATH or the command fails, skip and continue.
 <!-- /HKT-PATCH:gale-task-memory -->
 
 <!-- HKT-PATCH:knowledge-commit -->
@@ -314,11 +301,9 @@ After successfully writing the solution doc to `docs/solutions/`:
 
 After the solution document is written and stored to HKTMemory:
 
-```bash
-gale-knowledge commit --project "$(gale-knowledge extract-project 2>/dev/null || basename $(pwd))" --type solution --title "<frontmatter-title>" 2>/dev/null || true
-```
-
-If `gale-knowledge` is not on PATH, skip silently — this must never block the skill.
+1. Run `gale-knowledge extract-project` to get the project name. If the command fails or is not available, use the current directory basename as the project name instead.
+2. Run `gale-knowledge commit --project "<project-name>" --type solution --title "<frontmatter-title>"` to commit the knowledge document. If this command fails, log the error but continue — the document has already been written to disk.
+3. If `gale-knowledge` is not on PATH, skip both steps and continue — this must never block the skill.
 
 <!-- /HKT-PATCH:knowledge-commit -->
 
@@ -632,9 +617,6 @@ Based on problem type, these agents can enhance documentation:
 
 After the compound workflow is fully complete (documentation written, discoverability check done), log the completion event:
 
-```bash
-gale-task log skill_completed 2>/dev/null || true
-```
-
-If `gale-task` is not on PATH, skip silently — this must never block the skill.
+1. Run `gale-task log skill_completed` to record the completion event.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
 <!-- /HKT-PATCH:gale-task-end -->

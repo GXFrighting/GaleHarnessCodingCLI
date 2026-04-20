@@ -5,7 +5,7 @@
  */
 
 import { mkdirSync, writeFileSync } from "node:fs"
-import { dirname, join } from "node:path"
+import { dirname, join, resolve, sep } from "node:path"
 
 import { parseFrontmatter, formatFrontmatter } from "../utils/frontmatter.js"
 
@@ -57,27 +57,35 @@ export function writeKnowledgeDocument(options: WriteKnowledgeDocumentOptions): 
   const resolved = resolveKnowledgePath({ type, projectName })
   const primaryPath = join(resolved.docDir, filename)
 
+  // Path traversal guard
+  const finalPath = resolve(primaryPath)
+  const safeBase = resolve(resolved.docDir)
+  if (!finalPath.startsWith(safeBase + sep) && finalPath !== safeBase) {
+    throw new Error(`Invalid filename: path traversal detected`)
+  }
+
   try {
     mkdirSync(dirname(primaryPath), { recursive: true })
     writeFileSync(primaryPath, finalContent, "utf8")
     return { path: primaryPath, usedFallback: false }
-  } catch {
-    // 写入失败，降级到项目本地 docs/
-  }
+  } catch (primaryError) {
+    // 写入失败，降级到项目本地 docs/（保留原始错误信息）
+    const primaryWarning = primaryError instanceof Error ? primaryError.message : String(primaryError)
 
-  // Fallback: <cwd>/docs/<type>/
-  const fallbackDir = join(workDir, "docs", type)
-  const fallbackPath = join(fallbackDir, filename)
-  const warning = `Knowledge repo write failed, falling back to ${fallbackPath}`
+    // Fallback: <cwd>/docs/<type>/
+    const fallbackDir = join(workDir, "docs", type)
+    const fallbackPath = join(fallbackDir, filename)
+    const warning = `Knowledge repo write failed (${primaryWarning}), falling back to ${fallbackPath}`
 
-  try {
-    mkdirSync(fallbackDir, { recursive: true })
-    writeFileSync(fallbackPath, finalContent, "utf8")
-    console.warn(warning)
-    return { path: fallbackPath, usedFallback: true, warning }
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
-    throw new Error(`Failed to write knowledge document to both primary and fallback paths: ${msg}`)
+    try {
+      mkdirSync(fallbackDir, { recursive: true })
+      writeFileSync(fallbackPath, finalContent, "utf8")
+      console.warn(warning)
+      return { path: fallbackPath, usedFallback: true, warning }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      throw new Error(`Failed to write knowledge document to both primary and fallback paths: ${msg}`)
+    }
   }
 }
 

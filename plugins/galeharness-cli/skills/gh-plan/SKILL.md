@@ -67,11 +67,8 @@ A plan is ready when an implementer can start confidently without needing the pl
 
 Before any other action, log the skill start event so this execution appears on the task board:
 
-```bash
-gale-task log skill_started --skill gh:plan --title "${ARGUMENTS:-plan}" 2>/dev/null || true
-```
-
-If `gale-task` is not on PATH, skip silently — this must never block the skill.
+1. Run `gale-task log skill_started --skill gh:plan --title "<plan-topic>"` to register this execution on the task board.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
 
 <!-- /HKT-PATCH:gale-task-start -->
 
@@ -721,15 +718,8 @@ If the plan originated from a requirements document, re-read that document and v
 
 Before writing the plan file, resolve the target directory:
 
-```bash
-# Try global knowledge repo first, fall back to project docs/
-KNOWLEDGE_PATH=$(gale-knowledge resolve-path --type plans 2>/dev/null)
-if [ -z "$KNOWLEDGE_PATH" ] || [ $? -ne 0 ]; then
-  KNOWLEDGE_PATH="docs/plans"
-fi
-```
-
-Write the plan document to `$KNOWLEDGE_PATH/<filename>.md` instead of the hardcoded `docs/plans/` path.
+1. Run `gale-knowledge resolve-path --type plans` to get the target directory path (the command outputs a plain path string). If the command fails or `gale-knowledge` is not available, fall back to `docs/plans`.
+2. Write the plan document to `<resolved-path>/<filename>.md` instead of the hardcoded `docs/plans/` path.
 
 <!-- /HKT-PATCH:knowledge-write-path -->
 
@@ -828,11 +818,9 @@ After the plan file is finalized and document review has run:
 
 After the plan file is finalized and stored to HKTMemory:
 
-```bash
-gale-knowledge commit --project "$(gale-knowledge extract-project 2>/dev/null || basename $(pwd))" --type plan --title "<plan-title>" 2>/dev/null || true
-```
-
-If `gale-knowledge` is not on PATH, skip silently — this must never block the skill.
+1. Run `gale-knowledge extract-project` to get the project name. If the command fails or is not available, use the current directory basename as the project name instead.
+2. Run `gale-knowledge commit --project "<project-name>" --type plan --title "<plan-title>"` to commit the knowledge document. If this command fails, log the error but continue — the document has already been written to disk.
+3. If `gale-knowledge` is not on PATH, skip both steps and continue — this must never block the skill.
 
 <!-- /HKT-PATCH:knowledge-commit -->
 
@@ -841,7 +829,7 @@ NEVER CODE! Research, decide, and write the plan.
 <!-- HKT-PATCH:gale-task-end -->
 After the plan document is written and all phases are complete, log the completion event:
 
-```bash
-gale-task log skill_completed 2>/dev/null || true
-```
+1. Run `gale-task log skill_completed` to record the completion event.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+
 <!-- /HKT-PATCH:gale-task-end -->

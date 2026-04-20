@@ -8,7 +8,8 @@
  */
 
 import { defineCommand } from "citty"
-import { execSync } from "node:child_process"
+import { spawnSync } from "node:child_process"
+import type { KnowledgeDocType } from "../../src/knowledge/types.js"
 import { resolveKnowledgeHome } from "../../src/knowledge/home.js"
 
 // ---------------------------------------------------------------------------
@@ -19,7 +20,7 @@ export interface CommitOptions {
   /** 项目名 */
   project: string
   /** 文档类型 */
-  type: string // 'brainstorm' | 'plan' | 'solution'
+  type: KnowledgeDocType
   /** 文档标题（用于 commit message） */
   title: string
   /** 知识仓库路径（可选，默认通过 resolveKnowledgeHome 获取） */
@@ -67,19 +68,21 @@ export function sanitizeTitle(title: string): string {
  */
 export function commitKnowledgeChanges(options: CommitOptions): CommitResult {
   const home = options.knowledgeHome ?? resolveKnowledgeHome()
-  const execOpts = { cwd: home, stdio: ["ignore", "pipe", "pipe"] as const }
+  const spawnOpts = { cwd: home, stdio: ["ignore", "pipe", "pipe"] as const, timeout: 15000 }
 
   try {
     // 1. 暂存所有变更
-    execSync("git add -A", execOpts)
+    const addResult = spawnSync("git", ["add", "-A"], spawnOpts)
+    if (addResult.status !== 0) {
+      const stderr = addResult.stderr ? addResult.stderr.toString().trim() : "unknown error"
+      return { committed: false, message: `Commit failed: git add failed: ${stderr}` }
+    }
 
     // 2. 检查是否有暂存变更
-    try {
-      execSync("git diff --cached --quiet", execOpts)
+    const diffResult = spawnSync("git", ["diff", "--cached", "--quiet"], spawnOpts)
+    if (diffResult.status === 0) {
       // exit code 0 -> 无变更
       return { committed: false, message: "No changes to commit" }
-    } catch {
-      // exit code 1 -> 有变更，继续
     }
 
     // 3. 生成 commit message
@@ -87,14 +90,19 @@ export function commitKnowledgeChanges(options: CommitOptions): CommitResult {
     const commitMessage = `docs(${options.project}/${options.type}): ${safeTitle}`
 
     // 4. 执行 commit
-    execSync(`git commit -m "${commitMessage}"`, execOpts)
+    const commitResult = spawnSync("git", ["commit", "-m", commitMessage], spawnOpts)
+    if (commitResult.status !== 0) {
+      const stderr = commitResult.stderr ? commitResult.stderr.toString().trim() : "unknown error"
+      return { committed: false, message: `Commit failed: ${stderr}` }
+    }
 
     // 5. 获取 commit hash
-    const hash = execSync("git rev-parse --short HEAD", {
+    const hashResult = spawnSync("git", ["rev-parse", "--short", "HEAD"], {
       cwd: home,
-      encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],
-    }).trim()
+      timeout: 15000,
+    })
+    const hash = hashResult.stdout ? hashResult.stdout.toString().trim() : ""
 
     return {
       committed: true,
@@ -140,7 +148,7 @@ const commitCommand = defineCommand({
     try {
       const result = commitKnowledgeChanges({
         project: args.project as string,
-        type: args.type as string,
+        type: args.type as KnowledgeDocType,
         title: args.title as string,
       })
 
@@ -148,6 +156,9 @@ const commitCommand = defineCommand({
         process.stdout.write(
           `Committed: ${result.hash} ${result.message}\n`,
         )
+      } else if (result.message.startsWith("Commit failed")) {
+        process.stderr.write(`${result.message}\n`)
+        process.exit(1)
       } else {
         process.stdout.write(`${result.message}\n`)
       }

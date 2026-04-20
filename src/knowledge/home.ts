@@ -116,6 +116,7 @@ export function extractProjectName(cwd?: string): string {
       cwd: workDir,
       encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],
+      timeout: 15000,
     }).trim()
 
     if (remoteUrl) {

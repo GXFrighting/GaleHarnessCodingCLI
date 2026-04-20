@@ -58,11 +58,8 @@ If `__NO_CONFIG__` or `language: zh-CN` or no language key, write documents in C
 
 Before any other action, log the skill start event so this execution appears on the task board:
 
-```bash
-gale-task log skill_started --skill gh:brainstorm --title "${ARGUMENTS:-brainstorm}" 2>/dev/null || true
-```
-
-If `gale-task` is not on PATH, skip silently — this must never block the skill.
+1. Run `gale-task log skill_started --skill gh:brainstorm --title "<brainstorm-topic>"` to register this execution on the task board.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
 
 <!-- /HKT-PATCH:gale-task-start -->
 
@@ -283,15 +280,8 @@ If relevant, call out whether the choice is:
 
 Before writing the output document, resolve the target directory:
 
-```bash
-# Try global knowledge repo first, fall back to project docs/
-KNOWLEDGE_PATH=$(gale-knowledge resolve-path --type brainstorms 2>/dev/null)
-if [ -z "$KNOWLEDGE_PATH" ] || [ $? -ne 0 ]; then
-  KNOWLEDGE_PATH="docs/brainstorms"
-fi
-```
-
-Write the document to `$KNOWLEDGE_PATH/<filename>.md`.
+1. Run `gale-knowledge resolve-path --type brainstorms` to get the target directory path (the command outputs a plain path string). If the command fails or `gale-knowledge` is not available, fall back to `docs/brainstorms`.
+2. Write the document to `<resolved-path>/<filename>.md`.
 
 <!-- /HKT-PATCH:knowledge-write-path -->
 
@@ -338,11 +328,9 @@ After successfully writing or updating the requirements document:
 
 After the document is written:
 
-```bash
-gale-knowledge commit --project "$(gale-knowledge extract-project 2>/dev/null || basename $(pwd))" --type brainstorm --title "<document-title>" 2>/dev/null || true
-```
-
-If `gale-knowledge` is not on PATH, skip silently — this must never block the skill.
+1. Run `gale-knowledge extract-project` to get the project name. If the command fails or is not available, use the current directory basename as the project name instead.
+2. Run `gale-knowledge commit --project "<project-name>" --type brainstorm --title "<document-title>"` to commit the knowledge document. If this command fails, log the error but continue — the document has already been written to disk.
+3. If `gale-knowledge` is not on PATH, skip both steps and continue — this must never block the skill.
 
 <!-- /HKT-PATCH:knowledge-commit -->
 
@@ -353,7 +341,7 @@ Present next-step options and execute the user's selection. Read `references/han
 <!-- HKT-PATCH:gale-task-end -->
 After presenting handoff options and completing this skill, log the completion event:
 
-```bash
-gale-task log skill_completed 2>/dev/null || true
-```
+1. Run `gale-task log skill_completed` to record the completion event.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+
 <!-- /HKT-PATCH:gale-task-end -->
