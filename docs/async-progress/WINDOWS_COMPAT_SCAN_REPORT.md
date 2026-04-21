@@ -1,17 +1,17 @@
 # Windows Compatibility Scan Report
 
-Generated: 2026-04-21T02:39:00.627Z
+Generated: 2026-04-21T10:52:09.858Z
 
 ## Summary
 
 | Severity | Count |
 |----------|-------|
-| 🔴 Error | 106 |
-| 🟡 Warn  | 155 |
+| 🔴 Error | 91 |
+| 🟡 Warn  | 144 |
 | ℹ️ Info  | 3 |
-| **Total** | **264** |
+| **Total** | **238** |
 
-**Bash scripts found:** 15
+**Bash scripts found:** 17
 
 - `plugins/galeharness-cli/agents/research/session-history-scripts/discover-sessions.sh`
 - `plugins/galeharness-cli/skills/gh-optimize/scripts/parallel-probe.sh`
@@ -27,99 +27,11 @@ Generated: 2026-04-21T02:39:00.627Z
 - `scripts/dev-sync-skills.sh`
 - `scripts/setup.sh`
 - `scripts/dev-unlink.sh`
+- `scripts/upstream-sync/generate-batch.sh`
+- `scripts/upstream-sync/apply-patch-to-worktree.sh`
 - `scripts/dev-link.sh`
 
 ## Errors
-
-### .qoder/repowiki/zh/content/开发者指南/开发者指南.md:407
-- **Rule:** `command-v`
-- **Line:** `- **扫描规则**：检测 bash shebang、command -v、brew install、rm -rf、mkdir -p 等 Windows 不兼容`
-- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
-
-### .qoder/repowiki/zh/content/开发者指南/开发者指南.md:407
-- **Rule:** `brew-install`
-- **Line:** `- **扫描规则**：检测 bash shebang、command -v、brew install、rm -rf、mkdir -p 等 Windows 不兼容`
-- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
-
-### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:213
-- **Rule:** `command-v`
-- **Line:** `- Bash shebang、command -v、brew install、rm -rf、mkdir -p 等 Unix 特性在 PowerShell 中不兼`
-- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
-
-### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:213
-- **Rule:** `brew-install`
-- **Line:** `- Bash shebang、command -v、brew install、rm -rf、mkdir -p 等 Unix 特性在 PowerShell 中不兼`
-- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
-
-### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:278
-- **Rule:** `command-v`
-- **Line:** `- 使用 scripts/windows-compat-scan.ts 扫描并修复 Bash shebang、command -v、brew install、r`
-- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
-
-### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:278
-- **Rule:** `brew-install`
-- **Line:** `- 使用 scripts/windows-compat-scan.ts 扫描并修复 Bash shebang、command -v、brew install、r`
-- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
-
-### .qoder/repowiki/zh/content/开发者指南/测试指南.md:524
-- **Rule:** `command-v`
-- **Line:** `- 检测bash内置命令使用（command -v）`
-- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
-
-### .qoder/repowiki/zh/content/开发者指南/测试指南.md:525
-- **Rule:** `brew-install`
-- **Line:** `- 检测macOS包管理器（brew install）`
-- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:156
-- **Rule:** `command-v`
-- **Line:** `- **检测规则**：覆盖 shebang、command -v、brew install、rm -rf、mkdir -p、硬编码斜杠、process.env.`
-- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:156
-- **Rule:** `brew-install`
-- **Line:** `- **检测规则**：覆盖 shebang、command -v、brew install、rm -rf、mkdir -p、硬编码斜杠、process.env.`
-- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:236
-- **Rule:** `command-v`
-- **Line:** `- 🟡 警告问题：command -v、brew install、rm -rf/mkdir -p等`
-- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:236
-- **Rule:** `brew-install`
-- **Line:** `- 🟡 警告问题：command -v、brew install、rm -rf/mkdir -p等`
-- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:279
-- **Rule:** `command-v`
-- **Line:** `- **shebang 与命令替换**：Bash 的 #!/bin/bash、command -v、brew install、rm -rf、mkdir -p、I`
-- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:279
-- **Rule:** `brew-install`
-- **Line:** `- **shebang 与命令替换**：Bash 的 #!/bin/bash、command -v、brew install、rm -rf、mkdir -p、I`
-- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:281
-- **Rule:** `command-v`
-- **Line:** `- Get-Command 替代 command -v`
-- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:282
-- **Rule:** `brew-install`
-- **Line:** `- winget install 替代 brew install`
-- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:287
-- **Rule:** `python-subprocess-bash`
-- **Line:** `- **Python 子进程**：避免 subprocess.run(["bash", ...])，改用 sys.executable 或跨平台工具。`
-- **Suggestion:** Python subprocess with bash/sh is not portable to Windows. Use `subprocess.run([sys.executable, ...])` or a cross-platform approach.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:366
-- **Rule:** `python-subprocess-bash`
-- **Line:** `- **Python子进程调用bash**：改为 sys.executable 或跨平台工具；避免 subprocess.run(["bash", ...])。`
-- **Suggestion:** Python subprocess with bash/sh is not portable to Windows. Use `subprocess.run([sys.executable, ...])` or a cross-platform approach.
 
 ### plugins/galeharness-cli/agents/research/session-history-scripts/discover-sessions.sh:1
 - **Rule:** `bash-shebang`
@@ -551,6 +463,21 @@ Generated: 2026-04-21T02:39:00.627Z
 - **Line:** `#!/usr/bin/env bash`
 - **Suggestion:** Windows PowerShell cannot execute bash scripts. Consider adding a PowerShell equivalent (.ps1) or using Bun/Node.js for cross-platform scripting.
 
+### scripts/upstream-sync/generate-batch.sh:1
+- **Rule:** `bash-shebang`
+- **Line:** `#!/usr/bin/env bash`
+- **Suggestion:** Windows PowerShell cannot execute bash scripts. Consider adding a PowerShell equivalent (.ps1) or using Bun/Node.js for cross-platform scripting.
+
+### scripts/upstream-sync/generate-batch.sh:7
+- **Rule:** `command-v`
+- **Line:** `if ! command -v python3 >/dev/null 2>&1; then`
+- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
+
+### scripts/upstream-sync/apply-patch-to-worktree.sh:1
+- **Rule:** `bash-shebang`
+- **Line:** `#!/usr/bin/env bash`
+- **Suggestion:** Windows PowerShell cannot execute bash scripts. Consider adding a PowerShell equivalent (.ps1) or using Bun/Node.js for cross-platform scripting.
+
 ### scripts/windows-compat-scan.ts:59
 - **Rule:** `command-v`
 - **Line:** `suggestion: "`command -v` is a bash builtin. On PowerShell use `Get-Command`. In`
@@ -562,66 +489,6 @@ Generated: 2026-04-21T02:39:00.627Z
 - **Suggestion:** Windows PowerShell cannot execute bash scripts. Consider adding a PowerShell equivalent (.ps1) or using Bun/Node.js for cross-platform scripting.
 
 ## Warnings
-
-### .qoder/repowiki/zh/content/开发者指南/开发者指南.md:407
-- **Rule:** `mkdir-p`
-- **Line:** `- **扫描规则**：检测 bash shebang、command -v、brew install、rm -rf、mkdir -p 等 Windows 不兼容`
-- **Suggestion:** `mkdir -p` is a Unix idiom. In PowerShell use `New-Item -ItemType Directory -Force`. In Bun/Node.js use `fs.mkdirSync(dir, { recursive: true })`.
-
-### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:213
-- **Rule:** `mkdir-p`
-- **Line:** `- Bash shebang、command -v、brew install、rm -rf、mkdir -p 等 Unix 特性在 PowerShell 中不兼`
-- **Suggestion:** `mkdir -p` is a Unix idiom. In PowerShell use `New-Item -ItemType Directory -Force`. In Bun/Node.js use `fs.mkdirSync(dir, { recursive: true })`.
-
-### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:214
-- **Rule:** `process-env-home`
-- **Line:** `- 硬编码 Unix 路径分隔符、process.env.HOME 使用等跨平台问题`
-- **Suggestion:** `process.env.HOME` is undefined on Windows. Use `os.homedir()` or a cross-platform home detection utility.
-
-### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:278
-- **Rule:** `mkdir-p`
-- **Line:** `- 使用 scripts/windows-compat-scan.ts 扫描并修复 Bash shebang、command -v、brew install、r`
-- **Suggestion:** `mkdir -p` is a Unix idiom. In PowerShell use `New-Item -ItemType Directory -Force`. In Bun/Node.js use `fs.mkdirSync(dir, { recursive: true })`.
-
-### .qoder/repowiki/zh/content/插件转换系统/权限管理系统.md:187
-- **Rule:** `process-env-home`
-- **Line:** `- Windows 脚本与路径问题：通过扫描器识别硬编码斜杠、process.env.HOME 使用等不兼容模式`
-- **Suggestion:** `process.env.HOME` is undefined on Windows. Use `os.homedir()` or a cross-platform home detection utility.
-
-### .qoder/repowiki/zh/content/插件转换系统/权限管理系统.md:351
-- **Rule:** `process-env-home`
-- **Line:** `- 使用 Windows 兼容扫描器检查硬编码斜杠、process.env.HOME 等`
-- **Suggestion:** `process.env.HOME` is undefined on Windows. Use `os.homedir()` or a cross-platform home detection utility.
-
-### .qoder/repowiki/zh/content/插件转换系统/权限管理系统.md:373
-- **Rule:** `rm-rf`
-- **Line:** `- 拒绝：Bash(rm -rf *)`
-- **Suggestion:** `rm -rf` does not exist on PowerShell. Use `Remove-Item -Recurse -Force` in .ps1, or `fs.rmSync(dir, { recursive: true })` in Bun/Node.js.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:156
-- **Rule:** `process-env-home`
-- **Line:** `- **检测规则**：覆盖 shebang、command -v、brew install、rm -rf、mkdir -p、硬编码斜杠、process.env.`
-- **Suggestion:** `process.env.HOME` is undefined on Windows. Use `os.homedir()` or a cross-platform home detection utility.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:235
-- **Rule:** `process-env-home`
-- **Line:** `- 🔴 关键问题：新bash脚本无PowerShell等价物、硬编码斜杠、process.env.HOME等`
-- **Suggestion:** `process.env.HOME` is undefined on Windows. Use `os.homedir()` or a cross-platform home detection utility.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:279
-- **Rule:** `source-bash`
-- **Line:** `- **shebang 与命令替换**：Bash 的 #!/bin/bash、command -v、brew install、rm -rf、mkdir -p、I`
-- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:286
-- **Rule:** `source-bash`
-- **Line:** `- . .\file.ps1 替代 source ./file`
-- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
-
-### .qoder/repowiki/zh/content/Windows 兼容性.md:368
-- **Rule:** `source-bash`
-- **Line:** `- **审查员误报**：检查是否为文档中的"source"单词而非bash命令；审查员对"single source of truth"等术语有误报倾向。`
-- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
 ### plugins/galeharness-cli/CHANGELOG.md:826
 - **Rule:** `source-bash`
@@ -698,7 +565,7 @@ Generated: 2026-04-21T02:39:00.627Z
 - **Line:** `- `localPath`: the source file path (same as input)`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/proof/SKILL.md:287
+### plugins/galeharness-cli/skills/proof/SKILL.md:290
 - **Rule:** `source-bash`
 - **Line:** `- Use `/state` content as source of truth before editing`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
@@ -1307,6 +1174,11 @@ Generated: 2026-04-21T02:39:00.627Z
 - **Rule:** `source-bash`
 - **Line:** `ok "全部完成！执行 ${CYAN}source ${SHELL_PROFILE}${NC} 后立即可用。"`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### scripts/upstream-sync/apply-patch-to-worktree.sh:90
+- **Rule:** `bash-array`
+- **Line:** `APPLY_CMD=("git" "apply")`
+- **Suggestion:** Bash arrays are not supported in PowerShell. Use PowerShell arrays `@()` or refactor to Bun/Node.js.
 
 ### scripts/windows-compat-scan.ts:89
 - **Rule:** `process-env-home`
