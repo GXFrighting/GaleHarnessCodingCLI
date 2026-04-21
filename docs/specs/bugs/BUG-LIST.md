@@ -1,175 +1,150 @@
-# PR #31 Bug 列表 — 全局知识仓库（Global Knowledge Repository）
+# PR #31 Bug 验收报告 — 全局知识仓库（Global Knowledge Repository）
 
 > **PR**: https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/pull/31
 > **分支**: `feat/global-knowledge-repo`
-> **生成日期**: 2026-04-20
+> **验收日期**: 2026-04-20
 > **Bug 总数**: 25
-> **关联测试用例**: 248 条（详见 [`PR31-TEST-REPORT.md`](../PR31-TEST-REPORT.md)）
-> **测试状态**: 962 pass / 0 fail ✅
+> **最终状态**: ✅ **21/25 已修复验证通过 | ⚠️ 4/25 需关注**
 
 ---
 
-## 状态看板
+## 📊 验收结论
 
-| 统计 | 数量 |
+| 指标 | 结果 |
 |------|------|
-| ✅ 已修复已验证 | 25 |
-| 🔍 待验证 | 0 |
-| ❌ 不修复 | 0 |
+| Bug 修复率 | **21/25 (84%) 已确认修复** |
+| Bug 需关注 | **4/25 (16%) 待补充验证** |
+| 测试通过率 | **962/962 (100%)** |
+| 回归风险 | **低** |
+| 验收结果 | **✅ 有条件通过** |
 
 ---
 
-## Bug 列表总览
+## ✅ 已确认修复并验证通过（21个）
 
-| 编号 | 标题 | 优先级 | 模块 | 状态 | 修复提交 | 验证结果 | 文件 |
-|------|------|--------|------|------|----------|----------|------|
-| BUG-001 | 知识仓库路径解析三层优先级 | P0 | `src/knowledge/home.ts` | ✅ 已修复 | `6629912` | 代码审查通过 | [查看](./BUG-001-path-resolution.md) |
-| BUG-002 | 项目名称提取与Git Remote解析 | P0 | `src/knowledge/home.ts` | ✅ 已修复已验证 | `6629912` | `extractProjectName()` 实现完整，含 timeout 保护 | [查看](./BUG-002-project-name-extraction.md) |
-| BUG-003 | 路径穿越与路径组件净化防护 | P0 | `home.ts` + `writer.ts` | ✅ 已修复 | `6629912` | `sanitizePathComponent()` 已添加 | [查看](./BUG-003-path-traversal-protection.md) |
-| BUG-004 | 知识文档写入与Frontmatter注入 | P0 | `src/knowledge/writer.ts` | ✅ 已修复 | `6629912` | `VALID_DOC_TYPES` 导出，错误保留 | [查看](./BUG-004-document-write-frontmatter.md) |
-| BUG-005 | init 子命令幂等初始化 | P0 | `cmd/gale-knowledge/init.ts` | ✅ 已修复 | `6629912` | 幂等性测试通过 | [查看](./BUG-005-init-command.md) |
-| BUG-006 | commit 子命令批量提交与安全加固 | P0 | `cmd/gale-knowledge/git-ops.ts` | ✅ 已修复 | `6629912` | spawnSync 数组替换 | [查看](./BUG-006-commit-command.md) |
-| BUG-007 | ci-setup 子命令 Workflow 生成 | P0 | `cmd/gale-knowledge/ci-setup.ts` | ✅ 已修复 | `6629912`, `04ad1f7` | fetch-depth:0 等修正 | [查看](./BUG-007-ci-setup-command.md) |
-| BUG-008 | rebuild-index 子命令增量/全量重建 | P0 | `cmd/gale-knowledge/rebuild-index.ts` | ✅ 已修复 | `6629912`, `7faae7b` | commit 追踪修复 | [查看](./BUG-008-rebuild-index-command.md) |
-| BUG-009 | CLI 入口与子命令路由 | P0 | `cmd/gale-knowledge/index.ts` | ✅ 已修复 | `6629912` | resolve-path 输出修正 | [查看](./BUG-009-cli-entry.md) |
-| BUG-010 | knowledge-reader 核心读取逻辑 | P0 | `src/board/knowledge-reader.ts` | ✅ 已修复 | `428accf`, `7faae7b` | path.basename() 替换 | [查看](./BUG-010-knowledge-reader.md) |
-| BUG-011 | board-list 知识文档集成 | P0 | `src/commands/board-list.ts` | ✅ 已修复 | `04ad1f7` | 空字符串过滤修复 | [查看](./BUG-011-board-list-integration.md) |
-| BUG-012 | board-show/stats 回归验证 | P0 | `board-show.ts` + `board-stats.ts` | ✅ 已修复已验证 | - | board 测试 9/9 pass | [查看](./BUG-012-board-show-stats-regression.md) |
-| BUG-013 | board 子命令注册与默认行为 | P0 | `src/commands/board.ts` | ✅ 已修复已验证 | - | list/show/stats/serve 注册完整 | [查看](./BUG-013-board-command-registration.md) |
-| BUG-014 | Shell 注入防护验证 | P0 | `cmd/gale-knowledge/git-ops.ts` | ✅ 已修复 | `6629912` | execSync → spawnSync 数组 | [查看](./BUG-014-shell-injection-protection.md) |
-| BUG-015 | 符号链接穿越防护 | P0 | `cmd/gale-knowledge/rebuild-index.ts` | ✅ 已修复 | `6629912` | collectMarkdownFiles 加固 | [查看](./BUG-015-symlink-protection.md) |
-| BUG-016 | Commit Hash 注入防护 | P0 | `cmd/gale-knowledge/rebuild-index.ts` | ✅ 已修复 | `6629912` | hash 格式验证 | [查看](./BUG-016-commit-hash-injection.md) |
-| BUG-017 | 进程超时保护验证 | P0 | 多文件 | ✅ 已修复 | `6629912` | timeout:15000 全覆盖 | [查看](./BUG-017-timeout-protection.md) |
-| BUG-018 | 技能迁移一致性验证 | P0 | 4 个 SKILL.md | ✅ 已修复 | `6629912` | 3个SKILL已分解步骤 | [查看](./BUG-018-skill-migration-consistency.md) |
-| BUG-019 | 技能回退机制验证 | P0 | 4 个 SKILL.md | ✅ 已修复 | `6629912` | 回退逻辑保留 | [查看](./BUG-019-skill-fallback.md) |
-| BUG-020 | 技能步骤规范与 gh-pr-description 未迁移确认 | P0 | 5 个 SKILL.md | ✅ 已修复 | `6629912` | action-chain 已分解 | [查看](./BUG-020-skill-step-compliance.md) |
-| BUG-021 | 开发脚本验证 | P0 | `scripts/dev-*.sh` | ✅ 已验证 | - | 3个脚本均存在且可执行 | [查看](./BUG-021-dev-scripts.md) |
-| BUG-022 | Setup 脚本验证 | P0 | `setup.sh` + `setup.ps1` | ✅ 已验证 | - | `scripts/setup.sh` + `scripts/setup.ps1` 存在 | [查看](./BUG-022-setup-scripts.md) |
-| BUG-023 | package.json 与 .gitignore 验证 | P0 | `package.json`, `.gitignore` | ✅ 已验证 | - | `gale-knowledge` bin 入口已注册 | [查看](./BUG-023-package-gitignore.md) |
-| BUG-024 | 端到端场景验证 | P0 | 全链路 | ✅ 已修复 | - | E2E 场景通过测试套件验证 | [查看](./BUG-024-e2e-scenarios.md) |
-| BUG-025 | 边界条件与异常处理 | P1 | 多文件 | ✅ 已修复 | - | 边界条件通过测试套件验证 | [查看](./BUG-025-boundary-conditions.md) |
+| 编号 | 标题 | 优先级 | 修复提交 | 验证结果 |
+|------|------|--------|----------|----------|
+| BUG-001 | 知识仓库路径解析三层优先级 | P0 | `c398d2c` | ✅ 路径解析逻辑正确，跨平台兼容 |
+| BUG-002 | 项目名称提取与Git Remote解析 | P0 | `c398d2c` | ✅ `extractProjectName()` 实现完整 |
+| BUG-003 | 路径穿越与路径组件净化防护 | P0 | `6629912`, `c398d2c` | ✅ `sanitizePathComponent()` + `startsWith` 双重防护 |
+| BUG-004 | 知识文档写入与Frontmatter注入 | P0 | `6629912`, `c398d2c` | ✅ `VALID_DOC_TYPES` 导出，frontmatter 正确，错误聚合 |
+| BUG-005 | init 子命令幂等初始化 | P0 | `6629912` | ✅ 幂等性测试通过 |
+| BUG-006 | commit 子命令批量提交与安全加固 | P0 | `6629912` | ✅ `spawnSync` 数组替换字符串模板，区分无变更/错误 |
+| BUG-007 | ci-setup 子命令 Workflow 生成 | P0 | `6629912`, `04ad1f7` | ✅ `fetch-depth:0`、脚本路径、stderr 修正 |
+| BUG-008 | rebuild-index 子命令增量/全量重建 | P0 | `6629912`, `7faae7b` | ✅ commit 追踪、.last-rebuild-commit 正确保存 |
+| BUG-009 | CLI 入口与子命令路由 | P0 | `6629912` | ✅ `resolve-path` 输出格式修正 |
+| BUG-010 | knowledge-reader 核心读取逻辑 | P0 | `d4ef964`, `428accf`, `7faae7b` | ✅ `path.basename()` 替代 `split("/")`，Windows 兼容 |
+| BUG-011 | board-list 知识文档集成 | P0 | `04ad1f7` | ✅ 空字符串过滤修复 |
+| BUG-012 | board-show/stats 回归验证 | P0 | `d4ef964` | ✅ board 测试 9/9 pass |
+| BUG-013 | board 子命令注册与默认行为 | P0 | `d4ef964` | ✅ list/show/stats/serve 全注册 |
+| BUG-014 | Shell 注入防护验证 | P0 | `6629912` | ✅ `execSync` → `spawnSync` 数组参数 |
+| BUG-015 | 符号链接穿越防护 | P0 | `6629912` | ✅ `collectMarkdownFiles` `isSymbolicLink()` 跳过 |
+| BUG-016 | Commit Hash 注入防护 | P0 | `6629912` | ✅ `/^[0-9a-f]{7,40}$/i` 正则验证 |
+| BUG-017 | 进程超时保护验证 | P0 | `6629912` | ✅ `timeout: 15000` 全覆盖（12处） |
+| BUG-018 | 技能迁移一致性验证 | P0 | `e653d46` | ✅ 3个 SKILL.md 步骤分解完成 |
+| BUG-019 | 技能回退机制验证 | P0 | `e653d46` | ✅ 回退逻辑保留 |
+| BUG-020 | 技能步骤规范与 gh-pr-description 确认 | P0 | `e653d46` | ✅ action-chain 已分解为顺序步骤 |
+| BUG-025 | 边界条件与异常处理 | P1 | 测试覆盖 | ✅ empty/null/error 边界场景全部通过 |
 
 ---
 
-## 修复日志
+## ⚠️ 需关注项目（4个）
 
-### 2026-04-20 18:05 - 大规模修复 (`6629912`)
-**作者**: wangrenzhu
-**提交**: `66299125aaa601c27e9bdd1d42fb6fb0b4402544`
-
-修复范围（16个文件，-289/+160）：
-
-**安全修复**:
-- ✅ BUG-001: `writer.ts` 增加路径穿越防护
-- ✅ BUG-003: `git-ops.ts` + `rebuild-index.ts` 用 `spawnSync` 数组替换 `execSync` 字符串模板，消除 Shell 注入
-- ✅ BUG-015: `collectMarkdownFiles` 增加符号链接穿越防护
-- ✅ BUG-016: Git 命令前验证 commit hash 格式
-
-**可靠性修复**:
-- ✅ BUG-017: 所有 `execSync`/`spawnSync` 调用增加 `timeout: 15000`
-- ✅ BUG-008: 修复不可达 commit hash 时的增量索引丢失
-- ✅ BUG-006: 区分 "无变更"(exit 0) 与 "提交错误"(exit 1)
-- ✅ BUG-023: `uv`/script 缺失时返回 `errors: 1`
-- ✅ BUG-008: 仅在真正尝试文件操作后保存 `.last-rebuild-commit`
-
-**集成修复**:
-- ✅ BUG-009: `resolve-path` 默认输出纯字符串，`--json` 输出完整对象
-- ✅ BUG-007: CI workflow 修正 `fetch-depth: 0`、脚本路径、stderr 输出
-
-**清理**:
-- ✅ BUG-001: 删除死代码 `resolve.ts`
-- ✅ BUG-008: 移除 `rebuild-index.ts` 中的 ESM `require()`
-- ✅ BUG-004: 从 `types.ts` 导出 `VALID_DOC_TYPES`
-- ✅ BUG-004: 在主写入错误的 warning 字段中保留错误信息
-
-**技能修复**:
-- ✅ BUG-018/019/020: `gh-brainstorm`、`gh-compound`、`gh-plan` SKILL.md 中分解 action-chained 命令为顺序步骤
-
-### 2026-04-20 18:24 - rebuildIndex 修复 (`7faae7b`)
-**作者**: wangrenzhu
-**提交**: `7faae7b3f2fb0750d40c3bf350c70104302657bc`
-
-- ✅ BUG-008: `uv` 不可用时仍保存 `.last-rebuild-commit`
-- ✅ BUG-010: `knowledge-reader` 用 `path.basename()` 替代 `split("/")`
-- ✅ BUG-001: 测试中使用 `path.isAbsolute()` 替代 `startsWith("/")`
-- ✅ BUG-001: 使用 `path.join()`/`resolve()` 进行跨平台路径断言
-
-### 2026-04-20 18:57 - knowledge-reader 测试修复 (`428accf`)
-**作者**: wangrenzhu
-**提交**: `428accf5f017e89971073092123324ffdeb7eaf0`
-
-- ✅ BUG-010: 测试断言中使用正斜杠字符串替代 `path.join()`，兼容 Windows
-
-### 2026-04-19 19:27 - board-list 过滤修复 (`04ad1f7`)
-**作者**: wangrenzhu
-**提交**: `04ad1f7f241035eea467aa64356abde1743f9f2b`
-
-- ✅ BUG-011/BUG-007: `board-list.ts` 处理 `--project` 和 `--skill` 的空字符串过滤
+| 编号 | 标题 | 状态 | 说明 | 建议 |
+|------|------|------|------|------|
+| BUG-021 | 开发脚本验证 | ⚠️ 已修复待补充测试 | `dev-link.sh/dev-unlink.sh` 已修复，但无自动化测试覆盖执行流程 | 添加脚本执行测试 |
+| BUG-022 | Setup 脚本验证 | ⚠️ 已修复待补充测试 | `setup.sh` + `setup.ps1` 已修复，但无自动化测试 | 手动验证或在 CI 中测试 |
+| BUG-023 | package.json 与 .gitignore 验证 | ⚠️ 已修复待确认 | bin 入口已注册，但 `.gitignore` 对知识仓库的忽略规则未验证 | 检查 `.gitignore` 是否忽略 `~/.galeharness/` |
+| BUG-024 | 端到端场景验证 | ⚠️ 未自动化覆盖 | 单元测试全部通过，但**跨模块完整工作流**无自动化测试 | **建议手动执行 E2E 场景** |
 
 ---
 
-## 验证详情
+## 🔬 深度检查发现
 
-### BUG-002 验证 ✅
-- `extractProjectName()` 已实现完整逻辑
-- Git remote URL 解析正确（去掉 `.git`，按 `/` 或 `:` 分割，取最后一段）
-- 含 `timeout: 15000` 超时保护
-- 回退到目录名作为 projectName
-
-### BUG-012 验证 ✅
-- `bun test` 中 board 相关测试全部通过（9/9 pass）
-- `board reader > mergeEvents` 和 `readAndMergeTasks` 功能正常
-
-### BUG-013 验证 ✅
-- `src/commands/board.ts` 中 `list/show/stats/serve` 四个子命令均已注册
-- 默认无参数时回退到 `boardList`
-
-### BUG-021 验证 ✅
-- `scripts/dev-link.sh` - 存在且可执行
-- `scripts/dev-unlink.sh` - 存在且可执行
-- `scripts/dev-sync-skills.sh` - 存在
-
-### BUG-022 验证 ✅
-- `scripts/setup.sh` - 存在，支持 macOS
-- `scripts/setup.ps1` - 存在，支持 Windows
-
-### BUG-023 验证 ✅
-- `package.json` 中 `gale-knowledge` bin 入口已注册到 `cmd/gale-knowledge/index.ts`
-
-### BUG-025 验证 ✅
-- 边界测试覆盖：empty stdin、nonexistent repo、undefined temperature、empty bundle 等场景
-- 全部通过
-
----
-
-## 全部已修复（✅ 已修复已验证: 25/25）
-
-所有 25 个 bug 均已修复并通过 bun test 全量验证 (962 tests, 0 fail)。每个 bug 文档已添加修复记录章节。
-
----
-
-## 状态流转
+### 1. 测试验证（全部通过）
 
 ```
-🔍 待验证 → 🔧 修复中 → ✅ 已修复 → 🧪 待复测 → ✔️ 已关闭
-            ↓
-          ❌ 不修复（需记录原因）
+962 pass
+0 fail
+2470 expect() calls
+Ran 962 tests across 65 files. [13.44s]
 ```
+
+**Knowledge 专项测试**：
+```
+91 pass
+0 fail
+190 expect() calls
+Ran 91 tests across 7 files.
+```
+
+### 2. 安全加固验证（已到位）
+
+| 检查项 | 状态 | 代码位置 | 说明 |
+|--------|------|----------|------|
+| 路径穿越 | ✅ | `home.ts:177` | `sanitizePathComponent()` 过滤 `/`、`` 和 `..` |
+| 路径穿越兜底 | ✅ | `writer.ts:71` | `finalPath.startsWith(safeBase + sep)` 二次检查 |
+| Shell 注入 | ✅ | `git-ops.ts` | 全部 `spawnSync` 数组参数，无字符串模板 |
+| Symlink 攻击 | ✅ | `rebuild-index.ts:174` | `entry.isSymbolicLink()` 直接跳过 |
+| Commit hash 注入 | ✅ | `rebuild-index.ts:247` | `/^[0-9a-f]{7,40}$/i` 正则验证 |
+| 超时保护 | ✅ | 12处 | `timeout: 15000` 覆盖所有子进程调用 |
+| 空字符串过滤 | ✅ | `board-list.ts` | `--project ""` 视为无过滤 |
+
+### 3. 边界条件分析
+
+| 边界条件 | `sanitizePathComponent` 行为 | 风险 | 建议 |
+|----------|---------------------------|------|------|
+| `""` (空字符串) | ✅ 通过 | **低** — `projectName || extractProjectName()` 回退 | 显式拒绝空字符串 |
+| `"."` (当前目录) | ⚠️ 通过 | **低** — 导致文件写入 knowledge 根目录 | 添加 `.` 检查 |
+| `".."` (父目录) | ✅ 拒绝 | 无 | — |
+| `"..."` (三个点) | ✅ 拒绝 | 无 | — |
+| `"foo/bar"` | ✅ 拒绝 | 无 | — |
+| `"foo\\bar"` | ✅ 拒绝 | 无 | — |
+| `" "` (空格) | ⚠️ 通过 | **极低** — 创建带空格目录 | 可选：拒绝首尾空格 |
+
+### 4. 代码审查发现
+
+**⚠️ 次要问题 1：`commitKnowledgeChanges` 中 `project` 未净化**
+
+```typescript
+// git-ops.ts:106
+const commitMessage = `docs(${options.project}/${options.type}): ${safeTitle}`
+```
+
+- `safeTitle` 经过 `sanitizeTitle()` 处理
+- `options.project` 和 `options.type` **未净化**直接拼接
+- 实际风险：**低** — `spawnSync` 数组参数避免 shell 注入，但换行符可能破坏 commit message 格式
+- 建议：对 `project` 应用 `sanitizePathComponent` 或 `sanitizeTitle`
+
+**⚠️ 次要问题 2：`writer.ts` fallback 路径中 `type` 未显式净化**
+
+```typescript
+// writer.ts:84
+const fallbackDir = join(workDir, "docs", type)
+```
+
+- `type` 为 `KnowledgeDocType` 类型，CLI 入口有 `isValidDocType` 校验
+- 内部调用时若绕过类型检查，存在理论上的路径穿越风险
+- 实际风险：**极低** — 仅内部 API 调用，外部入口已校验
+- 建议：在 `writer.ts` 入口处添加 `isValidDocType(type)` 断言
 
 ---
 
-## 监控脚本
+## 🎯 最终建议
 
-如需持续监控修复进度，可运行：
+### 立即行动（合并前）
+- [ ] **手动执行 BUG-024 E2E 场景**：验证完整工作流 `clone → setup → init → brainstorm → board list`
+- [ ] **确认 BUG-023**：检查 `.gitignore` 是否包含 `~/.galeharness/`
 
-```bash
-bash docs/specs/bugs/monitor-bugs.sh
-```
-
-它会每分钟自动拉取最新提交、运行测试、记录状态到 `docs/specs/bugs/monitor.log`。
+### 合并后优化（非阻塞）
+- [ ] 在 `sanitizePathComponent` 中显式拒绝 `"."` 和 `""`
+- [ ] 在 `commitKnowledgeChanges` 中对 `project` 应用净化
+- [ ] 在 `writer.ts` fallback 路径中对 `type` 添加 `isValidDocType` 断言
+- [ ] 为 `dev-link.sh`/`setup.sh` 添加基础执行测试
+- [ ] 添加跨模块 E2E 自动化测试
 
 ---
 
-*更新时间：2026-04-20T19:10+08:00*
-*监控状态：🟢 活跃监控中*
-*测试状态：✅ 962 pass / 0 fail*
+*验收完成时间：2026-04-20T19:10+08:00*
+*验收人：Agent-Bug-Tracker*
+*结论：✅ 有条件通过 — 21/25 Bug 已确认修复，4项需关注但不阻塞合并*
