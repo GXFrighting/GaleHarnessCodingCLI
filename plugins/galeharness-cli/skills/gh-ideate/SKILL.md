@@ -49,6 +49,16 @@ If `__NO_CONFIG__` or `language: zh-CN` or no language key, write documents in C
 
 ## Execution Flow
 
+<!-- HKT-PATCH:gale-task-start -->
+### Phase -1: Task Lifecycle Start
+
+Before any other action, log the skill start event so this execution appears on the task board:
+
+1. Run `gale-task log skill_started --skill gh:ideate --title "<focus-or-topic>"` to register this execution on the task board.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+
+<!-- /HKT-PATCH:gale-task-start -->
+
 ### Phase 0: Resume and Scope
 
 #### 0.1 Check for Recent Ideation Work
@@ -214,3 +224,10 @@ After the ideation artifact is written to `docs/ideation/`:
 5. On error, proceed silently — storage is supplementary
 
 **Note:** This enables future ideation sessions to discover and build upon these ideas through Phase 0.5's retrieve step.
+
+<!-- HKT-PATCH:gale-task-end -->
+After the ideation workflow is fully complete, log the completion event:
+
+1. Run `gale-task log skill_completed` to record the completion event.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+<!-- /HKT-PATCH:gale-task-end -->

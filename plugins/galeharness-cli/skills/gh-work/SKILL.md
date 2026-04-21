@@ -369,6 +369,7 @@ After the work is complete and the shipping workflow has finished (PR created or
 4. On error, proceed silently — execution storage is supplementary
 
 **Note:** This creates a searchable record of completed work for future reference when similar tasks arise.
+<!-- /HKT-PATCH:phase-4.5 -->
 
 ## Key Principles
 
@@ -412,3 +413,10 @@ After the work is complete and the shipping workflow has finished (PR created or
 - **Forgetting to track progress** - Update task status as you go or lose track of what's done
 - **80% done syndrome** - Finish the feature, don't move on early
 - **Skipping review** - Every change gets reviewed; only the depth varies
+
+<!-- HKT-PATCH:gale-task-end -->
+After the work workflow is fully complete, log the completion event:
+
+1. Run `gale-task log skill_completed` to record the completion event.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+<!-- /HKT-PATCH:gale-task-end -->

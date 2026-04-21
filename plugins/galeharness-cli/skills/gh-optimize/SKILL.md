@@ -111,6 +111,18 @@ When Phase 0.4 detects an existing run:
 
 ---
 
+## Execution Flow
+
+<!-- HKT-PATCH:gale-task-start -->
+### Phase -1: Task Lifecycle Start
+
+Before any other action, log the skill start event so this execution appears on the task board:
+
+1. Run `gale-task log skill_started --skill gh:optimize --title "<optimization-goal>"` to register this execution on the task board.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+
+<!-- /HKT-PATCH:gale-task-start -->
+
 ## Phase 0: Setup
 
 ### 0.1 Determine Input Type
@@ -216,11 +228,38 @@ Check whether the input is:
 6. Write the spec to `.context/galeharness-cli/gh-optimize/<spec-name>/spec.yaml`
 7. Present the spec to the user for approval before proceeding
 
-### 0.3 Search Prior Learnings
+<!-- HKT-PATCH:phase-0.3 -->
+### 0.3 HKTMemory Retrieve
+
+Before searching prior learnings, query the vector memory database for related optimization work:
+
+1. Extract a 1-2 sentence search query from: the optimization goal, target metric, component names, approach being considered
+2. Run (requires env vars HKT_MEMORY_API_KEY, HKT_MEMORY_BASE_URL, HKT_MEMORY_MODEL):
+   ```bash
+   uv run vendor/hkt-memory/scripts/hkt_memory_v5.py retrieve \
+     --query "<extracted query>" \
+     --layer all --limit 10 --min-similarity 0.35 \
+     --vector-weight 0.7 --bm25-weight 0.3
+   ```
+3. If results returned, prepare a context block and use it to inform hypothesis generation:
+   ```
+   ## Related historical optimization experiences from HKTMemory
+   Source: vector database. Treat as additional context, not primary evidence.
+   [results here, each tagged with (similarity: X.XX)]
+   ```
+4. If no results or command error, proceed silently without blocking.
+
+**Integration with Phase 2:** When HKTMemory returns relevant results, cross-reference them during hypothesis generation. Look for:
+- Similar optimization targets and what approaches worked or failed
+- Related metric improvements and the strategies that achieved them
+- Past experiment results on comparable code paths
+<!-- /HKT-PATCH:phase-0.3 -->
+
+### 0.4 Search Prior Learnings
 
 Dispatch `galeharness-cli:research:learnings-researcher` to search for prior optimization work on similar topics. If relevant learnings exist, incorporate them into the approach.
 
-### 0.4 Run Identity Detection
+### 0.5 Run Identity Detection
 
 Check if `optimize/<spec-name>` branch already exists:
 
@@ -234,7 +273,7 @@ Present the user with a choice via the platform question tool:
 - **Resume**: read ALL state from the experiment log on disk (do not rely on any in-memory context from a prior session). Recover any measured-but-unlogged experiments by scanning worktree directories for `result.yaml` markers. Continue from the last iteration number in the log.
 - **Fresh start**: archive the old branch to `optimize-archive/<spec-name>/archived-<timestamp>`, clear the experiment log, start from scratch
 
-### 0.5 Create Optimization Branch and Scratch Space
+### 0.6 Create Optimization Branch and Scratch Space
 
 ```bash
 git checkout -b "optimize/<spec-name>"  # or switch to existing if resuming
@@ -646,7 +685,26 @@ Present post-completion options via the platform question tool:
 4. **Continue** with more experiments: re-enter Phase 3 with the current state. State re-read first.
 5. **Done** -- leave the optimization branch for manual review.
 
-### 4.4 Cleanup
+<!-- HKT-PATCH:phase-4.4 -->
+### 4.4 HKTMemory Store
+
+After the wrap-up summary is presented:
+
+1. Compose a concise summary (2-4 sentences) covering: the optimization goal, the winning strategy, key metric improvements (baseline -> final), and the spec name
+2. Run:
+   ```bash
+   uv run vendor/hkt-memory/scripts/hkt_memory_v5.py store \
+     --content "<summary with key metrics>" \
+     --title "<spec-name> optimization" \
+     --topic "optimize" \
+     --layer all
+   ```
+3. Log: `Stored to HKTMemory: [title]` on success, or note the error (non-blocking — do not fail the optimization workflow if HKTMemory is unavailable).
+
+**Rationale:** Optimization results are highly reusable — the winning strategy for one metric often applies to similar targets. Storing the approach and outcome helps future optimization sessions discover and build upon this work.
+<!-- /HKT-PATCH:phase-4.4 -->
+
+### 4.5 Cleanup
 
 Clean up scratch space:
 ```bash
@@ -657,3 +715,10 @@ rm -f .context/galeharness-cli/gh-optimize/<spec-name>/strategy-digest.md
 
 Do NOT delete the experiment log if the user may resume locally or wants a local audit trail. If they need a durable shared artifact, summarize or export the results into a tracked path before cleanup.
 Do NOT delete experiment worktrees that are still being referenced.
+
+<!-- HKT-PATCH:gale-task-end -->
+After completing the optimization workflow, log the completion event:
+
+1. Run `gale-task log skill_completed` to record the completion event.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+<!-- /HKT-PATCH:gale-task-end -->
