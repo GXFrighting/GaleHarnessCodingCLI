@@ -1,15 +1,15 @@
 # Windows Compatibility Scan Report
 
-Generated: 2026-04-22T09:45:50.525Z
+Generated: 2026-04-22T09:49:05.739Z
 
 ## Summary
 
 | Severity | Count |
 |----------|-------|
 | 🔴 Error | 91 |
-| 🟡 Warn  | 142 |
+| 🟡 Warn  | 143 |
 | ℹ️ Info  | 3 |
-| **Total** | **236** |
+| **Total** | **237** |
 
 **Bash scripts found:** 17
 
@@ -530,6 +530,11 @@ Generated: 2026-04-22T09:45:50.525Z
 - **Line:** `5. Distinguish issue sources when relevant: bot/agent-generated issues (e.g., `a`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
+### plugins/galeharness-cli/agents/swift-ios-reviewer.md:26
+- **Rule:** `source-bash`
+- **Line:** `Incorrect use of `@State`, `@StateObject`, `@ObservedObject`, `@EnvironmentObjec`
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
 ### plugins/galeharness-cli/agents/cli-agent-readiness-reviewer.md:3
 - **Rule:** `source-bash`
 - **Line:** `description: "Reviews CLI source code, plans, or specs for AI agent readiness us`
@@ -695,17 +700,17 @@ Generated: 2026-04-22T09:45:50.525Z
 - **Line:** `2. The subagent writes the new learning using the support files as the source of`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/gh-review/SKILL.md:211
+### plugins/galeharness-cli/skills/gh-review/SKILL.md:212
 - **Rule:** `source-bash`
 - **Line:** `This path works with any ref — a SHA, `origin/main`, a branch name. Automated ca`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/gh-review/SKILL.md:325
+### plugins/galeharness-cli/skills/gh-review/SKILL.md:326
 - **Rule:** `source-bash`
 - **Line:** `Understand what the change is trying to accomplish. The source of intent depends`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/gh-review/SKILL.md:425
+### plugins/galeharness-cli/skills/gh-review/SKILL.md:426
 - **Rule:** `mkdir-p`
 - **Line:** `mkdir -p ".context/galeharness-cli/gh-review/$RUN_ID"`
 - **Suggestion:** `mkdir -p` is a Unix idiom. In PowerShell use `New-Item -ItemType Directory -Force`. In Bun/Node.js use `fs.mkdirSync(dir, { recursive: true })`.
