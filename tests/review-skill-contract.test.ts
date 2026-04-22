@@ -233,7 +233,7 @@ describe("ce-review contract", () => {
 
   test("orchestration callers pass explicit mode flags", async () => {
     const lfg = await readRepoFile("plugins/galeharness-cli/skills/lfg/SKILL.md")
-    expect(lfg).toContain("/gh:review mode:autofix")
+    expect(lfg).toMatch(/gh-review[^\n]*mode:autofix/)
 
   })
 })
