@@ -1,6 +1,6 @@
 # Windows Compatibility Scan Report
 
-Generated: 2026-04-21T13:34:53.446Z
+Generated: 2026-04-22T03:40:19.294Z
 
 ## Summary
 
@@ -13,10 +13,10 @@ Generated: 2026-04-21T13:34:53.446Z
 
 **Bash scripts found:** 17
 
-- `plugins/galeharness-cli/agents/research/session-history-scripts/discover-sessions.sh`
 - `plugins/galeharness-cli/skills/gh-optimize/scripts/parallel-probe.sh`
 - `plugins/galeharness-cli/skills/gh-optimize/scripts/experiment-worktree.sh`
 - `plugins/galeharness-cli/skills/gh-optimize/scripts/measure.sh`
+- `plugins/galeharness-cli/skills/gh-session-inventory/scripts/discover-sessions.sh`
 - `plugins/galeharness-cli/skills/gh-review/references/resolve-base.sh`
 - `plugins/galeharness-cli/skills/git-worktree/scripts/worktree-manager.sh`
 - `plugins/galeharness-cli/skills/gh-polish-beta/scripts/resolve-port.sh`
@@ -32,11 +32,6 @@ Generated: 2026-04-21T13:34:53.446Z
 - `scripts/dev-link.sh`
 
 ## Errors
-
-### plugins/galeharness-cli/agents/research/session-history-scripts/discover-sessions.sh:1
-- **Rule:** `bash-shebang`
-- **Line:** `#!/usr/bin/env bash`
-- **Suggestion:** Windows PowerShell cannot execute bash scripts. Consider adding a PowerShell equivalent (.ps1) or using Bun/Node.js for cross-platform scripting.
 
 ### plugins/galeharness-cli/skills/gh-optimize/scripts/parallel-probe.sh:1
 - **Rule:** `bash-shebang`
@@ -87,6 +82,11 @@ Generated: 2026-04-21T13:34:53.446Z
 - **Rule:** `brew-install`
 - **Line:** `brew tap getsentry/xcodebuildmcp && brew install xcodebuildmcp`
 - **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
+
+### plugins/galeharness-cli/skills/gh-session-inventory/scripts/discover-sessions.sh:1
+- **Rule:** `bash-shebang`
+- **Line:** `#!/usr/bin/env bash`
+- **Suggestion:** Windows PowerShell cannot execute bash scripts. Consider adding a PowerShell equivalent (.ps1) or using Bun/Node.js for cross-platform scripting.
 
 ### plugins/galeharness-cli/skills/gh-review/references/resolve-base.sh:1
 - **Rule:** `bash-shebang`
@@ -495,52 +495,52 @@ Generated: 2026-04-21T13:34:53.446Z
 - **Line:** `- Phase 3: Synthesizes all findings with clear source attribution (skill-based >`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/research/framework-docs-researcher.md:33
-- **Rule:** `source-bash`
-- **Line:** `- Explore gem source code to understand internal implementations`
-- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
-
-### plugins/galeharness-cli/agents/research/framework-docs-researcher.md:59
-- **Rule:** `source-bash`
-- **Line:** `- Read through key source files related to the feature`
-- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
-
-### plugins/galeharness-cli/agents/research/framework-docs-researcher.md:89
-- **Rule:** `source-bash`
-- **Line:** `7. **References**: Links to documentation, GitHub issues, and source files`
-- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
-
-### plugins/galeharness-cli/agents/research/best-practices-researcher.md:64
-- **Rule:** `source-bash`
-- **Line:** `- Identify and analyze well-regarded open source projects that demonstrate the p`
-- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
-
-### plugins/galeharness-cli/agents/research/issue-intelligence-analyst.md:100
-- **Rule:** `source-bash`
-- **Line:** `5. Distinguish issue sources when relevant: bot/agent-generated issues (e.g., `a`
-- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
-
-### plugins/galeharness-cli/agents/review/security-reviewer.md:18
+### plugins/galeharness-cli/agents/security-reviewer.md:18
 - **Rule:** `source-bash`
 - **Line:** `- **Secrets in code or logs** -- hardcoded API keys, tokens, or passwords in sou`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/review/data-migration-expert.md:38
+### plugins/galeharness-cli/agents/framework-docs-researcher.md:33
+- **Rule:** `source-bash`
+- **Line:** `- Explore gem source code to understand internal implementations`
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### plugins/galeharness-cli/agents/framework-docs-researcher.md:59
+- **Rule:** `source-bash`
+- **Line:** `- Read through key source files related to the feature`
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### plugins/galeharness-cli/agents/framework-docs-researcher.md:89
+- **Rule:** `source-bash`
+- **Line:** `7. **References**: Links to documentation, GitHub issues, and source files`
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### plugins/galeharness-cli/agents/data-migration-expert.md:38
 - **Rule:** `source-bash`
 - **Line:** `- [ ] For each CASE/IF mapping, confirm the source data covers every branch (no `
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/review/cli-agent-readiness-reviewer.md:3
+### plugins/galeharness-cli/agents/best-practices-researcher.md:64
+- **Rule:** `source-bash`
+- **Line:** `- Identify and analyze well-regarded open source projects that demonstrate the p`
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### plugins/galeharness-cli/agents/issue-intelligence-analyst.md:100
+- **Rule:** `source-bash`
+- **Line:** `5. Distinguish issue sources when relevant: bot/agent-generated issues (e.g., `a`
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### plugins/galeharness-cli/agents/cli-agent-readiness-reviewer.md:3
 - **Rule:** `source-bash`
 - **Line:** `description: "Reviews CLI source code, plans, or specs for AI agent readiness us`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/review/cli-agent-readiness-reviewer.md:11
+### plugins/galeharness-cli/agents/cli-agent-readiness-reviewer.md:11
 - **Rule:** `source-bash`
 - **Line:** `You review CLI **source code**, **plans**, and **specs** for AI agent readiness `
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/review/cli-agent-readiness-reviewer.md:58
+### plugins/galeharness-cli/agents/cli-agent-readiness-reviewer.md:58
 - **Rule:** `source-bash`
 - **Line:** `Evaluate in priority order: check for **Blockers** first across all principles, `
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.

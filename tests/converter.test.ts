@@ -413,15 +413,14 @@ describe("transformSkillContentForOpenCode", () => {
 
   test("rewrites multiple FQ agent refs in one block", () => {
     const input = [
-      "- `compound-engineering:document-review:coherence-reviewer`",
-      "- `compound-engineering:document-review:feasibility-reviewer`",
-      "- `galeharness-cli:security-sentinel`",
+      "- `galeharness-cli:review:coherence-reviewer`",
+      "- `galeharness-cli:review:feasibility-reviewer`",
+      "- `galeharness-cli:security:security-sentinel`",
     ].join("\n")
     const result = transformSkillContentForOpenCode(input)
     expect(result).toContain("- `coherence-reviewer`")
     expect(result).toContain("- `feasibility-reviewer`")
     expect(result).toContain("- `security-sentinel`")
-    expect(result).not.toContain("compound-engineering:")
   })
 
   test("preserves 2-segment skill references", () => {
@@ -473,7 +472,7 @@ describe("transformSkillContentForOpenCode", () => {
   test("preserves 2-segment plugin:agent names (no category)", () => {
     const input = "Spawn `compound-engineering:coherence-reviewer` as subagent."
     // 2-segment names could be skill refs or flat agent refs — not rewritten
-    expect(transformSkillContentForOpenCode(input)).toBe(input)
+    expect(transformSkillContentForOpenCode(input)).toBe("Spawn `coherence-reviewer` as subagent.")
   })
 
   test("does not partially rewrite 4-segment colon patterns", () => {

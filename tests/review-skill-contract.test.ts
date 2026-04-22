@@ -160,23 +160,23 @@ describe("ce-review contract", () => {
   test("stack-specific reviewer agents follow the structured findings contract", async () => {
     const reviewers = [
       {
-        path: "plugins/galeharness-cli/agents/review/dhh-rails-reviewer.md",
+        path: "plugins/galeharness-cli/agents/dhh-rails-reviewer.md",
         reviewer: "dhh-rails",
       },
       {
-        path: "plugins/galeharness-cli/agents/review/gale-rails-reviewer.md",
+        path: "plugins/galeharness-cli/agents/gale-rails-reviewer.md",
         reviewer: "gale-rails",
       },
       {
-        path: "plugins/galeharness-cli/agents/review/gale-python-reviewer.md",
+        path: "plugins/galeharness-cli/agents/gale-python-reviewer.md",
         reviewer: "gale-python",
       },
       {
-        path: "plugins/galeharness-cli/agents/review/gale-typescript-reviewer.md",
+        path: "plugins/galeharness-cli/agents/gale-typescript-reviewer.md",
         reviewer: "gale-typescript",
       },
       {
-        path: "plugins/galeharness-cli/agents/review/julik-frontend-races-reviewer.md",
+        path: "plugins/galeharness-cli/agents/julik-frontend-races-reviewer.md",
         reviewer: "julik-frontend-races",
       },
     ]
@@ -200,7 +200,7 @@ describe("ce-review contract", () => {
 
   test("leaves data-migration-expert as the unstructured review format", async () => {
     const content = await readRepoFile(
-      "plugins/galeharness-cli/agents/review/data-migration-expert.md",
+      "plugins/galeharness-cli/agents/data-migration-expert.md",
     )
 
     expect(content).toContain("## Reviewer Checklist")
@@ -243,7 +243,7 @@ describe("ce-review contract", () => {
 
 describe("testing-reviewer contract", () => {
   test("includes behavioral-changes-with-no-test-additions check", async () => {
-    const content = await readRepoFile("plugins/galeharness-cli/agents/review/testing-reviewer.md")
+    const content = await readRepoFile("plugins/galeharness-cli/agents/testing-reviewer.md")
 
     // New check exists in "What you're hunting for" section
     expect(content).toContain("Behavioral changes with no test additions")

@@ -225,16 +225,18 @@ describe("writeOpenCodeBundle", () => {
 
   test("rewrites FQ agent names in copied skill markdown (#477)", async () => {
     const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "opencode-skill-transform-"))
+    
+    // Create a mock skill with fully-qualified agent references.
     const skillSrcDir = path.join(tempRoot, "src-skill")
     const refsDir = path.join(skillSrcDir, "references")
     await fs.mkdir(refsDir, { recursive: true })
     await fs.writeFile(
       path.join(skillSrcDir, "SKILL.md"),
-      "---\nname: test-skill\n---\n\n- `galeharness-cli:coherence-reviewer`\n"
+      "---\nname: test-skill\n---\n\n- `sample-plugin:coherence-reviewer`\n"
     )
     await fs.writeFile(
       path.join(refsDir, "agents.md"),
-      "Use `galeharness-cli:repo-research-analyst` for codebase analysis.\n"
+      "Use `sample-plugin:repo-research-analyst` for codebase analysis.\n"
     )
 
     const outputRoot = path.join(tempRoot, ".opencode")
@@ -253,14 +255,14 @@ describe("writeOpenCodeBundle", () => {
       "utf8"
     )
     expect(skillContent).toContain("`coherence-reviewer`")
-    expect(skillContent).not.toContain("galeharness-cli:coherence-reviewer")
+    expect(skillContent).not.toContain("sample-plugin:coherence-reviewer")
 
     const refContent = await fs.readFile(
       path.join(outputRoot, "skills", "test-skill", "references", "agents.md"),
       "utf8"
     )
     expect(refContent).toContain("`repo-research-analyst`")
-    expect(refContent).not.toContain("galeharness-cli:repo-research-analyst")
+    expect(refContent).not.toContain("sample-plugin:repo-research-analyst")
   })
 
   test("does not transform non-markdown files in skill directories", async () => {
