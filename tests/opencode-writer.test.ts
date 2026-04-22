@@ -230,11 +230,11 @@ describe("writeOpenCodeBundle", () => {
     await fs.mkdir(refsDir, { recursive: true })
     await fs.writeFile(
       path.join(skillSrcDir, "SKILL.md"),
-      "---\nname: test-skill\n---\n\n- `galeharness-cli:review:coherence-reviewer`\n"
+      "---\nname: test-skill\n---\n\n- `galeharness-cli:coherence-reviewer`\n"
     )
     await fs.writeFile(
       path.join(refsDir, "agents.md"),
-      "Use `galeharness-cli:research:repo-research-analyst` for codebase analysis.\n"
+      "Use `galeharness-cli:repo-research-analyst` for codebase analysis.\n"
     )
 
     const outputRoot = path.join(tempRoot, ".opencode")
@@ -253,14 +253,14 @@ describe("writeOpenCodeBundle", () => {
       "utf8"
     )
     expect(skillContent).toContain("`coherence-reviewer`")
-    expect(skillContent).not.toContain("galeharness-cli:review:coherence-reviewer")
+    expect(skillContent).not.toContain("galeharness-cli:coherence-reviewer")
 
     const refContent = await fs.readFile(
       path.join(outputRoot, "skills", "test-skill", "references", "agents.md"),
       "utf8"
     )
     expect(refContent).toContain("`repo-research-analyst`")
-    expect(refContent).not.toContain("galeharness-cli:research:repo-research-analyst")
+    expect(refContent).not.toContain("galeharness-cli:repo-research-analyst")
   })
 
   test("does not transform non-markdown files in skill directories", async () => {
@@ -272,7 +272,7 @@ describe("writeOpenCodeBundle", () => {
       path.join(skillSrcDir, "SKILL.md"),
       "---\nname: test-skill\n---\n\nSkill body.\n"
     )
-    const scriptContent = "#!/bin/bash\n# galeharness-cli:review:security-sentinel\necho done\n"
+    const scriptContent = "#!/bin/bash\n# galeharness-cli:security-sentinel\necho done\n"
     await fs.writeFile(path.join(scriptsDir, "run.sh"), scriptContent)
 
     const outputRoot = path.join(tempRoot, ".opencode")

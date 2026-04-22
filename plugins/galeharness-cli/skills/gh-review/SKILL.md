@@ -107,42 +107,42 @@ Routing rules:
 
 | Agent | Focus |
 |-------|-------|
-| `galeharness-cli:review:correctness-reviewer` | Logic errors, edge cases, state bugs, error propagation |
-| `galeharness-cli:review:testing-reviewer` | Coverage gaps, weak assertions, brittle tests |
-| `galeharness-cli:review:maintainability-reviewer` | Coupling, complexity, naming, dead code, abstraction debt |
-| `galeharness-cli:review:project-standards-reviewer` | CLAUDE.md and AGENTS.md compliance -- frontmatter, references, naming, portability |
-| `galeharness-cli:review:agent-native-reviewer` | Verify new features are agent-accessible |
-| `galeharness-cli:research:learnings-researcher` | Search docs/solutions/ for past issues related to this PR |
+| `galeharness-cli:correctness-reviewer` | Logic errors, edge cases, state bugs, error propagation |
+| `galeharness-cli:testing-reviewer` | Coverage gaps, weak assertions, brittle tests |
+| `galeharness-cli:maintainability-reviewer` | Coupling, complexity, naming, dead code, abstraction debt |
+| `galeharness-cli:project-standards-reviewer` | CLAUDE.md and AGENTS.md compliance -- frontmatter, references, naming, portability |
+| `galeharness-cli:agent-native-reviewer` | Verify new features are agent-accessible |
+| `galeharness-cli:learnings-researcher` | Search docs/solutions/ for past issues related to this PR |
 
 **Cross-cutting conditional (selected per diff):**
 
 | Agent | Select when diff touches... |
 |-------|---------------------------|
-| `galeharness-cli:review:security-reviewer` | Auth, public endpoints, user input, permissions |
-| `galeharness-cli:review:performance-reviewer` | DB queries, data transforms, caching, async |
-| `galeharness-cli:review:api-contract-reviewer` | Routes, serializers, type signatures, versioning |
-| `galeharness-cli:review:data-migrations-reviewer` | Migrations, schema changes, backfills |
-| `galeharness-cli:review:reliability-reviewer` | Error handling, retries, timeouts, background jobs |
-| `galeharness-cli:review:adversarial-reviewer` | Diff >=50 changed non-test/non-generated/non-lockfile lines, or auth, payments, data mutations, external APIs |
-| `galeharness-cli:review:cli-readiness-reviewer` | CLI command definitions, argument parsing, CLI framework usage, command handler implementations |
-| `galeharness-cli:review:previous-comments-reviewer` | Reviewing a PR that has existing review comments or threads |
+| `galeharness-cli:security-reviewer` | Auth, public endpoints, user input, permissions |
+| `galeharness-cli:performance-reviewer` | DB queries, data transforms, caching, async |
+| `galeharness-cli:api-contract-reviewer` | Routes, serializers, type signatures, versioning |
+| `galeharness-cli:data-migrations-reviewer` | Migrations, schema changes, backfills |
+| `galeharness-cli:reliability-reviewer` | Error handling, retries, timeouts, background jobs |
+| `galeharness-cli:adversarial-reviewer` | Diff >=50 changed non-test/non-generated/non-lockfile lines, or auth, payments, data mutations, external APIs |
+| `galeharness-cli:cli-readiness-reviewer` | CLI command definitions, argument parsing, CLI framework usage, command handler implementations |
+| `galeharness-cli:previous-comments-reviewer` | Reviewing a PR that has existing review comments or threads |
 
 **Stack-specific conditional (selected per diff):**
 
 | Agent | Select when diff touches... |
 |-------|---------------------------|
-| `galeharness-cli:review:dhh-rails-reviewer` | Rails architecture, service objects, session/auth choices, or Hotwire-vs-SPA boundaries |
-| `galeharness-cli:review:gale-rails-reviewer` | Rails application code where conventions, naming, and maintainability are in play |
-| `galeharness-cli:review:gale-python-reviewer` | Python modules, endpoints, scripts, or services |
-| `galeharness-cli:review:gale-typescript-reviewer` | TypeScript components, services, hooks, utilities, or shared types |
-| `galeharness-cli:review:julik-frontend-races-reviewer` | Stimulus/Turbo controllers, DOM events, timers, animations, or async UI flows |
+| `galeharness-cli:dhh-rails-reviewer` | Rails architecture, service objects, session/auth choices, or Hotwire-vs-SPA boundaries |
+| `galeharness-cli:gale-rails-reviewer` | Rails application code where conventions, naming, and maintainability are in play |
+| `galeharness-cli:gale-python-reviewer` | Python modules, endpoints, scripts, or services |
+| `galeharness-cli:gale-typescript-reviewer` | TypeScript components, services, hooks, utilities, or shared types |
+| `galeharness-cli:julik-frontend-races-reviewer` | Stimulus/Turbo controllers, DOM events, timers, animations, or async UI flows |
 
 **CE conditional (migration-specific):**
 
 | Agent | Select when diff includes migration files |
 |-------|------------------------------------------|
-| `galeharness-cli:review:schema-drift-detector` | Cross-references schema.rb against included migrations |
-| `galeharness-cli:review:deployment-verification-agent` | Produces deployment checklist with SQL verification queries |
+| `galeharness-cli:schema-drift-detector` | Cross-references schema.rb against included migrations |
+| `galeharness-cli:deployment-verification-agent` | Produces deployment checklist with SQL verification queries |
 
 ## Review Scope
 

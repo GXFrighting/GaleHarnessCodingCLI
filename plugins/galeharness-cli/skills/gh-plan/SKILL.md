@@ -220,8 +220,8 @@ Prepare a concise planning context summary (a paragraph or two) to pass as input
 
 Run these agents in parallel:
 
-- Task galeharness-cli:research:repo-research-analyst(Scope: technology, architecture, patterns. {planning context summary})
-- Task galeharness-cli:research:learnings-researcher(planning context summary)
+- Task galeharness-cli:repo-research-analyst(Scope: technology, architecture, patterns. {planning context summary})
+- Task galeharness-cli:learnings-researcher(planning context summary)
 Collect:
 - Technology stack and versions (used in section 1.2 to make sharper external research decisions)
 - Architectural patterns and conventions to follow
@@ -231,7 +231,7 @@ Collect:
 
 **Slack context** (opt-in) — never auto-dispatch. Route by condition:
 
-- **Tools available + user asked**: Dispatch `galeharness-cli:research:slack-researcher` with the planning context summary in parallel with other Phase 1.1 agents. If the origin document has a Slack context section, pass it verbatim so the researcher focuses on gaps. Include findings in consolidation.
+- **Tools available + user asked**: Dispatch `galeharness-cli:slack-researcher` with the planning context summary in parallel with other Phase 1.1 agents. If the origin document has a Slack context section, pass it verbatim so the researcher focuses on gaps. Include findings in consolidation.
 - **Tools available + user didn't ask**: Note in output: "Slack tools detected. Ask me to search Slack for organizational context at any point, or include it in your next prompt."
 - **No tools + user asked**: Note in output: "Slack context was requested but no Slack tools are available. Install and authenticate the Slack plugin to enable organizational context search."
 
@@ -289,8 +289,8 @@ Announce the decision briefly before continuing. Examples:
 
 If Step 1.2 indicates external research is useful, run these agents in parallel:
 
-- Task galeharness-cli:research:best-practices-researcher(planning context summary)
-- Task galeharness-cli:research:framework-docs-researcher(planning context summary)
+- Task galeharness-cli:best-practices-researcher(planning context summary)
+- Task galeharness-cli:framework-docs-researcher(planning context summary)
 
 #### 1.4 Consolidate Research
 
@@ -318,7 +318,7 @@ This ensures flow analysis (Phase 1.5) runs and the confidence check (Phase 5.3)
 
 For **Standard** or **Deep** plans, or when user flow completeness is still unclear, run:
 
-- Task galeharness-cli:workflow:spec-flow-analyzer(planning context summary, research findings)
+- Task galeharness-cli:spec-flow-analyzer(planning context summary, research findings)
 
 Use the output to:
 - Identify missing edge cases, state transitions, or handoff gaps

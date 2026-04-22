@@ -143,7 +143,7 @@ Previously-resolved threads (from `cross_invocation.resolved_threads`) participa
 
 #### Individual dispatch (default)
 
-**For review threads** (`review_threads`): Spawn a `galeharness-cli:workflow:pr-comment-resolver` agent for each new thread that is NOT already assigned to a cluster from step 3. Clustered threads are handled by cluster dispatch below -- do not dispatch them individually.
+**For review threads** (`review_threads`): Spawn a `galeharness-cli:pr-comment-resolver` agent for each new thread that is NOT already assigned to a cluster from step 3. Clustered threads are handled by cluster dispatch below -- do not dispatch them individually.
 
 Each agent receives:
 - The thread ID
@@ -153,11 +153,11 @@ Each agent receives:
 - The feedback type (`review_thread`)
 - The `isOutdated` flag from the thread node (tells the agent the reported line may have drifted)
 
-**For PR comments and review bodies** (`pr_comments`, `review_bodies`): These lack file/line context. Spawn a `galeharness-cli:workflow:pr-comment-resolver` agent for each actionable non-clustered item. The agent receives the comment ID, body text, PR number, and feedback type (`pr_comment` or `review_body`). The agent must identify the relevant files from the comment text and the PR diff.
+**For PR comments and review bodies** (`pr_comments`, `review_bodies`): These lack file/line context. Spawn a `galeharness-cli:pr-comment-resolver` agent for each actionable non-clustered item. The agent receives the comment ID, body text, PR number, and feedback type (`pr_comment` or `review_body`). The agent must identify the relevant files from the comment text and the PR diff.
 
 #### Cluster dispatch
 
-For each cluster identified in step 3, dispatch ONE `galeharness-cli:workflow:pr-comment-resolver` agent that receives:
+For each cluster identified in step 3, dispatch ONE `galeharness-cli:pr-comment-resolver` agent that receives:
 - The `<cluster-brief>` XML block
 - All thread details for threads in the cluster (IDs, file paths, line numbers, comment text)
 - The PR number
@@ -362,7 +362,7 @@ This fetches thread IDs and their first comment IDs (minimal fields, no bodies) 
 
 ### 2. Fix, Reply, Resolve
 
-Spawn a single `galeharness-cli:workflow:pr-comment-resolver` agent for the thread. Then follow the same commit -> push -> reply -> resolve flow as Full Mode steps 6-7.
+Spawn a single `galeharness-cli:pr-comment-resolver` agent for the thread. Then follow the same commit -> push -> reply -> resolve flow as Full Mode steps 6-7.
 
 ---
 

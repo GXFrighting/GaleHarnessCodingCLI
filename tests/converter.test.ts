@@ -415,7 +415,7 @@ describe("transformSkillContentForOpenCode", () => {
     const input = [
       "- `compound-engineering:document-review:coherence-reviewer`",
       "- `compound-engineering:document-review:feasibility-reviewer`",
-      "- `galeharness-cli:review:security-sentinel`",
+      "- `galeharness-cli:security-sentinel`",
     ].join("\n")
     const result = transformSkillContentForOpenCode(input)
     expect(result).toContain("- `coherence-reviewer`")
@@ -441,7 +441,7 @@ describe("transformSkillContentForOpenCode", () => {
   })
 
   test("handles FQ names in JSON-like contexts", () => {
-    const input = '  subagent_type: "galeharness-cli:review:security-sentinel",'
+    const input = '  subagent_type: "galeharness-cli:security-sentinel",'
     expect(transformSkillContentForOpenCode(input)).toBe(
       '  subagent_type: "security-sentinel",'
     )
@@ -485,7 +485,7 @@ describe("transformSkillContentForOpenCode", () => {
   test("preserves 3-segment slash commands", () => {
     const cases = [
       "Run `/team:ops:deploy` to deploy.",
-      "Use /galeharness-cli:review:check after changes.",
+      "Use /galeharness-cli:check after changes.",
     ]
     for (const input of cases) {
       expect(transformSkillContentForOpenCode(input)).toBe(input)

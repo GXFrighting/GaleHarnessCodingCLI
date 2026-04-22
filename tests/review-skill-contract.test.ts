@@ -143,11 +143,11 @@ describe("ce-review contract", () => {
     )
 
     for (const agent of [
-      "galeharness-cli:review:dhh-rails-reviewer",
-      "galeharness-cli:review:gale-rails-reviewer",
-      "galeharness-cli:review:gale-python-reviewer",
-      "galeharness-cli:review:gale-typescript-reviewer",
-      "galeharness-cli:review:julik-frontend-races-reviewer",
+      "galeharness-cli:dhh-rails-reviewer",
+      "galeharness-cli:gale-rails-reviewer",
+      "galeharness-cli:gale-python-reviewer",
+      "galeharness-cli:gale-typescript-reviewer",
+      "galeharness-cli:julik-frontend-races-reviewer",
     ]) {
       expect(content).toContain(agent)
       expect(catalog).toContain(agent)

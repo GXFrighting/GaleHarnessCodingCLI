@@ -109,15 +109,15 @@ Reviewing with:
 ### Build Agent List
 
 Always include:
-- `galeharness-cli:document-review:coherence-reviewer`
-- `galeharness-cli:document-review:feasibility-reviewer`
+- `galeharness-cli:coherence-reviewer`
+- `galeharness-cli:feasibility-reviewer`
 
 Add activated conditional personas:
-- `galeharness-cli:document-review:product-lens-reviewer`
-- `galeharness-cli:document-review:design-lens-reviewer`
-- `galeharness-cli:document-review:security-lens-reviewer`
-- `galeharness-cli:document-review:scope-guardian-reviewer`
-- `galeharness-cli:document-review:adversarial-document-reviewer`
+- `galeharness-cli:product-lens-reviewer`
+- `galeharness-cli:design-lens-reviewer`
+- `galeharness-cli:security-lens-reviewer`
+- `galeharness-cli:scope-guardian-reviewer`
+- `galeharness-cli:adversarial-document-reviewer`
 
 ### Dispatch
 
