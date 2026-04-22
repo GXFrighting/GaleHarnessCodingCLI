@@ -16,7 +16,7 @@ describe("ce-review contract", () => {
     expect(content).toContain("mode:report-only")
     expect(content).toContain("mode:headless")
     expect(content).toContain(".context/galeharness-cli/gh-review/<run-id>/")
-    expect(content).toContain("Do not create residual todos or `.context` artifacts.")
+    expect(content).toContain("Do not write `.context` artifacts.")
     expect(content).toContain(
       "Do not start a mutating review round concurrently with browser testing on the same checkout.",
     )
@@ -47,8 +47,8 @@ describe("ce-review contract", () => {
       "Not safe for concurrent use on a shared checkout.",
     )
 
-    // Writes artifacts but no todos, no commit/push/PR
-    expect(content).toContain("Do not create todo files.")
+    // Writes artifacts but no externalized work, no commit/push/PR
+    expect(content).toContain("Do not file tickets or externalize work.")
     expect(content).toContain(
       "Never commit, push, or create a PR",
     )
@@ -80,10 +80,12 @@ describe("ce-review contract", () => {
     expect(content).toContain(
       "If no `gated_auto` or `manual` findings remain after safe fixes, skip the policy question entirely",
     )
+    // Autofix-mode residual handoff is the run artifact (file-based todo system removed).
     expect(content).toContain(
-      "In autofix mode, create durable todo files only for unresolved actionable findings whose final owner is `downstream-resolver`.",
+      "In autofix mode, the run artifact is the handoff.",
     )
-    expect(content).toContain("If only advisory outputs remain, create no todos.")
+    expect(content).not.toContain("todo-create")
+    expect(content).not.toContain("create durable todo files")
     expect(content).toContain("**On the resolved review base/default branch:**")
     expect(content).toContain("git push --set-upstream origin HEAD")
     expect(content).not.toContain("**On main/master:**")
@@ -127,13 +129,8 @@ describe("ce-review contract", () => {
     expect(schema.properties.findings.items.properties.requires_verification.type).toBe("boolean")
     expect(schema._meta.confidence_thresholds.suppress).toContain("0.60")
 
-    const fileTodos = await readRepoFile("plugins/galeharness-cli/skills/todo-create/SKILL.md")
-    expect(fileTodos).toContain("/gh:review mode:autofix")
-    expect(fileTodos).toContain("/todo-resolve")
-
-    const resolveTodos = await readRepoFile("plugins/galeharness-cli/skills/todo-resolve/SKILL.md")
-    expect(resolveTodos).toContain("gh:review mode:autofix")
-    expect(resolveTodos).toContain("safe_auto")
+    // File-based todo skills removed in upstream sync patch 0010.
+    // No durable todo handoff from gh:review autofix mode.
   })
 
   test("documents stack-specific conditional reviewers for the JSON pipeline", async () => {

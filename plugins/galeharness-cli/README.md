@@ -105,8 +105,6 @@ Recommended operating model:
 | `/test-xcode` | Build and test iOS apps on simulator using XcodeBuildMCP |
 | `/gh:setup` | Diagnose environment, install missing tools, and bootstrap project config |
 | `/gh:update` | Check compound-engineering plugin version and fix stale cache (Claude Code only) |
-| `/todo-resolve` | Resolve todos in parallel |
-| `/todo-triage` | Triage and prioritize pending todos |
 
 ### Development Frameworks
 
@@ -127,7 +125,6 @@ Recommended operating model:
 | Skill | Description |
 |-------|-------------|
 | `proof` | Create, edit, and share documents via Proof collaborative editor |
-| `todo-create` | File-based todo tracking system |
 
 ### Automation & Tools
 

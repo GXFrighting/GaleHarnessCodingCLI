@@ -21,10 +21,8 @@ CRITICAL: You MUST execute every step below IN ORDER. Do NOT skip any required s
 
    Pass the plan file path from step 2 so gh:review can verify requirements completeness.
 
-5. `/galeharness-cli:todo-resolve`
+5. `/galeharness-cli:test-browser`
 
-6. `/galeharness-cli:test-browser`
-
-7. Output `<promise>DONE</promise>` when complete
+6. Output `<promise>DONE</promise>` when complete
 
 Start with step 2 now (or step 1 if ralph-loop is available). Remember: plan FIRST, then work. Never skip the plan.
