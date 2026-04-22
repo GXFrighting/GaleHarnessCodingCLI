@@ -89,6 +89,31 @@ Before Phase 1, query the vector memory database for related execution context:
 
 <!-- /HKT-PATCH:phase-0.6 -->
 
+<!-- HKT-PATCH:phase-0.6b -->
+#### 0.6b HKTMemory Session Search
+
+In addition to vector retrieval, query related historical work session records:
+
+1. Build a search query from the current task title and skill name
+
+2. Run (requires env vars HKT_MEMORY_API_KEY, HKT_MEMORY_BASE_URL, HKT_MEMORY_MODEL):
+   ```bash
+   uv run vendor/hkt-memory/scripts/hkt_memory_v5.py session-search \
+     --query "<skill name: gh:work — task title or feature description>" \
+     --limit 5
+   ```
+
+3. If results returned, prepare a context block for later phases:
+   ```
+   ## Related Historical Work Sessions
+   Source: session record search. Supplementary context only, not primary evidence.
+   [results list]
+   ```
+
+4. If no results or command error, proceed silently without blocking Phase 1.
+
+<!-- /HKT-PATCH:phase-0.6b -->
+
 ### Phase 1: Quick Start
 
 1. **Read Plan and Clarify** _(skip if arriving from Phase 0 with a bare prompt)_
@@ -371,6 +396,7 @@ After the work is complete and the shipping workflow has finished (PR created or
 4. On error, proceed silently — execution storage is supplementary
 
 **Note:** This creates a searchable record of completed work for future reference when similar tasks arise.
+<!-- /HKT-PATCH:phase-4.5 -->
 
 ## Key Principles
 
@@ -414,3 +440,10 @@ After the work is complete and the shipping workflow has finished (PR created or
 - **Forgetting to track progress** - Update task status as you go or lose track of what's done
 - **80% done syndrome** - Finish the feature, don't move on early
 - **Skipping review** - Every change gets reviewed; only the depth varies
+
+<!-- HKT-PATCH:gale-task-end -->
+After the work workflow is fully complete, log the completion event:
+
+1. Run `gale-task log skill_completed` to record the completion event.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+<!-- /HKT-PATCH:gale-task-end -->

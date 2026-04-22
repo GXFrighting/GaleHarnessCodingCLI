@@ -1,22 +1,22 @@
 # Windows Compatibility Scan Report
 
-Generated: 2026-04-22T09:49:05.739Z
+Generated: 2026-04-22T04:24:52.359Z
 
 ## Summary
 
 | Severity | Count |
 |----------|-------|
-| 🔴 Error | 91 |
-| 🟡 Warn  | 143 |
+| 🔴 Error | 100 |
+| 🟡 Warn  | 155 |
 | ℹ️ Info  | 3 |
-| **Total** | **237** |
+| **Total** | **258** |
 
-**Bash scripts found:** 17
+**Bash scripts found:** 15
 
+- `plugins/galeharness-cli/agents/research/session-history-scripts/discover-sessions.sh`
 - `plugins/galeharness-cli/skills/gh-optimize/scripts/parallel-probe.sh`
 - `plugins/galeharness-cli/skills/gh-optimize/scripts/experiment-worktree.sh`
 - `plugins/galeharness-cli/skills/gh-optimize/scripts/measure.sh`
-- `plugins/galeharness-cli/skills/gh-session-inventory/scripts/discover-sessions.sh`
 - `plugins/galeharness-cli/skills/gh-review/references/resolve-base.sh`
 - `plugins/galeharness-cli/skills/git-worktree/scripts/worktree-manager.sh`
 - `plugins/galeharness-cli/skills/gh-polish-beta/scripts/resolve-port.sh`
@@ -27,11 +27,74 @@ Generated: 2026-04-22T09:49:05.739Z
 - `scripts/dev-sync-skills.sh`
 - `scripts/setup.sh`
 - `scripts/dev-unlink.sh`
-- `scripts/upstream-sync/generate-batch.sh`
-- `scripts/upstream-sync/apply-patch-to-worktree.sh`
 - `scripts/dev-link.sh`
 
 ## Errors
+
+### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:213
+- **Rule:** `command-v`
+- **Line:** `- Bash shebang、command -v、brew install、rm -rf、mkdir -p 等 Unix 特性在 PowerShell 中不兼`
+- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
+
+### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:213
+- **Rule:** `brew-install`
+- **Line:** `- Bash shebang、command -v、brew install、rm -rf、mkdir -p 等 Unix 特性在 PowerShell 中不兼`
+- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
+
+### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:278
+- **Rule:** `command-v`
+- **Line:** `- 使用 scripts/windows-compat-scan.ts 扫描并修复 Bash shebang、command -v、brew install、r`
+- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
+
+### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:278
+- **Rule:** `brew-install`
+- **Line:** `- 使用 scripts/windows-compat-scan.ts 扫描并修复 Bash shebang、command -v、brew install、r`
+- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:152
+- **Rule:** `command-v`
+- **Line:** `- **检测规则**：覆盖 shebang、command -v、brew install、rm -rf、mkdir -p、硬编码斜杠、process.env.`
+- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:152
+- **Rule:** `brew-install`
+- **Line:** `- **检测规则**：覆盖 shebang、command -v、brew install、rm -rf、mkdir -p、硬编码斜杠、process.env.`
+- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:213
+- **Rule:** `command-v`
+- **Line:** `- **shebang 与命令替换**：Bash 的 #!/bin/bash、command -v、brew install、rm -rf、mkdir -p、I`
+- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:213
+- **Rule:** `brew-install`
+- **Line:** `- **shebang 与命令替换**：Bash 的 #!/bin/bash、command -v、brew install、rm -rf、mkdir -p、I`
+- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:215
+- **Rule:** `command-v`
+- **Line:** `- Get-Command 替代 command -v`
+- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:216
+- **Rule:** `brew-install`
+- **Line:** `- winget install 替代 brew install`
+- **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:221
+- **Rule:** `python-subprocess-bash`
+- **Line:** `- **Python 子进程**：避免 subprocess.run(["bash", ...])，改用 sys.executable 或跨平台工具。`
+- **Suggestion:** Python subprocess with bash/sh is not portable to Windows. Use `subprocess.run([sys.executable, ...])` or a cross-platform approach.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:328
+- **Rule:** `python-subprocess-bash`
+- **Line:** `- **Python 子进程调用 bash**：改为 sys.executable 或跨平台工具；避免 subprocess.run(["bash", ...]`
+- **Suggestion:** Python subprocess with bash/sh is not portable to Windows. Use `subprocess.run([sys.executable, ...])` or a cross-platform approach.
+
+### plugins/galeharness-cli/agents/research/session-history-scripts/discover-sessions.sh:1
+- **Rule:** `bash-shebang`
+- **Line:** `#!/usr/bin/env bash`
+- **Suggestion:** Windows PowerShell cannot execute bash scripts. Consider adding a PowerShell equivalent (.ps1) or using Bun/Node.js for cross-platform scripting.
 
 ### plugins/galeharness-cli/skills/gh-optimize/scripts/parallel-probe.sh:1
 - **Rule:** `bash-shebang`
@@ -83,11 +146,6 @@ Generated: 2026-04-22T09:49:05.739Z
 - **Line:** `brew tap getsentry/xcodebuildmcp && brew install xcodebuildmcp`
 - **Suggestion:** `brew` is macOS-only. On Windows use `winget install` or document manual installation steps.
 
-### plugins/galeharness-cli/skills/gh-session-inventory/scripts/discover-sessions.sh:1
-- **Rule:** `bash-shebang`
-- **Line:** `#!/usr/bin/env bash`
-- **Suggestion:** Windows PowerShell cannot execute bash scripts. Consider adding a PowerShell equivalent (.ps1) or using Bun/Node.js for cross-platform scripting.
-
 ### plugins/galeharness-cli/skills/gh-review/references/resolve-base.sh:1
 - **Rule:** `bash-shebang`
 - **Line:** `#!/usr/bin/env bash`
@@ -138,14 +196,14 @@ Generated: 2026-04-22T09:49:05.739Z
 - **Line:** `#!/bin/bash`
 - **Suggestion:** Windows PowerShell cannot execute bash scripts. Consider adding a PowerShell equivalent (.ps1) or using Bun/Node.js for cross-platform scripting.
 
-### plugins/galeharness-cli/skills/git-worktree/scripts/worktree-manager.sh:126
+### plugins/galeharness-cli/skills/git-worktree/scripts/worktree-manager.sh:120
 - **Rule:** `command-v`
 - **Line:** `if command -v mise &>/dev/null; then`
 - **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
 
 ### plugins/galeharness-cli/skills/git-worktree/scripts/worktree-manager.sh:139
 - **Rule:** `command-v`
-- **Line:** `if command -v direnv &>/dev/null && [[ -f "$worktree_path/.envrc" ]]; then`
+- **Line:** `if command -v direnv &>/dev/null; then`
 - **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
 
 ### plugins/galeharness-cli/skills/gh-polish-beta/scripts/resolve-port.sh:1
@@ -463,21 +521,6 @@ Generated: 2026-04-22T09:49:05.739Z
 - **Line:** `#!/usr/bin/env bash`
 - **Suggestion:** Windows PowerShell cannot execute bash scripts. Consider adding a PowerShell equivalent (.ps1) or using Bun/Node.js for cross-platform scripting.
 
-### scripts/upstream-sync/generate-batch.sh:1
-- **Rule:** `bash-shebang`
-- **Line:** `#!/usr/bin/env bash`
-- **Suggestion:** Windows PowerShell cannot execute bash scripts. Consider adding a PowerShell equivalent (.ps1) or using Bun/Node.js for cross-platform scripting.
-
-### scripts/upstream-sync/generate-batch.sh:7
-- **Rule:** `command-v`
-- **Line:** `if ! command -v python3 >/dev/null 2>&1; then`
-- **Suggestion:** `command -v` is a bash builtin. On PowerShell use `Get-Command`. In Bun/Node.js use `which` from a cross-platform package.
-
-### scripts/upstream-sync/apply-patch-to-worktree.sh:1
-- **Rule:** `bash-shebang`
-- **Line:** `#!/usr/bin/env bash`
-- **Suggestion:** Windows PowerShell cannot execute bash scripts. Consider adding a PowerShell equivalent (.ps1) or using Bun/Node.js for cross-platform scripting.
-
 ### scripts/windows-compat-scan.ts:59
 - **Rule:** `command-v`
 - **Line:** `suggestion: "`command -v` is a bash builtin. On PowerShell use `Get-Command`. In`
@@ -490,67 +533,122 @@ Generated: 2026-04-22T09:49:05.739Z
 
 ## Warnings
 
-### plugins/galeharness-cli/CHANGELOG.md:826
+### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:213
+- **Rule:** `mkdir-p`
+- **Line:** `- Bash shebang、command -v、brew install、rm -rf、mkdir -p 等 Unix 特性在 PowerShell 中不兼`
+- **Suggestion:** `mkdir -p` is a Unix idiom. In PowerShell use `New-Item -ItemType Directory -Force`. In Bun/Node.js use `fs.mkdirSync(dir, { recursive: true })`.
+
+### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:214
+- **Rule:** `process-env-home`
+- **Line:** `- 硬编码 Unix 路径分隔符、process.env.HOME 使用等跨平台问题`
+- **Suggestion:** `process.env.HOME` is undefined on Windows. Use `os.homedir()` or a cross-platform home detection utility.
+
+### .qoder/repowiki/zh/content/开发者指南/开发环境搭建.md:278
+- **Rule:** `mkdir-p`
+- **Line:** `- 使用 scripts/windows-compat-scan.ts 扫描并修复 Bash shebang、command -v、brew install、r`
+- **Suggestion:** `mkdir -p` is a Unix idiom. In PowerShell use `New-Item -ItemType Directory -Force`. In Bun/Node.js use `fs.mkdirSync(dir, { recursive: true })`.
+
+### .qoder/repowiki/zh/content/开发者指南/测试指南.md:366
+- **Rule:** `mkdir-p`
+- **Line:** `Check --> |否| Create["mkdir -p home"]`
+- **Suggestion:** `mkdir -p` is a Unix idiom. In PowerShell use `New-Item -ItemType Directory -Force`. In Bun/Node.js use `fs.mkdirSync(dir, { recursive: true })`.
+
+### .qoder/repowiki/zh/content/插件转换系统/权限管理系统.md:187
+- **Rule:** `process-env-home`
+- **Line:** `- Windows 脚本与路径问题：通过扫描器识别硬编码斜杠、process.env.HOME 使用等不兼容模式`
+- **Suggestion:** `process.env.HOME` is undefined on Windows. Use `os.homedir()` or a cross-platform home detection utility.
+
+### .qoder/repowiki/zh/content/插件转换系统/权限管理系统.md:351
+- **Rule:** `process-env-home`
+- **Line:** `- 使用 Windows 兼容扫描器检查硬编码斜杠、process.env.HOME 等`
+- **Suggestion:** `process.env.HOME` is undefined on Windows. Use `os.homedir()` or a cross-platform home detection utility.
+
+### .qoder/repowiki/zh/content/插件转换系统/权限管理系统.md:373
+- **Rule:** `rm-rf`
+- **Line:** `- 拒绝：Bash(rm -rf *)`
+- **Suggestion:** `rm -rf` does not exist on PowerShell. Use `Remove-Item -Recurse -Force` in .ps1, or `fs.rmSync(dir, { recursive: true })` in Bun/Node.js.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:152
+- **Rule:** `process-env-home`
+- **Line:** `- **检测规则**：覆盖 shebang、command -v、brew install、rm -rf、mkdir -p、硬编码斜杠、process.env.`
+- **Suggestion:** `process.env.HOME` is undefined on Windows. Use `os.homedir()` or a cross-platform home detection utility.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:158
+- **Rule:** `source-bash`
+- **Line:** `- source 命令误报和真实引用（大量警告）`
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:159
+- **Rule:** `process-env-home`
+- **Line:** `- 硬编码斜杠和 process.env.HOME 使用（警告和信息级别）`
+- **Suggestion:** `process.env.HOME` is undefined on Windows. Use `os.homedir()` or a cross-platform home detection utility.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:213
+- **Rule:** `source-bash`
+- **Line:** `- **shebang 与命令替换**：Bash 的 #!/bin/bash、command -v、brew install、rm -rf、mkdir -p、I`
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### .qoder/repowiki/zh/content/Windows 兼容性.md:220
+- **Rule:** `source-bash`
+- **Line:** `- . .\file.ps1 替代 source ./file`
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### plugins/galeharness-cli/CHANGELOG.md:833
 - **Rule:** `source-bash`
 - **Line:** `- Phase 3: Synthesizes all findings with clear source attribution (skill-based >`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/security-reviewer.md:18
-- **Rule:** `source-bash`
-- **Line:** `- **Secrets in code or logs** -- hardcoded API keys, tokens, or passwords in sou`
-- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
-
-### plugins/galeharness-cli/agents/framework-docs-researcher.md:33
+### plugins/galeharness-cli/agents/research/framework-docs-researcher.md:33
 - **Rule:** `source-bash`
 - **Line:** `- Explore gem source code to understand internal implementations`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/framework-docs-researcher.md:59
+### plugins/galeharness-cli/agents/research/framework-docs-researcher.md:59
 - **Rule:** `source-bash`
 - **Line:** `- Read through key source files related to the feature`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/framework-docs-researcher.md:89
+### plugins/galeharness-cli/agents/research/framework-docs-researcher.md:89
 - **Rule:** `source-bash`
 - **Line:** `7. **References**: Links to documentation, GitHub issues, and source files`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/data-migration-expert.md:38
-- **Rule:** `source-bash`
-- **Line:** `- [ ] For each CASE/IF mapping, confirm the source data covers every branch (no `
-- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
-
-### plugins/galeharness-cli/agents/best-practices-researcher.md:64
+### plugins/galeharness-cli/agents/research/best-practices-researcher.md:64
 - **Rule:** `source-bash`
 - **Line:** `- Identify and analyze well-regarded open source projects that demonstrate the p`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/issue-intelligence-analyst.md:100
+### plugins/galeharness-cli/agents/research/issue-intelligence-analyst.md:100
 - **Rule:** `source-bash`
 - **Line:** `5. Distinguish issue sources when relevant: bot/agent-generated issues (e.g., `a`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/swift-ios-reviewer.md:26
+### plugins/galeharness-cli/agents/review/security-reviewer.md:18
 - **Rule:** `source-bash`
-- **Line:** `Incorrect use of `@State`, `@StateObject`, `@ObservedObject`, `@EnvironmentObjec`
+- **Line:** `- **Secrets in code or logs** -- hardcoded API keys, tokens, or passwords in sou`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/cli-agent-readiness-reviewer.md:3
+### plugins/galeharness-cli/agents/review/data-migration-expert.md:38
+- **Rule:** `source-bash`
+- **Line:** `- [ ] For each CASE/IF mapping, confirm the source data covers every branch (no `
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### plugins/galeharness-cli/agents/review/cli-agent-readiness-reviewer.md:3
 - **Rule:** `source-bash`
 - **Line:** `description: "Reviews CLI source code, plans, or specs for AI agent readiness us`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/cli-agent-readiness-reviewer.md:11
+### plugins/galeharness-cli/agents/review/cli-agent-readiness-reviewer.md:11
 - **Rule:** `source-bash`
 - **Line:** `You review CLI **source code**, **plans**, and **specs** for AI agent readiness `
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/agents/cli-agent-readiness-reviewer.md:58
+### plugins/galeharness-cli/agents/review/cli-agent-readiness-reviewer.md:58
 - **Rule:** `source-bash`
 - **Line:** `Evaluate in priority order: check for **Blockers** first across all principles, `
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/gh-work/SKILL.md:98
+### plugins/galeharness-cli/skills/gh-work/SKILL.md:123
 - **Rule:** `source-bash`
 - **Line:** `- If the plan includes sections such as `Implementation Units`, `Work Breakdown``
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
@@ -570,7 +668,7 @@ Generated: 2026-04-22T09:49:05.739Z
 - **Line:** `- `localPath`: the source file path (same as input)`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/proof/SKILL.md:290
+### plugins/galeharness-cli/skills/proof/SKILL.md:287
 - **Rule:** `source-bash`
 - **Line:** `- Use `/state` content as source of truth before editing`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
@@ -630,12 +728,12 @@ Generated: 2026-04-22T09:49:05.739Z
 - **Line:** `rm -rf "$worktree_path" 2>/dev/null || true`
 - **Suggestion:** `rm -rf` does not exist on PowerShell. Use `Remove-Item -Recurse -Force` in .ps1, or `fs.rmSync(dir, { recursive: true })` in Bun/Node.js.
 
-### plugins/galeharness-cli/skills/gh-optimize/SKILL.md:245
+### plugins/galeharness-cli/skills/gh-optimize/SKILL.md:284
 - **Rule:** `mkdir-p`
 - **Line:** `mkdir -p .context/galeharness-cli/gh-optimize/<spec-name>/`
 - **Suggestion:** `mkdir -p` is a Unix idiom. In PowerShell use `New-Item -ItemType Directory -Force`. In Bun/Node.js use `fs.mkdirSync(dir, { recursive: true })`.
 
-### plugins/galeharness-cli/skills/gh-optimize/SKILL.md:544
+### plugins/galeharness-cli/skills/gh-optimize/SKILL.md:583
 - **Rule:** `source-bash`
 - **Line:** `1. **Re-read the experiment log from disk** — do not trust in-memory state. The `
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
@@ -670,6 +768,26 @@ Generated: 2026-04-22T09:49:05.739Z
 - **Line:** `argument-hint: "[findings list or source type]"`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
+### plugins/galeharness-cli/skills/andrew-kane-gem-writer/references/testing-patterns.md:76
+- **Rule:** `source-bash`
+- **Line:** `source "https://rubygems.org"`
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### plugins/galeharness-cli/skills/andrew-kane-gem-writer/references/testing-patterns.md:85
+- **Rule:** `source-bash`
+- **Line:** `source "https://rubygems.org"`
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### plugins/galeharness-cli/skills/every-style-editor/references/EVERY_WRITE_STYLE.md:245
+- **Rule:** `source-bash`
+- **Line:** `Use hyphens in compound adjectives, with the exception of adverbs (words ending `
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
+### plugins/galeharness-cli/skills/every-style-editor/references/EVERY_WRITE_STYLE.md:529
+- **Rule:** `source-bash`
+- **Line:** `add on (verb), add-on (noun, adjective), back end (noun), back-end (adjective), `
+- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
+
 ### plugins/galeharness-cli/skills/gale-style-editor/references/EVERY_WRITE_STYLE.md:245
 - **Rule:** `source-bash`
 - **Line:** `Use hyphens in compound adjectives, with the exception of adverbs (words ending `
@@ -680,12 +798,7 @@ Generated: 2026-04-22T09:49:05.739Z
 - **Line:** `add on (verb), add-on (noun, adjective), back end (noun), back-end (adjective), `
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/document-review/references/review-output-template.md:120
-- **Rule:** `source-bash`
-- **Line:** `- **Count invariant.** The `Findings` column in Coverage continues to equal Auto`
-- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
-
-### plugins/galeharness-cli/skills/gh-debug/SKILL.md:70
+### plugins/galeharness-cli/skills/gh-debug/SKILL.md:134
 - **Rule:** `source-bash`
 - **Line:** `Read the relevant source files. Follow the execution path from entry point to wh`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
@@ -700,17 +813,17 @@ Generated: 2026-04-22T09:49:05.739Z
 - **Line:** `2. The subagent writes the new learning using the support files as the source of`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/gh-review/SKILL.md:212
+### plugins/galeharness-cli/skills/gh-review/SKILL.md:221
 - **Rule:** `source-bash`
 - **Line:** `This path works with any ref — a SHA, `origin/main`, a branch name. Automated ca`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/gh-review/SKILL.md:326
+### plugins/galeharness-cli/skills/gh-review/SKILL.md:335
 - **Rule:** `source-bash`
 - **Line:** `Understand what the change is trying to accomplish. The source of intent depends`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/gh-review/SKILL.md:426
+### plugins/galeharness-cli/skills/gh-review/SKILL.md:435
 - **Rule:** `mkdir-p`
 - **Line:** `mkdir -p ".context/galeharness-cli/gh-review/$RUN_ID"`
 - **Suggestion:** `mkdir -p` is a Unix idiom. In PowerShell use `New-Item -ItemType Directory -Force`. In Bun/Node.js use `fs.mkdirSync(dir, { recursive: true })`.
@@ -725,19 +838,14 @@ Generated: 2026-04-22T09:49:05.739Z
 - **Line:** `- **Findings organized by topic** with source channels and dates`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/git-worktree/scripts/worktree-manager.sh:62
-- **Rule:** `source-bash`
-- **Line:** `for source in "$GIT_ROOT"/.env*; do`
-- **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
-
-### plugins/galeharness-cli/skills/git-worktree/scripts/worktree-manager.sh:179
+### plugins/galeharness-cli/skills/git-worktree/scripts/worktree-manager.sh:232
 - **Rule:** `mkdir-p`
 - **Line:** `mkdir -p "$WORKTREE_DIR"`
 - **Suggestion:** `mkdir -p` is a Unix idiom. In PowerShell use `New-Item -ItemType Directory -Force`. In Bun/Node.js use `fs.mkdirSync(dir, { recursive: true })`.
 
-### plugins/galeharness-cli/skills/git-worktree/SKILL.md:54
+### plugins/galeharness-cli/skills/git-worktree/SKILL.md:105
 - **Rule:** `source-bash`
-- **Line:** `- **Other branches** (feature branches, PR review branches): configs are compare`
+- **Line:** `- direnv auto-allow is skipped on non-trusted bases because `.envrc` can source `
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
 ### plugins/galeharness-cli/skills/gh-compound/SKILL.md:268
@@ -765,7 +873,7 @@ Generated: 2026-04-22T09:49:05.739Z
 - **Line:** `- **Mermaid** (default) for simple flows — 5-15 nodes, no in-box annotations, st`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/gh-brainstorm/SKILL.md:212
+### plugins/galeharness-cli/skills/gh-brainstorm/SKILL.md:205
 - **Rule:** `source-bash`
 - **Line:** `1. **Verify before claiming** — When the brainstorm touches checkable infrastruc`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
@@ -795,12 +903,12 @@ Generated: 2026-04-22T09:49:05.739Z
 - **Line:** `If multiple source documents match, ask which one to use using the platform's bl`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/gh-plan/SKILL.md:130
+### plugins/galeharness-cli/skills/gh-plan/SKILL.md:129
 - **Rule:** `source-bash`
 - **Line:** `4. Use the source document as the primary input to planning and research`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
 
-### plugins/galeharness-cli/skills/gh-plan/SKILL.md:132
+### plugins/galeharness-cli/skills/gh-plan/SKILL.md:131
 - **Rule:** `source-bash`
 - **Line:** `6. Do not silently omit source content — if the origin document discussed it, th`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
@@ -1169,11 +1277,6 @@ Generated: 2026-04-22T09:49:05.739Z
 - **Rule:** `source-bash`
 - **Line:** `ok "全部完成！执行 ${CYAN}source ${SHELL_PROFILE}${NC} 后立即可用。"`
 - **Suggestion:** `source` is a bash command. In PowerShell use `. .\file.ps1`. In Bun/Node.js use `import` or `require`.
-
-### scripts/upstream-sync/apply-patch-to-worktree.sh:90
-- **Rule:** `bash-array`
-- **Line:** `APPLY_CMD=("git" "apply")`
-- **Suggestion:** Bash arrays are not supported in PowerShell. Use PowerShell arrays `@()` or refactor to Bun/Node.js.
 
 ### scripts/windows-compat-scan.ts:89
 - **Rule:** `process-env-home`

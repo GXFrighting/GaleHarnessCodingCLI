@@ -161,6 +161,16 @@ If a reviewer flags any file in these directories for cleanup or removal, discar
 
 ## How to Run
 
+<!-- HKT-PATCH:gale-task-start -->
+### Stage -1: Task Lifecycle Start
+
+Before any other action, log the skill start event so this execution appears on the task board:
+
+1. Run `gale-task log skill_started --skill gh:review --title "<branch-or-PR-reference>"` to register this execution on the task board.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+
+<!-- /HKT-PATCH:gale-task-start -->
+
 <!-- HKT-PATCH:stage-0.5 -->
 ### Stage 0.5: HKTMemory Retrieve
 
@@ -796,3 +806,10 @@ If the platform doesn't support parallel sub-agents, run reviewers sequentially.
 ### Review Output Template
 
 @./references/review-output-template.md
+
+<!-- HKT-PATCH:gale-task-end -->
+After the review workflow is fully complete, log the completion event:
+
+1. Run `gale-task log skill_completed` to record the completion event.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+<!-- /HKT-PATCH:gale-task-end -->

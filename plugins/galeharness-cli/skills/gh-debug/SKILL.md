@@ -21,6 +21,16 @@ These principles govern every phase. They are repeated at decision points becaus
 
 ## Execution Flow
 
+<!-- HKT-PATCH:gale-task-start -->
+### Phase -1: Task Lifecycle Start
+
+Before any other action, log the skill start event so this execution appears on the task board:
+
+1. Run `gale-task log skill_started --skill gh:debug --title "<bug-description>"` to register this execution on the task board.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+
+<!-- /HKT-PATCH:gale-task-start -->
+
 | Phase | Name | Purpose |
 |-------|------|---------|
 | 0 | Triage | Parse input, fetch issue if referenced, proceed to investigation |
@@ -41,7 +51,61 @@ Parse the input and reach a clear problem statement.
 - GitHub (`#123`, `org/repo#123`, github.com URL): Parse the issue reference from `<bug_description>` and fetch with `gh issue view <number> --json title,body,comments,labels`. For URLs, pass the URL directly to `gh`.
 - Other trackers (Linear URL/ID, Jira URL/key, any tracker URL): Attempt to fetch using available MCP tools or by fetching the URL content. If the fetch fails — auth, missing tool, non-public page — ask the user to paste the relevant issue content.
 
-Extract reported symptoms, expected behavior, reproduction steps, and environment details. Then proceed to Phase 1.
+Extract reported symptoms, expected behavior, reproduction steps, and environment details.
+
+<!-- HKT-PATCH:phase-0.4 -->
+#### 0.4 HKTMemory Retrieve
+
+Before Phase 1, query the vector memory database for related bugs and debug experiences:
+
+1. Extract a 1-2 sentence search query from: the bug description, error messages, component names, symptoms observed
+2. Run (requires env vars HKT_MEMORY_API_KEY, HKT_MEMORY_BASE_URL, HKT_MEMORY_MODEL):
+   ```bash
+   uv run vendor/hkt-memory/scripts/hkt_memory_v5.py retrieve \
+     --query "<extracted query>" \
+     --layer all --limit 10 --min-similarity 0.35 \
+     --vector-weight 0.7 --bm25-weight 0.3
+   ```
+3. If results returned, prepare a context block and use it to inform Phase 1 (Investigate):
+   ```
+   ## Related historical debug experiences from HKTMemory
+   Source: vector database. Treat as additional context, not primary evidence.
+   [results here, each tagged with (similarity: X.XX)]
+   ```
+4. If no results or command error, proceed silently without blocking Phase 1.
+
+**Integration with Phase 1:** When HKTMemory returns relevant results, cross-reference them during investigation. Look for:
+- Similar bugs already encountered and their root causes
+- Related fixes or workarounds that may still apply
+- Past debugging strategies for comparable symptoms
+<!-- /HKT-PATCH:phase-0.4 -->
+
+<!-- HKT-PATCH:phase-0.4b -->
+#### 0.4b HKTMemory Session Search
+
+In addition to vector retrieval, query related historical debug session records:
+
+1. Build a search query from the current error message, bug description, or debugging target
+
+2. Run (requires env vars HKT_MEMORY_API_KEY, HKT_MEMORY_BASE_URL, HKT_MEMORY_MODEL):
+   ```bash
+   uv run vendor/hkt-memory/scripts/hkt_memory_v5.py session-search \
+     --query "<error message or bug description summary>" \
+     --limit 5
+   ```
+
+3. If results returned, prepare a context block for the triage phase:
+   ```
+   ## Historical Debug Session Records
+   Source: session record search. Supplementary context for root cause analysis.
+   [results list]
+   ```
+
+4. If no results or command error, proceed silently without blocking subsequent triage.
+
+<!-- /HKT-PATCH:phase-0.4b -->
+
+Then proceed to Phase 1.
 
 **Everything else** (stack traces, test paths, error messages, descriptions of broken behavior): Proceed directly to Phase 1.
 
@@ -167,6 +231,25 @@ Check whether the same gap exists at those locations. Skip when the root cause i
 **Conditional post-mortem** (trigger: the bug was in production, OR the pattern appears in 3+ locations):
 How was this introduced? What allowed it to survive? If a systemic gap was found: "This pattern appears in N other files. Want to capture it with `/gh:compound`?"
 
+<!-- HKT-PATCH:phase-3.5 -->
+### Phase 3.5: HKTMemory Store
+
+After successfully fixing the bug (or completing diagnosis if Phase 3 was skipped):
+
+1. Compose a concise summary (2-4 sentences) covering: the bug, the root cause, the fix applied, and key file paths involved
+2. Run:
+   ```bash
+   uv run vendor/hkt-memory/scripts/hkt_memory_v5.py store \
+     --content "<summary with repo-relative file paths>" \
+     --title "<bug title or short description>" \
+     --topic "debug" \
+     --layer all
+   ```
+3. Log: `Stored to HKTMemory: [title]` on success, or note the error (non-blocking — do not fail the debug workflow if HKTMemory is unavailable).
+
+**Rationale:** Debug experiences are highly reusable — the same root cause pattern often recurses in different parts of the codebase. Storing the causal chain and fix helps future debug sessions discover and build upon this work.
+<!-- /HKT-PATCH:phase-3.5 -->
+
 ---
 
 ### Phase 4: Close
@@ -189,3 +272,10 @@ How was this introduced? What allowed it to survive? If a systemic gap was found
 3. Post findings to the issue (if entry came from an issue tracker) — convey: confirmed root cause, verified reproduction steps, relevant code references, and suggested fix direction; keep it concise and useful for whoever picks up the issue next
 4. View in Proof (`/proof`) — for easy review and sharing with others
 5. Done
+
+<!-- HKT-PATCH:gale-task-end -->
+After presenting handoff options and completing this skill, log the completion event:
+
+1. Run `gale-task log skill_completed` to record the completion event.
+2. If `gale-task` is not on PATH or the command fails, skip and continue — this must never block the skill.
+<!-- /HKT-PATCH:gale-task-end -->
