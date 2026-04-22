@@ -103,7 +103,6 @@ Recommended operating model:
 | `/sync` | Sync Claude Code config across machines |
 | `/test-browser` | Run browser tests on PR-affected pages |
 | `/test-xcode` | Build and test iOS apps on simulator using XcodeBuildMCP |
-| `/onboarding` | Generate `ONBOARDING.md` to help new contributors understand the codebase |
 | `/gh:setup` | Diagnose environment, install missing tools, and bootstrap project config |
 | `/gh:update` | Check compound-engineering plugin version and fix stale cache (Claude Code only) |
 | `/todo-resolve` | Resolve todos in parallel |
