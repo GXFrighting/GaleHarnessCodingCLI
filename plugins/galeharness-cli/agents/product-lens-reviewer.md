@@ -58,9 +58,12 @@ If priority tiers exist: do assignments match stated goals? Are must-haves truly
 
 ## Confidence calibration
 
-- **HIGH (0.80+):** Can quote both the goal and the conflicting work -- disconnect is clear.
-- **MODERATE (0.60-0.79):** Likely misalignment, depends on business context not in document.
-- **Below 0.50:** Suppress.
+Use the shared anchored rubric (see `subagent-template.md` — Confidence rubric). Product strategy findings cap naturally at anchor `75` for most concerns because strategy challenges inherently resist full verification — "is this the right goal?" usually cannot be proven objectively true or false in advance. That is not a calibration problem; it is the nature of the work. Apply as:
+
+- **`100` — Absolutely certain:** Can quote specific text showing a direct contradiction with stated company goals, or a mathematically provable failure of the business logic (e.g., "This pricing model costs more to operate than it charges"). The rare case — use sparingly.
+- **`75` — Highly confident:** The strategic gap or misalignment is highly likely to cause friction, and you can describe the scenario concretely. Full confirmation would require market or business data not in the document. You double-checked and the concern is material. This is product-lens's normal working ceiling.
+- **`50` — Advisory (routes to FYI):** A plausible-but-unlikely strategic risk, or a framing concern worth surfacing without a strong supporting scenario (e.g., "This feature might overlap confusingly with feature X"). Still requires an evidence quote. Surfaces as observation without forcing a decision.
+- **Suppress entirely:** Anything below anchor `50` — speculative "what if" or purely subjective preference with no supporting scenario. Do not emit; anchors `0` and `25` exist in the enum only so synthesis can track drops.
 
 ## What you don't flag
 

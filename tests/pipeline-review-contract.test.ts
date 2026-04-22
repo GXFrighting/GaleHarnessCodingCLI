@@ -350,3 +350,51 @@ describe("gh:plan review contract", () => {
     expect(content).not.toContain("**Options for Standard or Lightweight plans:**")
   })
 })
+
+describe("document-review contract", () => {
+  test("findings schema enforces discrete confidence anchors", async () => {
+    const schema = JSON.parse(
+      await readRepoFile("plugins/galeharness-cli/skills/document-review/references/findings-schema.json")
+    )
+    const confidence = schema.properties.findings.items.properties.confidence
+
+    // Anchored integer enum, not continuous float
+    expect(confidence.type).toBe("integer")
+    expect(confidence.enum).toEqual([0, 25, 50, 75, 100])
+
+    // No stale continuous-range properties
+    expect(confidence.minimum).toBeUndefined()
+    expect(confidence.maximum).toBeUndefined()
+
+    // Rubric text embedded in the description so persona agents see it
+    expect(confidence.description).toContain("Absolutely certain")
+    expect(confidence.description).toContain("Highly confident")
+    expect(confidence.description).toContain("Moderately confident")
+    expect(confidence.description).toContain("double-checked")
+    expect(confidence.description).toContain("evidence directly confirms")
+  })
+
+  test("subagent template embeds anchor rubric and bans float confidence", async () => {
+    const template = await readRepoFile(
+      "plugins/galeharness-cli/skills/document-review/references/subagent-template.md"
+    )
+
+    // Rubric section embedded verbatim in the persona-facing template
+    expect(template).toContain("Confidence rubric")
+    expect(template).toContain("`0`")
+    expect(template).toContain("`25`")
+    expect(template).toContain("`50`")
+    expect(template).toContain("`75`")
+    expect(template).toContain("`100`")
+
+    // Example finding uses anchor, not float
+    expect(template).toContain('"confidence": 100')
+    expect(template).not.toMatch(/"confidence":\s*0\.\d+/)
+
+    // Advisory observations route to anchor 50, not to a 0.40-0.59 band
+    expect(template).toContain("`confidence: 50`")
+    expect(template).not.toContain("0.40–0.59 LOW/Advisory band")
+    expect(template).not.toContain("0.40-0.59 LOW/Advisory band")
+  })
+
+})

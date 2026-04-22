@@ -27,9 +27,12 @@ Apply each check only when relevant. Silence is only a finding when the gap woul
 
 ## Confidence calibration
 
-- **HIGH (0.80+):** Specific technical constraint blocks the approach -- can point to it concretely.
-- **MODERATE (0.60-0.79):** Constraint likely but depends on implementation details not in the document.
-- **Below 0.50:** Suppress entirely.
+Use the shared anchored rubric (see `subagent-template.md` — Confidence rubric). Feasibility findings span the full range of anchors. Apply as:
+
+- **`100` — Absolutely certain:** Provable constraint violation. Can quote specific text from the document and point to a known physical, logical, or platform constraint that makes it impossible (e.g., "Requires synchronous cross-region transaction").
+- **`75` — Highly confident:** Highly likely to fail or degrade severely. You can describe the failure mode concretely, but full confirmation requires codebase or production knowledge not in the document. You double-checked and the concern is material.
+- **`50` — Advisory (routes to FYI):** A plausible-but-unlikely bottleneck, or a technical concern worth surfacing without a strong supporting scenario (e.g., "This queue might back up if traffic spikes 10x"). Still requires an evidence quote. Surfaces as observation without forcing a decision.
+- **Suppress entirely:** Anything below anchor `50` — speculative "what if" or general pessimism with no supporting scenario. Do not emit; anchors `0` and `25` exist in the enum only so synthesis can track drops.
 
 ## What you don't flag
 

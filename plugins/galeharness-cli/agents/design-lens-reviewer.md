@@ -34,9 +34,12 @@ Explain what's missing: the functional design thinking that makes the interface 
 
 ## Confidence calibration
 
-- **HIGH (0.80+):** Missing states/flows that will clearly cause UX problems during implementation.
-- **MODERATE (0.60-0.79):** Gap exists but a skilled designer could resolve from context.
-- **Below 0.50:** Suppress.
+Use the shared anchored rubric (see `subagent-template.md` — Confidence rubric). Apply as:
+
+- **`100` — Absolutely certain:** Can quote specific text showing a gap or contradiction in the user experience, construct a concrete scenario where the user fails, AND trace the consequence to observable impact (e.g., "User cannot complete the flow because step 3 requires data not collected in steps 1-2").
+- **`75` — Highly confident:** The gap is likely to bite and you can describe the scenario concretely, but full confirmation would require information not in the document (existing UI patterns, user research). You double-checked and the concern is material.
+- **`50` — Advisory (routes to FYI):** A plausible-but-unlikely friction point, or a UX concern worth surfacing without a strong supporting scenario (e.g., "This pattern diverges from standard iOS conventions"). Still requires an evidence quote. Surfaces as observation without forcing a decision.
+- **Suppress entirely:** Anything below anchor `50` — speculative "what if" or purely subjective preference with no supporting scenario. Do not emit; anchors `0` and `25` exist in the enum only so synthesis can track drops.
 
 ## What you don't flag
 

@@ -41,9 +41,12 @@ With AI-assisted implementation, the cost gap between shortcuts and complete sol
 
 ## Confidence calibration
 
-- **HIGH (0.80+):** Can quote goal statement and scope item showing the mismatch.
-- **MODERATE (0.60-0.79):** Misalignment likely but depends on context not in document.
-- **Below 0.50:** Suppress.
+Use the shared anchored rubric (see `subagent-template.md` — Confidence rubric). Apply as:
+
+- **`100` — Absolutely certain:** Provable scope creep or dependency cycle. Can quote specific text showing a requirement that contradicts the stated non-goals, or a circular dependency.
+- **`75` — Highly confident:** Highly likely to bloat the project or cause sequencing failures. You can describe the scenario concretely, but full confirmation requires implementation details not in the document. You double-checked and the concern is material.
+- **`50` — Advisory (routes to FYI):** A plausible-but-unlikely scope risk, or a sequencing concern worth surfacing without a strong supporting scenario. Still requires an evidence quote. Surfaces as observation without forcing a decision.
+- **Suppress entirely:** Anything below anchor `50` — speculative "what if" with no supporting scenario. Do not emit; anchors `0` and `25` exist in the enum only so synthesis can track drops.
 
 ## What you don't flag
 
