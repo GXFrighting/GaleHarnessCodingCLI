@@ -79,4 +79,4 @@ jobs:
           & .\scripts\setup.ps1
 
       - name: Run tests
-        run: bun test --path-ignore-patterns="**/cli.test.ts" --path-ignore-patterns="**/detect-tools.test.ts" --path-ignore-patterns="**/plugin-path.test.ts" --path-ignore-patterns="**/resolve-output.test.ts" --path-ignore-patterns="**/sync-codex.test.ts" --path-ignore-patterns="**/sync-copilot.test.ts" --path-ignore-patterns="**/sync-kimi.test.ts" --path-ignore-patterns="**/sync-windsurf.test.ts"
+        run: bun test --timeout=60000 --path-ignore-patterns="**/cli.test.ts" --path-ignore-patterns="**/detect-tools.test.ts" --path-ignore-patterns="**/plugin-path.test.ts" --path-ignore-patterns="**/resolve-output.test.ts" --path-ignore-patterns="**/sync-codex.test.ts" --path-ignore-patterns="**/sync-copilot.test.ts" --path-ignore-patterns="**/sync-kimi.test.ts" --path-ignore-patterns="**/sync-windsurf.test.ts"

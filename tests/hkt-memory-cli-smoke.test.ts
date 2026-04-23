@@ -120,7 +120,6 @@ const uvAvailableSync = isUvAvailableSync()
 // calls runHktCommand will fail. Using Bun.spawnSync at module load time
 // ensures skipIf evaluates the correct condition synchronously.
 const skipIfMissing = test.skipIf(!scriptPresentSync || !uvAvailableSync)
-skipIfMissing.timeout(60_000)
 
 describe("HKTMemory CLI Smoke Tests", () => {
   beforeAll(async () => {
