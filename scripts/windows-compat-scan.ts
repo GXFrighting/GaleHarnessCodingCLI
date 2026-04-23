@@ -213,7 +213,7 @@ export async function scanFile(filePath: string, rules?: Rule[]): Promise<Findin
 }
 
 async function main() {
-  console.log("🔍 Windows Compatibility Scan\n")
+  console.log("[SCAN] Windows Compatibility Scan\n")
 
   const config = await loadConfig()
   const rules = buildRules(config)
@@ -245,9 +245,9 @@ async function main() {
   reportLines.push("")
   reportLines.push(`| Severity | Count |`)
   reportLines.push(`|----------|-------|`)
-  reportLines.push(`| 🔴 Error | ${errors.length} |`)
-  reportLines.push(`| 🟡 Warn  | ${warnings.length} |`)
-  reportLines.push(`| ℹ️ Info  | ${infos.length} |`)
+  reportLines.push(`| [ERR] Error | ${errors.length} |`)
+  reportLines.push(`| [WARN] Warn  | ${warnings.length} |`)
+  reportLines.push(`| [INFO] Info  | ${infos.length} |`)
   reportLines.push(`| **Total** | **${findings.length}** |`)
   reportLines.push("")
   reportLines.push(`**Bash scripts found:** ${shFiles.length}`)
@@ -302,7 +302,7 @@ async function main() {
   await Bun.write("docs/async-progress/WINDOWS_COMPAT_SCAN_REPORT.md", report)
 
   console.log(report)
-  console.log(`\n✅ Report written to docs/async-progress/WINDOWS_COMPAT_SCAN_REPORT.md`)
+  console.log(`\n[OK] Report written to docs/async-progress/WINDOWS_COMPAT_SCAN_REPORT.md`)
   console.log(`   Errors: ${errors.length}, Warnings: ${warnings.length}, Info: ${infos.length}`)
   console.log(`   Bash scripts: ${shFiles.length}`)
 }
