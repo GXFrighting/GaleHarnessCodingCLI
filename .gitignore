@@ -23,3 +23,6 @@ __pycache__/
 .compound-sync.diff
 .compound-sync.raw.diff
 .qoder/
+
+# Local test scripts
+test-gh-local
