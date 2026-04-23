@@ -127,7 +127,8 @@ def write_commit_range(
     ]
     for commit in commits:
         lines.append(f"  - {commit.filename} {commit.sha} {commit.subject}")
-    (batch_dir / "commit-range.txt").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    with (batch_dir / "commit-range.txt").open("w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(lines) + "\n")
 
 
 def suggested_worktree_name(batch_dir: Path, commit: CommitMetadata) -> str:
@@ -217,7 +218,8 @@ def write_readme(
         ]
     )
 
-    (batch_dir / "README.md").write_text("\n".join(lines), encoding="utf-8", newline="\n")
+    with (batch_dir / "README.md").open("w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(lines))
 
 
 def run_adaptation(raw_patch: Path, adapted_patch: Path, rules_path: Path) -> None:
@@ -287,7 +289,8 @@ def main() -> int:
             raw_patch_path = raw_dir / filename
             adapted_patch_path = adapted_dir / filename
 
-            raw_patch_path.write_text(format_patch(upstream_repo, sha), encoding="utf-8", newline="\n")
+            with raw_patch_path.open("w", encoding="utf-8", newline="\n") as f:
+                f.write(format_patch(upstream_repo, sha))
             run_adaptation(raw_patch_path, adapted_patch_path, rules_path)
 
             exported_commits.append(
