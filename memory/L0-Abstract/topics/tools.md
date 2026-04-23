@@ -24,3 +24,9 @@
 - **核心**: HKTMemory PR #…
 - **来源**: 2026-04-22-110518-120
 
+### PR #47 Review Fixes: Windows hkt-memory CLI install
+- **时间**: 2026-04-23
+- **关键词**: pr, memory, review, applied, code
+- **核心**: Code Review PR…
+- **来源**: 2026-04-23-165707-632
+

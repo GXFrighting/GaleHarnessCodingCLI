@@ -603,3 +603,5 @@
 {"timestamp": "2026-04-22T14:52:47.620836+00:00", "type": "cleanup", "memory_id": null, "scope": null, "data": {"dry_run": false, "deleted_count": 0, "retention_days": 90}}
 {"timestamp": "2026-04-22T14:52:47.664977+00:00", "type": "cleanup", "memory_id": null, "scope": null, "data": {"dry_run": false, "deleted_count": 0, "retention_days": 90}}
 {"timestamp": "2026-04-22T14:52:47.712322+00:00", "type": "cleanup", "memory_id": null, "scope": null, "data": {"dry_run": false, "deleted_count": 0, "retention_days": 90}}
+{"timestamp": "2026-04-23T08:57:07.621586+00:00", "type": "cleanup", "memory_id": null, "scope": null, "data": {"dry_run": false, "deleted_count": 0, "retention_days": 90}}
+{"timestamp": "2026-04-23T08:57:09.719585+00:00", "type": "capture", "memory_id": "2026-04-23-165707-632", "scope": "topic:code-review", "data": {"status": "active"}}

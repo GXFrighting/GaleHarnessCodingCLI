@@ -69,3 +69,17 @@
 **标签**: 技术方案
 
 ---
+### PR #47 Review Fixes: Windows hkt-memory CLI install
+
+- **时间**: 2026-04-23
+- **摘要**: Code Review PR #47 fixes applied: (1) setup.ps1 now sets HKT_MEMORY_SCRIPT env v...
+- **重要性**: medium
+- **来源**: [2026-04-23-165707-632](../L2-Full/daily/)
+
+**关键要点**:
+
+- Code Review PR #47 fixes applied: (1) setup.ps1 now sets HKT_MEMORY_SCRIPT env v
+
+**标签**: 通用
+
+---
