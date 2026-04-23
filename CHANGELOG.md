@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.14.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v1.13.1...cli-v1.14.0) (2026-04-23)
+## [2.0.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v1.13.1...cli-v2.0.0) (2026-04-23)
 
 
 ### Features
