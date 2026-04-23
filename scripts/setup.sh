@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# GaleHarnessCLI 环境一键安装脚本 (macOS)
+# GaleHarnessCLI 环境一键安装脚本 (macOS / Linux)
 # 用法: bash scripts/setup.sh
 
 set -euo pipefail
@@ -25,12 +25,39 @@ header() { echo -e "\n${BLUE}${BOLD}▶ $1${NC}"; }
 #  OS Check
 # =====================================================
 OS="$(uname -s)"
-if [ "$OS" != "Darwin" ]; then
-  err "本脚本仅支持 macOS。请在 macOS 上运行，或使用 Windows PowerShell 脚本。"
+if [ "$OS" != "Darwin" ] && [ "$OS" != "Linux" ]; then
+  err "本脚本仅支持 macOS 和 Linux。请在 macOS 或 Linux 上运行，或使用 Windows PowerShell 脚本。"
   exit 1
 fi
 
-# Detect shell profile
+# Detect package manager and shell profile
+PKG_MANAGER=""
+INSTALL_CMD=""
+if [ "$OS" = "Darwin" ]; then
+  if command -v brew >/dev/null 2>&1; then
+    PKG_MANAGER="brew"
+    INSTALL_CMD="brew install"
+  fi
+else
+  # Linux
+  if command -v brew >/dev/null 2>&1; then
+    PKG_MANAGER="brew"
+    INSTALL_CMD="brew install"
+  elif command -v apt-get >/dev/null 2>&1; then
+    PKG_MANAGER="apt"
+    INSTALL_CMD="sudo apt-get install -y"
+  elif command -v dnf >/dev/null 2>&1; then
+    PKG_MANAGER="dnf"
+    INSTALL_CMD="sudo dnf install -y"
+  elif command -v yum >/dev/null 2>&1; then
+    PKG_MANAGER="yum"
+    INSTALL_CMD="sudo yum install -y"
+  elif command -v pacman >/dev/null 2>&1; then
+    PKG_MANAGER="pacman"
+    INSTALL_CMD="sudo pacman -S --noconfirm"
+  fi
+fi
+
 SHELL_PROFILE=""
 case "${SHELL##*/}" in
   zsh)  SHELL_PROFILE="$HOME/.zshrc" ;;
@@ -41,7 +68,7 @@ esac
 # =====================================================
 #  Banner
 # =====================================================
-echo -e "${BOLD}GaleHarnessCLI 环境一键安装 (macOS)${NC}"
+echo -e "${BOLD}GaleHarnessCLI 环境一键安装 (macOS / Linux)${NC}"
 echo "本脚本将自动检测并安装所有依赖。"
 echo ""
 
@@ -53,12 +80,11 @@ if command -v git >/dev/null 2>&1; then
   ok "Git 已安装 ($(git --version))"
 else
   info "正在安装 Git..."
-  if command -v brew >/dev/null 2>&1; then
-    brew install git
+  if [ -n "$INSTALL_CMD" ]; then
+    $INSTALL_CMD git
   else
-    info "正在安装 Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    brew install git
+    err "未找到可用的包管理器，请手动安装 Git"
+    exit 1
   fi
   ok "Git 安装完成"
 fi
@@ -95,8 +121,17 @@ done
 
 if [ -z "$PYTHON_CMD" ]; then
   info "正在安装 Python..."
-  if command -v brew >/dev/null 2>&1; then
+  if [ "$PKG_MANAGER" = "brew" ]; then
     brew install python@3.12
+  elif [ "$PKG_MANAGER" = "apt" ]; then
+    sudo apt-get update && sudo apt-get install -y python3 python3-pip
+  elif [ "$PKG_MANAGER" = "dnf" ] || [ "$PKG_MANAGER" = "yum" ]; then
+    $INSTALL_CMD python3 python3-pip
+  elif [ "$PKG_MANAGER" = "pacman" ]; then
+    $INSTALL_CMD python python-pip
+  else
+    err "未找到可用的包管理器，请手动安装 Python 3.9+"
+    exit 1
   fi
   PYTHON_CMD="python3"
 fi
@@ -109,7 +144,7 @@ if [ "$PYTHON_MAJOR" -gt 3 ] || { [ "$PYTHON_MAJOR" -eq 3 ] && [ "$PYTHON_MINOR"
   ok "Python 已安装 (${PYTHON_VERSION})"
 else
   err "Python 版本过低: ${PYTHON_VERSION}，需要 >= 3.9"
-  info "建议运行: brew install python@3.12"
+  info "建议运行: $INSTALL_CMD python3 (或等价命令)"
   exit 1
 fi
 
@@ -209,7 +244,17 @@ for tool in "${optional_tools[@]}"; do
   if command -v "$tool" >/dev/null 2>&1; then
     ok "${tool} 已安装"
   else
-    warn "${tool} 未安装 (可选，建议: brew install ${tool})"
+    if [ "$OS" = "Darwin" ]; then
+      warn "${tool} 未安装 (可选，建议: brew install ${tool})"
+    elif [ "$PKG_MANAGER" = "apt" ]; then
+      warn "${tool} 未安装 (可选，建议: sudo apt-get install ${tool})"
+    elif [ "$PKG_MANAGER" = "dnf" ] || [ "$PKG_MANAGER" = "yum" ]; then
+      warn "${tool} 未安装 (可选，建议: sudo ${PKG_MANAGER} install ${tool})"
+    elif [ "$PKG_MANAGER" = "pacman" ]; then
+      warn "${tool} 未安装 (可选，建议: sudo pacman -S ${tool})"
+    else
+      warn "${tool} 未安装 (可选，请使用系统包管理器安装)"
+    fi
   fi
 done
 
