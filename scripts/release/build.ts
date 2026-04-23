@@ -41,7 +41,18 @@ const repoRoot = path.resolve(__dirname, "../..")
 const packageJsonPath = path.join(repoRoot, "package.json")
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"))
 const version = parsed.version || packageJson.version
-const platform = parsed.platform || "darwin-arm64"
+function detectPlatform(): string {
+  const platform = os.platform()
+  const arch = os.arch()
+  const platformMap: Record<string, Record<string, string>> = {
+    darwin: { arm64: "darwin-arm64", x64: "darwin-x64" },
+    linux: { x64: "linux-x64", arm64: "linux-arm64" },
+    win32: { x64: "windows-x64" },
+  }
+  return platformMap[platform]?.[arch] || `${platform}-${arch}`
+}
+
+const platform = parsed.platform || detectPlatform()
 
 // ── Build ───────────────────────────────────────────────────────────────────
 

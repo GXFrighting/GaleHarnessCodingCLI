@@ -413,20 +413,22 @@ gale-knowledge rebuild-index --full  # 全量
 
 ### 前置要求
 
-- macOS 11+ 或 Windows 10/11
-- 能联网的终端（macOS: Terminal / iTerm2，Windows: PowerShell）
+- macOS 11+、Linux（主流发行版）或 Windows 10/11
+- 能联网的终端（macOS: Terminal / iTerm2，Linux: Bash/Zsh，Windows: PowerShell）
 
 > 不需要预先安装任何工具。一键脚本会自动检测并安装缺失的依赖。
 
 ### 一键安装
 
-#### macOS
+#### macOS / Linux
 
 ```bash
 git clone https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI.git
 cd GaleHarnessCodingCLI
 bash scripts/setup.sh
 ```
+
+> **Linux 说明：** 脚本会自动检测 `apt`、`dnf`、`yum`、`pacman` 或 `brew` 等包管理器。如果系统未预装 Git 或 Python，请确保有 `sudo` 权限以便自动安装。
 
 #### Windows
 
@@ -563,7 +565,7 @@ GaleHarnessCodingCLI/
 **文件模式**：`HKT_MEMORY_FILE_MODE=true` 可在无 API 密钥情况下使用 HKTMemory。
 
 **手动修改位置**：
-- macOS：`~/.zshrc` 或 `~/.bashrc`
+- macOS / Linux：`~/.zshrc` 或 `~/.bashrc`
 - Windows：`notepad $PROFILE` 或系统环境变量
 
 ---
