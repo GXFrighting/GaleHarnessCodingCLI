@@ -75,6 +75,9 @@ class LayerManagerV5:
                 from vector_store.sqlite_backend import SQLiteVectorBackend
                 self.vector_store = SQLiteVectorBackend(str(self.base_path / "vector_store.db"))
                 print(f"[OK] Using SQLiteVectorBackend")
+            elif vector_backend == "file":
+                self.vector_store = None
+                print("[OK] Using file mode (vector store unavailable)")
             else:
                 self.vector_store = VectorStore(str(self.base_path / "vector_store.db"))
         except Exception as e:
@@ -633,7 +636,7 @@ class LayerManagerV5:
             return result
         
         elif layer == "all":
-            # ✅ v5.0 核心：存储 L2 并自动触发 L1/L0 提取
+            # [OK] v5.0 核心：存储 L2 并自动触发 L1/L0 提取
             l2_result = self._store_l2_only(content, effective_title, topic, metadata)
             
             if auto_extract:
@@ -1039,7 +1042,7 @@ class LayerManagerV5:
                 valid_until = entry.get("metadata", {}).get("valid_until") if entry else None
                 if valid_until and valid_until < today:
                     item["_expired"] = True
-                    item["_expired_badge"] = "⚠️ 已过期"
+                    item["_expired_badge"] = "[WARN] 已过期"
                 filtered_items.append(item)
             results[layer_name] = filtered_items[:limit]
 

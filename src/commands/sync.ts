@@ -48,7 +48,7 @@ export default defineCommand({
     // Warn about potential secrets in MCP env vars
     if (hasPotentialSecrets(config.mcpServers)) {
       console.warn(
-        "⚠️  Warning: MCP servers contain env vars that may include secrets (API keys, tokens).\n" +
+        "[WARN] Warning: MCP servers contain env vars that may include secrets (API keys, tokens).\n" +
         "   These will be copied to the target config. Review before sharing the config file.",
       )
     }
