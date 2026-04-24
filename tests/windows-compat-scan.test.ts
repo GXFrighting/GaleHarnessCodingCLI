@@ -1,5 +1,31 @@
 import { describe, expect, test } from "bun:test"
-import { buildRules, getExclusions, loadConfig, scanContent } from "../scripts/windows-compat-scan"
+import { existsSync } from "fs"
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "fs/promises"
+import { tmpdir } from "os"
+import path from "path"
+import {
+  buildRules,
+  DEFAULT_REPORT_PATH,
+  getExclusions,
+  loadConfig,
+  runCli,
+  runScan,
+  scanContent,
+} from "../scripts/windows-compat-scan"
+
+async function withTempWorkspace(run: (rootDir: string) => Promise<void>) {
+  const rootDir = await mkdtemp(path.join(tmpdir(), "windows-compat-scan-"))
+  try {
+    await run(rootDir)
+  } finally {
+    await rm(rootDir, { recursive: true, force: true })
+  }
+}
+
+const quietStdout = {
+  log() {},
+  error() {},
+}
 
 describe("windows-compat-scan", () => {
   describe("rules", () => {
@@ -136,6 +162,8 @@ describe("windows-compat-scan", () => {
     test("getExclusions merges defaults and extras", () => {
       const exclusions = getExclusions({ exclude: ["custom/**"] })
       expect(exclusions).toContain("node_modules")
+      expect(exclusions).toContain(".worktrees/**")
+      expect(exclusions).toContain("vendor/**")
       expect(exclusions).toContain("custom/**")
     })
 
@@ -143,11 +171,97 @@ describe("windows-compat-scan", () => {
       const exclusions = getExclusions()
       expect(exclusions).toContain("node_modules")
       expect(exclusions).toContain(".git")
+      expect(exclusions).toContain(".worktrees")
+      expect(exclusions).toContain("vendor")
     })
 
     test("loadConfig returns undefined for missing file", async () => {
       const config = await loadConfig("/nonexistent/path/config.json")
       expect(config).toBeUndefined()
+    })
+  })
+
+  describe("scan execution", () => {
+    test("importing the module does not write the default report", async () => {
+      await withTempWorkspace(async (rootDir) => {
+        const scriptPath = path.resolve(import.meta.dir, "../scripts/windows-compat-scan.ts")
+        const proc = Bun.spawn({
+          cmd: ["bun", "-e", `await import(${JSON.stringify(scriptPath)})`],
+          cwd: rootDir,
+          stdout: "ignore",
+          stderr: "pipe",
+        })
+
+        const exitCode = await proc.exited
+        const stderr = await new Response(proc.stderr).text()
+        expect(stderr).toBe("")
+        expect(exitCode).toBe(0)
+        expect(existsSync(path.join(rootDir, DEFAULT_REPORT_PATH))).toBe(false)
+      })
+    })
+
+    test("--no-write does not write the default report", async () => {
+      await withTempWorkspace(async (rootDir) => {
+        await writeFile(path.join(rootDir, "script.sh"), "#!/bin/bash\n")
+
+        await runCli(["--no-write"], { rootDir, stdout: quietStdout })
+
+        expect(existsSync(path.join(rootDir, DEFAULT_REPORT_PATH))).toBe(false)
+      })
+    })
+
+    test("--dry-run is an alias for --no-write", async () => {
+      await withTempWorkspace(async (rootDir) => {
+        await writeFile(path.join(rootDir, "script.sh"), "#!/bin/bash\n")
+
+        await runCli(["--dry-run"], { rootDir, stdout: quietStdout })
+
+        expect(existsSync(path.join(rootDir, DEFAULT_REPORT_PATH))).toBe(false)
+      })
+    })
+
+    test("--output writes to the requested path", async () => {
+      await withTempWorkspace(async (rootDir) => {
+        await writeFile(path.join(rootDir, "script.sh"), "#!/bin/bash\n")
+
+        await runCli(["--output", "tmp/report.md"], { rootDir, stdout: quietStdout })
+
+        const reportPath = path.join(rootDir, "tmp/report.md")
+        expect(existsSync(reportPath)).toBe(true)
+        expect(await readFile(reportPath, "utf8")).toContain("# Windows Compatibility Scan Report")
+        expect(existsSync(path.join(rootDir, DEFAULT_REPORT_PATH))).toBe(false)
+      })
+    })
+
+    test("default run writes the default report", async () => {
+      await withTempWorkspace(async (rootDir) => {
+        await writeFile(path.join(rootDir, "script.sh"), "#!/bin/bash\n")
+
+        await runCli([], { rootDir, stdout: quietStdout })
+
+        const reportPath = path.join(rootDir, DEFAULT_REPORT_PATH)
+        expect(existsSync(reportPath)).toBe(true)
+        expect(await readFile(reportPath, "utf8")).toContain("script.sh")
+      })
+    })
+
+    test("default exclusions skip .worktrees and vendor", async () => {
+      await withTempWorkspace(async (rootDir) => {
+        await writeFile(path.join(rootDir, "regular.sh"), "#!/bin/bash\n")
+        await writeFile(path.join(rootDir, "vendor.sh"), "#!/bin/bash\n")
+        await mkdir(path.join(rootDir, ".worktrees/review-pr-68/vendor"), { recursive: true })
+        await mkdir(path.join(rootDir, "vendor"), { recursive: true })
+        await writeFile(path.join(rootDir, ".worktrees/review-pr-68/vendor/noisy.sh"), "#!/bin/bash\n")
+        await writeFile(path.join(rootDir, "vendor/noisy.sh"), "#!/bin/bash\n")
+
+        const result = await runScan({ rootDir })
+
+        expect(result.shFiles).toContain("regular.sh")
+        expect(result.shFiles).toContain("vendor.sh")
+        expect(result.shFiles).not.toContain(".worktrees/review-pr-68/vendor/noisy.sh")
+        expect(result.shFiles).not.toContain("vendor/noisy.sh")
+        expect(result.findings.map((finding) => finding.file)).toContain("regular.sh")
+      })
     })
   })
 })

@@ -12,7 +12,7 @@
  * Run: bun run scripts/windows-compat-scan.ts
  */
 
-import { readdir, readFile } from "fs/promises"
+import { mkdir, readdir, readFile, writeFile } from "fs/promises"
 import path from "path"
 
 export interface Finding {
@@ -36,13 +36,41 @@ export interface Config {
   exclude?: string[]
 }
 
-const DEFAULT_EXCLUDE_DIRS = [
+export interface ScanResult {
+  findings: Finding[]
+  shFiles: string[]
+}
+
+export interface RunScanOptions {
+  rootDir?: string
+  configPath?: string
+  config?: Config
+}
+
+export interface CliOptions {
+  noWrite: boolean
+  outputPath?: string
+  configPath?: string
+}
+
+export interface RunCliOptions {
+  rootDir?: string
+  stdout?: Pick<typeof console, "log" | "error">
+}
+
+export const DEFAULT_REPORT_PATH = path.join("docs", "async-progress", "WINDOWS_COMPAT_SCAN_REPORT.md")
+
+const DEFAULT_EXCLUDE_PATTERNS = [
   "node_modules",
   ".git",
   "__pycache__",
   ".venv",
   "memory",
   "docs/async-progress",
+  ".worktrees",
+  ".worktrees/**",
+  "vendor",
+  "vendor/**",
 ]
 
 const DEFAULT_RULES: Rule[] = [
@@ -129,22 +157,28 @@ export function buildRules(config?: Config): Rule[] {
 }
 
 function minimatchLike(filePath: string, pattern: string): boolean {
+  if (!pattern.includes("*")) {
+    return filePath === pattern || filePath.startsWith(`${pattern}/`)
+  }
+
   const regexPattern = pattern
     .replace(/\./g, "\\.")
     .replace(/\*\*/g, "{{GLOBSTAR}}")
     .replace(/\*/g, "[^/]*")
     .replace(/{{GLOBSTAR}}/g, ".*")
-  const re = new RegExp(`^${regexPattern}`)
+  const re = new RegExp(`^${regexPattern}$`)
   return re.test(filePath)
 }
 
 export function getExclusions(config?: Config): string[] {
   const extras = config?.exclude ?? []
-  return [...DEFAULT_EXCLUDE_DIRS, ...extras]
+  return [...DEFAULT_EXCLUDE_PATTERNS, ...extras]
 }
 
-export async function loadConfig(configPath?: string): Promise<Config | undefined> {
-  const target = configPath ?? path.join(process.cwd(), "scripts", "windows-compat-scan-config.json")
+export async function loadConfig(configPath?: string, rootDir = process.cwd()): Promise<Config | undefined> {
+  const target = configPath
+    ? path.resolve(rootDir, configPath)
+    : path.join(rootDir, "scripts", "windows-compat-scan-config.json")
   try {
     const raw = await readFile(target, "utf8")
     return JSON.parse(raw) as Config
@@ -153,14 +187,18 @@ export async function loadConfig(configPath?: string): Promise<Config | undefine
   }
 }
 
-async function* walkFiles(dir: string, exclusions: string[]): AsyncGenerator<string> {
+function toPosixPath(filePath: string): string {
+  return filePath.split(path.sep).join("/").replace(/\\/g, "/")
+}
+
+export async function* walkFiles(dir: string, exclusions: string[], rootDir = dir): AsyncGenerator<string> {
   const entries = await readdir(dir, { withFileTypes: true })
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name)
-    const relPath = path.relative(process.cwd(), fullPath)
+    const relPath = toPosixPath(path.relative(rootDir, fullPath))
     if (entry.isDirectory()) {
       if (exclusions.some((e) => minimatchLike(relPath, e) || minimatchLike(entry.name, e))) continue
-      yield* walkFiles(fullPath, exclusions)
+      yield* walkFiles(fullPath, exclusions, rootDir)
     } else if (entry.isFile()) {
       if (exclusions.some((e) => minimatchLike(relPath, e))) continue
       yield fullPath
@@ -200,7 +238,7 @@ export function scanContent(lines: string[], rules: Rule[], ext: string): Findin
   return findings
 }
 
-export async function scanFile(filePath: string, rules?: Rule[]): Promise<Finding[]> {
+export async function scanFile(filePath: string, rules?: Rule[], rootDir = process.cwd()): Promise<Finding[]> {
   const activeRules = rules ?? buildRules(await loadConfig())
   const ext = path.extname(filePath)
   const content = await readFile(filePath, "utf8")
@@ -208,27 +246,32 @@ export async function scanFile(filePath: string, rules?: Rule[]): Promise<Findin
   const findings = scanContent(lines, activeRules, ext)
   return findings.map((f) => ({
     ...f,
-    file: path.relative(process.cwd(), filePath),
+    file: toPosixPath(path.relative(rootDir, filePath)),
   }))
 }
 
-async function main() {
-  console.log("[SCAN] Windows Compatibility Scan\n")
-
-  const config = await loadConfig()
+export async function runScan(options: RunScanOptions = {}): Promise<ScanResult> {
+  const rootDir = options.rootDir ?? process.cwd()
+  const config = options.config ?? await loadConfig(options.configPath, rootDir)
   const rules = buildRules(config)
   const exclusions = getExclusions(config)
 
   const findings: Finding[] = []
   const shFiles: string[] = []
 
-  for await (const file of walkFiles(process.cwd(), exclusions)) {
+  for await (const file of walkFiles(rootDir, exclusions, rootDir)) {
     if (file.endsWith(".sh") || file.endsWith(".bash")) {
-      shFiles.push(path.relative(process.cwd(), file))
+      shFiles.push(toPosixPath(path.relative(rootDir, file)))
     }
-    const fileFindings = await scanFile(file, rules)
+    const fileFindings = await scanFile(file, rules, rootDir)
     findings.push(...fileFindings)
   }
+
+  return { findings, shFiles }
+}
+
+export function renderReport(result: ScanResult, generatedAt = new Date()): string {
+  const { findings, shFiles } = result
 
   // Group by severity
   const errors = findings.filter((f) => f.severity === "error")
@@ -239,7 +282,7 @@ async function main() {
   const reportLines: string[] = []
   reportLines.push("# Windows Compatibility Scan Report")
   reportLines.push("")
-  reportLines.push(`Generated: ${new Date().toISOString()}`)
+  reportLines.push(`Generated: ${generatedAt.toISOString()}`)
   reportLines.push("")
   reportLines.push("## Summary")
   reportLines.push("")
@@ -298,16 +341,69 @@ async function main() {
   reportLines.push("---")
   reportLines.push("*Run this scan anytime with: `bun run scripts/windows-compat-scan.ts`*")
 
-  const report = reportLines.join("\n")
-  await Bun.write("docs/async-progress/WINDOWS_COMPAT_SCAN_REPORT.md", report)
-
-  console.log(report)
-  console.log(`\n[OK] Report written to docs/async-progress/WINDOWS_COMPAT_SCAN_REPORT.md`)
-  console.log(`   Errors: ${errors.length}, Warnings: ${warnings.length}, Info: ${infos.length}`)
-  console.log(`   Bash scripts: ${shFiles.length}`)
+  return reportLines.join("\n")
 }
 
-main().catch((err) => {
-  console.error("Scan failed:", err)
-  process.exit(1)
-})
+export function parseCliArgs(args: string[]): CliOptions {
+  const options: CliOptions = { noWrite: false }
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i]
+    if (arg === "--no-write" || arg === "--dry-run") {
+      options.noWrite = true
+    } else if (arg === "--output") {
+      const value = args[++i]
+      if (!value) throw new Error("--output requires a path")
+      options.outputPath = value
+    } else if (arg === "--config") {
+      const value = args[++i]
+      if (!value) throw new Error("--config requires a path")
+      options.configPath = value
+    } else {
+      throw new Error(`Unknown argument: ${arg}`)
+    }
+  }
+
+  return options
+}
+
+export async function runCli(args = process.argv.slice(2), options: RunCliOptions = {}): Promise<ScanResult> {
+  const rootDir = options.rootDir ?? process.cwd()
+  const output = options.stdout ?? console
+  const cliOptions = parseCliArgs(args)
+
+  output.log("[SCAN] Windows Compatibility Scan\n")
+
+  const result = await runScan({ rootDir, configPath: cliOptions.configPath })
+  const report = renderReport(result)
+  const errors = result.findings.filter((f) => f.severity === "error")
+  const warnings = result.findings.filter((f) => f.severity === "warn")
+  const infos = result.findings.filter((f) => f.severity === "info")
+
+  const reportPath = cliOptions.outputPath
+    ? path.resolve(rootDir, cliOptions.outputPath)
+    : path.join(rootDir, DEFAULT_REPORT_PATH)
+
+  if (!cliOptions.noWrite) {
+    await mkdir(path.dirname(reportPath), { recursive: true })
+    await writeFile(reportPath, report)
+  }
+
+  output.log(report)
+  if (cliOptions.noWrite) {
+    output.log("\n[OK] Report generated without writing a file")
+  } else {
+    output.log(`\n[OK] Report written to ${toPosixPath(path.relative(rootDir, reportPath))}`)
+  }
+  output.log(`   Errors: ${errors.length}, Warnings: ${warnings.length}, Info: ${infos.length}`)
+  output.log(`   Bash scripts: ${result.shFiles.length}`)
+
+  return result
+}
+
+if (import.meta.main) {
+  runCli().catch((err) => {
+    console.error("Scan failed:", err)
+    process.exit(1)
+  })
+}
