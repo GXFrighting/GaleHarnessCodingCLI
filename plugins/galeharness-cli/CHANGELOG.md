@@ -9,6 +9,16 @@ All notable changes to GaleHarnessCLI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/galeharness-cli-v2.2.0...galeharness-cli-v2.3.0) (2026-04-24)
+
+
+### Features
+
+* **memory:** add Gale task memory helper ([4e4e80b](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/4e4e80b16b62f284626aa951ea2f85ee9f7f9287))
+* **memory:** add Gale task memory helper ([e88fb73](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/e88fb73de8478f5e561a24ecf89b348bca7f25f6))
+* **morph:** add iOS Morph-X workflow ([f7130ef](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/f7130ef0d4c8898a6864d41c2a1487b2244f13e4))
+* **morph:** 新增 iOS Morph-X 工作流 ([bdaee16](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/bdaee1647d986c6846fe6b35256cda3e5e6b6d23))
+
 ## [2.2.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/galeharness-cli-v2.1.0...galeharness-cli-v2.2.0) (2026-04-24)
 
 
