@@ -9,6 +9,13 @@ All notable changes to GaleHarnessCLI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/galeharness-cli-v2.4.0...galeharness-cli-v2.5.0) (2026-04-24)
+
+
+### Features
+
+* **memory:** 迁移 Gale-managed HKTMemory 到公共知识库 ([da1cb06](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/da1cb06a9a230e1326325697a2c12ac9c5e653e6))
+
 ## [2.4.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/galeharness-cli-v2.3.0...galeharness-cli-v2.4.0) (2026-04-24)
 
 
