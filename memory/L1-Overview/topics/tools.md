@@ -354,3 +354,45 @@
 **标签**: 通用
 
 ---
+### Karpathy Guidelines 融入 GaleHarnessCLI 全流程 Guardrails
+
+- **时间**: 2026-04-24
+- **摘要**: Karpathy guidelines integration requirements: 将 andrej-karpathy-skills 的四类 LLM 行...
+- **重要性**: medium
+- **来源**: [2026-04-24-164659-735](../L2-Full/daily/)
+
+**关键要点**:
+
+- Karpathy guidelines integration requirements: 将 andrej-karpathy-skills 的四类 LLM 行
+
+**标签**: 技术方案
+
+---
+### feat: Integrate Karpathy workflow guardrails
+
+- **时间**: 2026-04-24
+- **摘要**: Plan for integrating Karpathy-inspired guardrails into GaleHarnessCLI: add phase...
+- **重要性**: medium
+- **来源**: [2026-04-24-170907-937](../L2-Full/daily/)
+
+**关键要点**:
+
+- Plan for integrating Karpathy-inspired guardrails into GaleHarnessCLI: add phase
+
+**标签**: 通用
+
+---
+### Work: Karpathy workflow guardrails integration
+
+- **时间**: 2026-04-24
+- **摘要**: Implemented Karpathy-inspired workflow guardrails for GaleHarnessCLI in branch b...
+- **重要性**: medium
+- **来源**: [2026-04-24-174028-148](../L2-Full/daily/)
+
+**关键要点**:
+
+- Implemented Karpathy-inspired workflow guardrails for GaleHarnessCLI in branch b
+
+**标签**: 通用
+
+---

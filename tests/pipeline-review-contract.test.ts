@@ -272,6 +272,47 @@ describe("gh:plan remains neutral during gh:work-beta rollout", () => {
   })
 })
 
+describe("Karpathy workflow guardrails contract", () => {
+  test("gh:brainstorm challenges framing without bloating lightweight work", async () => {
+    const content = await readRepoFile("plugins/galeharness-cli/skills/gh-brainstorm/SKILL.md")
+    const capture = await readRepoFile("plugins/galeharness-cli/skills/gh-brainstorm/references/requirements-capture.md")
+
+    expect(content).toContain("Challenge framing before committing")
+    expect(content).toContain("explicit assumptions, non-goals, and success criteria")
+    expect(content).toContain("without bulldozing their intent")
+    expect(content).toContain("Right-size the artifact")
+    expect(capture).toContain("unconfirmed implementation proposal")
+    expect(capture).toContain("Confirmed requirements, deliberate non-goals, explicit assumptions, success criteria")
+  })
+
+  test("gh:plan requires complexity justification and classified uncertainty", async () => {
+    const content = await readRepoFile("plugins/galeharness-cli/skills/gh-plan/SKILL.md")
+
+    expect(content).toContain("Justify complexity from source material")
+    expect(content).toContain("requirement, success criterion, risk, or explicit constraint")
+    expect(content).toContain("blocker, assumption, deferred technical question, or implementation-time unknown")
+    expect(content).toContain("Complexity justification gate")
+    expect(content).not.toContain("delegate:codex")
+  })
+
+  test("gh:work and gh:work-beta share execution contract and surgical-change rules", async () => {
+    const stable = await readRepoFile("plugins/galeharness-cli/skills/gh-work/SKILL.md")
+    const beta = await readRepoFile("plugins/galeharness-cli/skills/gh-work-beta/SKILL.md")
+
+    for (const content of [stable, beta]) {
+      expect(content).toContain("lightweight execution contract")
+      expect(content).toContain("current assumptions, minimal change, explicit non-goals, and verification criteria")
+      expect(content).toContain("Surgical-change guardrails")
+      expect(content).toContain("Every changed line should trace to the request")
+      expect(content).toContain("Clean up only orphans created by this change")
+      expect(content).toContain("pre-existing dead code or unrelated quality issues")
+      expect(content).toContain("Scope Boundaries")
+      expect(content).toContain("Execution note")
+      expect(content).toContain("Verification")
+    }
+  })
+})
+
 describe("gh:brainstorm review contract", () => {
   test("exposes document review as an opt-in handoff option", async () => {
     const content = await readRepoFile("plugins/galeharness-cli/skills/gh-brainstorm/SKILL.md")

@@ -378,3 +378,27 @@ describe("testing-reviewer contract", () => {
     expect(content).toContain("Non-behavioral changes")
   })
 })
+
+describe("Karpathy diff hygiene review contract", () => {
+  test("gh:review synthesizes intent-aware diff hygiene findings", async () => {
+    const content = await readRepoFile("plugins/galeharness-cli/skills/gh-review/SKILL.md")
+
+    expect(content).toContain("diff-hygiene anchor")
+    expect(content).toContain("Unrelated refactors, speculative abstractions, adjacent formatting/comment churn")
+    expect(content).toContain("Classify diff-hygiene findings")
+    expect(content).toContain("Necessary cleanup is allowed when it removes orphans created by this diff")
+    expect(content).toContain("Diff Hygiene")
+    expect(content).toContain("pre-existing dead code or unrelated quality issues should be reported, not silently fixed")
+  })
+
+  test("always-on personas understand scoped cleanup boundaries", async () => {
+    const maintainability = await readRepoFile("plugins/galeharness-cli/agents/maintainability-reviewer.md")
+    const standards = await readRepoFile("plugins/galeharness-cli/agents/project-standards-reviewer.md")
+
+    expect(maintainability).toContain("Speculative abstraction outside the change intent")
+    expect(maintainability).toContain("Drive-by cleanup")
+    expect(maintainability).toContain("Cleanup required by this diff")
+    expect(standards).toContain("Plan and intent traceability violations")
+    expect(standards).toContain("Require a cited standard, plan boundary, or explicit review-context intent")
+  })
+})

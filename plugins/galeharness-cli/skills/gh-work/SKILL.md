@@ -40,6 +40,8 @@ Determine how to proceed based on what was provided in `<input_document>`.
    | **Small / Medium** | Clear scope, under ~10 files | Build a task list from discovery. Proceed to Phase 1 step 2 |
    | **Large** | Cross-cutting, architectural decisions, 10+ files, touches auth/payments/migrations | Inform the user this would benefit from `/gh:brainstorm` or `/gh:plan` to surface edge cases and scope boundaries. Honor their choice. If proceeding, build a task list and continue to Phase 1 step 2 |
 
+For any non-trivial bare prompt, form a lightweight execution contract before implementation: current assumptions, the minimal change that should satisfy the request, explicit non-goals, and verification criteria. Keep this compact; trivial typo/config fixes do not need ceremony.
+
 ---
 
 <!-- HKT-PATCH:gale-task-start -->
@@ -130,6 +132,7 @@ In addition to vector retrieval, query related historical work session records:
    - Get user approval to proceed
    - **Do not skip this** - better to ask questions now than build the wrong thing
    - **Do not edit the plan body during execution.** The plan is a decision artifact; progress lives in git commits and the task tracker. The only plan mutation during gh:work is the final `status: active` -> `status: completed` flip at shipping (see `references/shipping-workflow.md` Phase 4 Step 2). Legacy plans may contain `- [ ]` / `- [x]` marks on unit headings — ignore them as state; per-unit completion is determined during execution by reading the current file state.
+   - For non-trivial work, establish the execution contract before editing: current assumptions, minimal change, explicit non-goals, and verification criteria. Derive it from the plan when available; if the plan is thin, state it briefly from the prompt and repo scan.
 
 2. **Setup Environment**
 
@@ -271,6 +274,13 @@ In addition to vector retrieval, query related historical work session records:
    - Do not skip verifying that a new test fails before implementing the fix or feature
    - Do not over-implement beyond the current behavior slice when working test-first
    - Skip test-first discipline for trivial renames, pure configuration, and pure styling work
+
+   Surgical-change guardrails:
+   - Every changed line should trace to the request, plan unit, execution contract, or verification need.
+   - Do not improve adjacent code, comments, formatting, naming, or architecture just because you noticed it.
+   - Match existing style even when you would choose a different style in new code.
+   - Clean up only orphans created by this change, such as newly unused imports, variables, functions, or tests.
+   - If you notice pre-existing dead code or unrelated quality issues, mention them in the summary or a follow-up note; do not delete or refactor them unless the user asked.
 
    **Test Discovery** — Before implementing changes to a file, find its existing test files (search for test/spec files that import, reference, or share naming patterns with the implementation file). When a plan specifies test scenarios or test files, start there, then check for additional test coverage the plan may not have enumerated. Changes to implementation files should be accompanied by corresponding test updates — new tests for new behavior, modified tests for changed behavior, removed or updated tests for deleted behavior.
 
