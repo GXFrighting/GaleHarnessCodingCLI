@@ -10,6 +10,9 @@
 
 ## 最新条目
 
+- [2026-04-24] **Codex copied skill descriptions must be truncated at install time** (tools): Codex copied s…
+
+
 - [2026-04-23] **PR #47 Review Fixes: Windows hkt-memory CLI install** (tools): Code Review PR…
 
 

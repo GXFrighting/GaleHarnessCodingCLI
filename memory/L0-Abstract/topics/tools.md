@@ -72,3 +72,9 @@
 - **核心**: Code Review PR…
 - **来源**: 2026-04-23-165707-632
 
+### Codex copied skill descriptions must be truncated at install time
+- **时间**: 2026-04-24
+- **关键词**: directories, preserve, codex, md, copied
+- **核心**: Codex copied s…
+- **来源**: 2026-04-24-122547-902
+

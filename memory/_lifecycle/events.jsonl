@@ -840,3 +840,6 @@
 {"timestamp": "2026-04-23T07:28:01.170437+00:00", "type": "recall", "memory_id": "2026-04-20-172528-002", "scope": "topic:developer-experience", "data": {}}
 {"timestamp": "2026-04-23T09:05:19.521519+00:00", "type": "capture", "memory_id": "2026-04-23-152013-870", "scope": "topic:implementation", "data": {"status": "active"}}
 {"timestamp": "2026-04-23T09:05:19.522585+00:00", "type": "cleanup", "memory_id": null, "scope": null, "data": {"dry_run": false, "deleted_count": 0, "retention_days": 90}}
+{"timestamp": "2026-04-24T04:24:43.045633+00:00", "type": "cleanup", "memory_id": null, "scope": null, "data": {"dry_run": false, "deleted_count": 0, "retention_days": 90}}
+{"timestamp": "2026-04-24T04:25:47.874691+00:00", "type": "cleanup", "memory_id": null, "scope": null, "data": {"dry_run": false, "deleted_count": 0, "retention_days": 90}}
+{"timestamp": "2026-04-24T04:25:47.905343+00:00", "type": "capture", "memory_id": "2026-04-24-122547-902", "scope": "topic:integration-issues", "data": {"status": "active"}}

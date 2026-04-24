@@ -191,3 +191,17 @@
 **标签**: 通用
 
 ---
+### Codex copied skill descriptions must be truncated at install time
+
+- **时间**: 2026-04-24
+- **摘要**: Codex copied skill directories could preserve SKILL.md descriptions longer than ...
+- **重要性**: medium
+- **来源**: [2026-04-24-122547-902](../L2-Full/daily/)
+
+**关键要点**:
+
+- Codex copied skill directories could preserve SKILL.md descriptions longer than
+
+**标签**: 通用
+
+---
