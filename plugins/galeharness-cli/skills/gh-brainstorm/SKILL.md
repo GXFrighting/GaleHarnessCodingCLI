@@ -120,6 +120,8 @@ Before Phase 1, query the vector memory database for related brainstorms and req
 
 2. Run (requires env vars HKT_MEMORY_API_KEY, HKT_MEMORY_BASE_URL, HKT_MEMORY_MODEL):
    ```bash
+   memory_root="$(gale-memory resolve-root 2>/dev/null || true)"
+   [ -n "$memory_root" ] && export HKT_MEMORY_DIR="$memory_root"
    hkt-memory retrieve \
      --query "<extracted query>" \
      --layer all --limit 10 --min-similarity 0.35 \
@@ -322,6 +324,8 @@ After successfully writing or updating the requirements document:
 2. Extract `title` and `category` values from its YAML frontmatter (if present)
 3. Run:
    ```bash
+   memory_root="$(gale-memory resolve-root 2>/dev/null || true)"
+   [ -n "$memory_root" ] && export HKT_MEMORY_DIR="$memory_root"
    hkt-memory store \
      --content "<summary + repo-relative file path>" \
      --title "<frontmatter title or filename>" \

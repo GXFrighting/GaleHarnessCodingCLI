@@ -1,9 +1,13 @@
 import { spawn } from "node:child_process"
+import { existsSync, readFileSync } from "node:fs"
+import path from "node:path"
 
 export interface HktClientOptions {
   binary?: string
   cwd?: string
   timeoutMs?: number
+  memoryDir?: string
+  diagnostics?: Record<string, unknown>
 }
 
 export interface HktTaskResult {
@@ -21,11 +25,15 @@ export class HktClient {
   private binary: string
   private cwd: string
   private timeoutMs: number
+  private memoryDir?: string
+  private diagnostics: Record<string, unknown>
 
   constructor(options: HktClientOptions = {}) {
     this.binary = options.binary ?? process.env.HKT_MEMORY_BIN ?? "hkt-memory"
     this.cwd = options.cwd ?? process.cwd()
     this.timeoutMs = options.timeoutMs ?? 5000
+    this.memoryDir = options.memoryDir
+    this.diagnostics = options.diagnostics ?? {}
   }
 
   taskRecall(envelope: Record<string, unknown>, limit = 5): Promise<HktTaskResult> {
@@ -52,14 +60,16 @@ export class HktClient {
         resolve(result)
       }
 
-      const proc = spawn(this.binary, args, {
+      const command = resolveExecutableCommand(this.binary, args)
+      const proc = spawn(command.executable, command.args, {
         cwd: this.cwd,
         stdio: ["ignore", "pipe", "pipe"],
+        env: this.memoryDir ? { ...process.env, HKT_MEMORY_DIR: this.memoryDir } : { ...process.env },
       })
 
       const timer = setTimeout(() => {
         proc.kill("SIGKILL")
-        finish(skippedResult(`hkt-memory timed out after ${this.timeoutMs}ms`))
+        finish(this.withDiagnostics(skippedResult(`hkt-memory timed out after ${this.timeoutMs}ms`)))
       }, this.timeoutMs)
 
       proc.stdout.on("data", (chunk: Buffer) => {
@@ -70,23 +80,34 @@ export class HktClient {
       })
       proc.on("error", (err) => {
         clearTimeout(timer)
-        finish(skippedResult(`hkt-memory unavailable: ${err.message}`))
+        finish(this.withDiagnostics(skippedResult(`hkt-memory unavailable: ${err.message}`)))
       })
       proc.on("close", (code) => {
         clearTimeout(timer)
         if (settled) return
         if (code !== 0) {
-          finish(skippedResult(`hkt-memory exited ${code}: ${stderr.trim()}`.trim()))
+          finish(this.withDiagnostics(skippedResult(`hkt-memory exited ${code}: ${stderr.trim()}`.trim())))
           return
         }
         try {
           const parsed = JSON.parse(stdout) as HktTaskResult
-          finish(parsed)
+          finish(this.withDiagnostics(parsed))
         } catch {
-          finish(skippedResult("hkt-memory returned malformed JSON"))
+          finish(this.withDiagnostics(skippedResult("hkt-memory returned malformed JSON")))
         }
       })
     })
+  }
+
+  private withDiagnostics(result: HktTaskResult): HktTaskResult {
+    return {
+      ...result,
+      diagnostics: {
+        ...(result.diagnostics ?? {}),
+        ...this.diagnostics,
+        memory_dir: this.memoryDir ?? process.env.HKT_MEMORY_DIR ?? null,
+      },
+    }
   }
 }
 
@@ -99,5 +120,34 @@ export function skippedResult(reason: string): HktTaskResult {
     injectable_markdown: "",
     items: [],
     diagnostics: { blocked: [], omitted_sources: [] },
+  }
+}
+
+function resolveExecutableCommand(executable: string, args: string[]): { executable: string; args: string[] } {
+  if (process.platform !== "win32" || !isPathLike(executable)) {
+    return { executable, args }
+  }
+
+  if (shouldRunWithBun(executable)) {
+    return { executable: process.execPath, args: [executable, ...args] }
+  }
+
+  return { executable, args }
+}
+
+function isPathLike(executable: string): boolean {
+  return path.isAbsolute(executable) || executable.includes("/") || executable.includes("\\")
+}
+
+function shouldRunWithBun(executable: string): boolean {
+  const ext = path.extname(executable).toLowerCase()
+  if ([".js", ".mjs", ".cjs", ".ts"].includes(ext)) return true
+  if (!existsSync(executable)) return false
+
+  try {
+    const firstLine = readFileSync(executable, "utf8").split(/\r?\n/, 1)[0] ?? ""
+    return firstLine.startsWith("#!") && /\b(?:bun|node)\b/.test(firstLine)
+  } catch {
+    return false
   }
 }

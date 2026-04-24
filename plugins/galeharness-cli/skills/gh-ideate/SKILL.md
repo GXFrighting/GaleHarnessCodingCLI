@@ -119,6 +119,8 @@ Before Phase 1, query the vector memory database for related ideation and improv
 
 2. Run (requires env vars HKT_MEMORY_API_KEY, HKT_MEMORY_BASE_URL, HKT_MEMORY_MODEL):
    ```bash
+   memory_root="$(gale-memory resolve-root 2>/dev/null || true)"
+   [ -n "$memory_root" ] && export HKT_MEMORY_DIR="$memory_root"
    hkt-memory retrieve \
      --query "<extracted query>" \
      --layer all --limit 10 --min-similarity 0.35 \
@@ -214,6 +216,8 @@ After the ideation artifact is written to `docs/ideation/`:
 2. Extract the title and key themes from the frontmatter/content
 3. Run:
    ```bash
+   memory_root="$(gale-memory resolve-root 2>/dev/null || true)"
+   [ -n "$memory_root" ] && export HKT_MEMORY_DIR="$memory_root"
    hkt-memory store \
      --content "<full ideation document>" \
      --title "Ideation: [document title]" \
