@@ -130,3 +130,19 @@
 - **关键词**: galeharnesscodingcli, asset, publication, 通用, fixed
 - **核心**: Fixed GaleHarn…
 - **来源**: 2026-04-24-154932-736
+### Karpathy Guidelines 融入 GaleHarnessCLI 全流程 Guardrails
+- **时间**: 2026-04-24
+- **关键词**: llm, karpathy, requirements, skills, integration
+- **核心**: Karpathy guide…
+- **来源**: 2026-04-24-164659-735
+
+### feat: Integrate Karpathy workflow guardrails
+- **时间**: 2026-04-24
+- **关键词**: integrating, add, karpathy, guardrails, inspired
+- **核心**: Plan for integ…
+- **来源**: 2026-04-24-170907-937
+### Work: Karpathy workflow guardrails integration
+- **时间**: 2026-04-24
+- **关键词**: workflow, 通用, karpathy, inspired, galeharnesscli
+- **核心**: Implemented Ka…
+- **来源**: 2026-04-24-174028-148

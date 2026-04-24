@@ -45,6 +45,8 @@ If the file is missing, contains `language: zh-CN`, or has no language key, writ
 5. **Separate planning from execution discovery** - Resolve planning-time questions here. Explicitly defer execution-time unknowns to implementation.
 6. **Keep the plan portable** - The plan should work as a living document, review artifact, or issue body without embedding tool-specific executor instructions.
 7. **Carry execution posture lightly when it matters** - If the request, origin document, or repo context clearly implies test-first, characterization-first, or another non-default execution posture, reflect that in the plan as a lightweight signal. Do not turn the plan into step-by-step execution choreography.
+8. **Justify complexity from source material** - Any new abstraction, configuration surface, target, agent, pipeline step, error layer, or other carrying cost must trace to a requirement, success criterion, risk, or explicit constraint. If it only serves a hypothetical future, leave it out or list it as a rejected alternative.
+9. **Classify uncertainty honestly** - Unknowns must be labeled as blocker, assumption, deferred technical question, or implementation-time unknown. Do not present execution-time discovery as if it were already settled design.
 
 ## Plan Quality Bar
 
@@ -334,6 +336,10 @@ Build a planning question list from:
 - Technical decisions required to produce a useful plan
 
 For each question, decide whether it should be:
+- **Blocker** - the answer changes product behavior, scope, success criteria, or risk enough that planning should stop or convert it into an explicit assumption
+- **Assumption** - a reasonable planning basis that must be stated because implementation or review may need to challenge it
+- **Deferred technical question** - a technical or research question that planning can hand off without changing product intent
+- **Implementation-time unknown** - the answer depends on editing code, seeing real failures, runtime behavior, or execution-time discovery
 - **Resolved during planning** - the answer is knowable from repo context, documentation, or user choice
 - **Deferred to implementation** - the answer depends on code changes, runtime behavior, or execution-time discovery
 
@@ -367,11 +373,13 @@ Good units are:
 - Usually touching a small cluster of related files
 - Ordered by dependency
 - Concrete enough for execution without pre-writing code
+- Justified by requirements, success criteria, risk, or explicit constraints rather than speculative flexibility
 
 Avoid:
 - 2-5 minute micro-steps
 - Units that span multiple unrelated concerns
 - Units that are so vague an implementer still has to invent the plan
+- Abstractions, configuration, agents, targets, or pipeline layers that have no traceable requirement/risk/constraint basis
 
 Each unit carries a stable plan-local **U-ID** assigned in Phase 3.5 (`U1`, `U2`, …). U-IDs survive reordering, splitting, and deletion: new units take the next unused number, gaps are fine, and existing IDs are never renumbered. This lets `gh:work` reference units unambiguously across plan edits.
 
@@ -438,6 +446,8 @@ For each unit, include:
   - **Integration scenarios** (when the unit crosses layers) - behaviors that mocks alone will not prove, e.g., "creating X triggers callback Y which persists Z". Include these for any unit touching callbacks, middleware, or multi-layer interactions
 - **Verification** - how an implementer should know the unit is complete, expressed as outcomes rather than shell command scripts
 
+**Complexity justification gate.** Before keeping an abstraction, configuration surface, target/provider, new agent/persona, workflow step, pipeline layer, or error-handling layer in a unit, point to the requirement, success criterion, risk, or constraint that pays for that complexity. If no source exists, simplify the unit or move the idea to Alternative Approaches Considered as rejected speculative complexity.
+
 Every feature-bearing unit should include the test file path in `**Files:**`.
 
 Use `Execution note` sparingly. Good uses include:
@@ -456,6 +466,8 @@ Examples:
 - Final SQL or query details after touching real code
 - Runtime behavior that depends on seeing actual test failures
 - Refactors that may become unnecessary once implementation starts
+
+Use the labels consistently: blocker, assumption, deferred technical question, or implementation-time unknown. This keeps `gh:work` from treating uncertainty as permission to invent product behavior.
 
 ### Phase 4: Write the Plan
 
@@ -783,12 +795,14 @@ Before finalizing, check:
 - The plan does not invent product behavior that should have been defined in `gh:brainstorm`
 - If there was no origin document, the bounded planning bootstrap established enough product clarity to plan responsibly
 - Every major decision is grounded in the origin document or research
+- Every added abstraction, configuration surface, target, agent, pipeline step, or error layer has a requirement/risk/constraint basis; speculative complexity is removed or explicitly rejected
 - Each implementation unit is concrete, dependency-ordered, and implementation-ready
 - If test-first or characterization-first posture was explicit or strongly implied, the relevant units carry it forward with a lightweight `Execution note`
 - Each feature-bearing unit has test scenarios from every applicable category (happy path, edge cases, error paths, integration) — right-sized to the unit's complexity, not padded or skimped
 - Test scenarios name specific inputs, actions, and expected outcomes without becoming test code
 - Feature-bearing units with blank or missing test scenarios are flagged as incomplete — feature-bearing units must have actual test scenarios, not just an annotation. The `Test expectation: none -- [reason]` annotation is only valid for non-feature-bearing units (pure config, scaffolding, styling)
 - Deferred items are explicit and not hidden as fake certainty
+- Unknowns are classified as blocker, assumption, deferred technical question, or implementation-time unknown
 - If a High-Level Technical Design section is included, it uses the right medium for the work, carries the non-prescriptive framing, and does not contain implementation code (no imports, exact signatures, or framework-specific syntax)
 - Per-unit technical design fields, if present, are concise and directional rather than copy-paste-ready
 - If the plan creates a new directory structure, would an Output Structure tree help reviewers see the overall shape?

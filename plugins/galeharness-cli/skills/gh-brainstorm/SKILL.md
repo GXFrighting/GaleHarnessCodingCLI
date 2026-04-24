@@ -24,6 +24,8 @@ This skill does not implement code. It explores, clarifies, and documents decisi
 4. **Keep implementation out of the requirements doc by default** - Do not include libraries, schemas, endpoints, file layouts, or code-level design unless the brainstorm itself is inherently about a technical or architectural change.
 5. **Right-size the artifact** - Simple work gets a compact requirements document or brief alignment. Larger work gets a fuller document. Do not add ceremony that does not help planning.
 6. **Apply YAGNI to carrying cost, not coding effort** - Prefer the simplest approach that delivers meaningful value. Avoid speculative complexity and hypothetical future-proofing, but low-cost polish or delight is worth including when its ongoing cost is small and easy to maintain.
+7. **Challenge framing before committing** - Name the real problem, explicit assumptions, non-goals, and success criteria before locking the requirements. If the user's first framing looks like a proxy problem, present the simpler or higher-leverage framing without bulldozing their intent.
+8. **Separate decisions from guesses** - Do not write an unconfirmed implementation idea as a product requirement. Record it as an assumption, rejected option, key decision, or deferred planning question depending on what was actually decided.
 
 ## Interaction Rules
 
@@ -222,6 +224,8 @@ If nothing obvious appears after a short scan, say so and continue. Two rules go
 #### 1.2 Product Pressure Test
 
 Before generating approaches, challenge the request to catch misframing. Match depth to scope:
+
+Use this as a thinking checkpoint, not a debate club. The output of the pressure test should sharpen the requirements by separating confirmed user intent from explicit assumptions, non-goals, success criteria, and open questions.
 
 **Lightweight:**
 - Is this solving the real user problem?

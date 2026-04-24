@@ -56,6 +56,10 @@ The primary entry points for engineering work, invoked as slash commands:
 
 For `/gh:optimize`, see [`skills/gh-optimize/README.md`](./skills/gh-optimize/README.md) for usage guidance, example specs, and links to the schema and workflow docs.
 
+### Workflow Guardrails
+
+The core `gh:` workflow includes Karpathy-inspired guardrails without requiring a separate skill. `gh:brainstorm` challenges problem framing and separates assumptions, non-goals, and success criteria; `gh:plan` requires complexity to trace to requirements, risks, or constraints; `gh:work` keeps non-trivial execution tied to a minimal change contract and surgical diffs; `gh:review` checks diff hygiene against intent and plan scope.
+
 ### Research & Context
 
 | Skill | Description |

@@ -8,6 +8,8 @@ This document should behave like a lightweight PRD without PRD ceremony. Include
 
 The requirements document is for product definition and scope control. Do **not** include implementation details such as libraries, schemas, endpoints, file layouts, or code structure unless the brainstorm is inherently technical and those details are themselves the subject of the decision.
 
+Before writing, separate what was actually decided from what was merely proposed. Confirmed requirements, deliberate non-goals, explicit assumptions, success criteria, product decisions, and deferred planning questions must not collapse into one generic bullet list. An unconfirmed implementation proposal belongs under Dependencies / Assumptions, Key Decisions, or Outstanding Questions -- not under Requirements.
+
 ## Section matrix
 
 | Section | Lightweight | Standard / Deep-feature | Deep-product |
@@ -199,6 +201,8 @@ Before finalizing:
 - At Deep-product tier: does Scope Boundaries distinguish "Deferred for later" from "Outside this product's identity"?
 - Do any requirements depend on something claimed to be out of scope?
 - Are any unresolved items actually product decisions rather than planning questions?
+- Are any requirements really unconfirmed implementation proposals? If so, move them to Key Decisions, Dependencies / Assumptions, or Deferred to Planning.
+- Are explicit assumptions, deliberate non-goals, and success criteria separated so `gh:plan` does not invent product behavior?
 - Did implementation details leak in when they shouldn't have?
 - Do any requirements claim that infrastructure is absent without that claim having been verified against the codebase? If so, verify now or label as an unverified assumption.
 - Is there a low-cost change that would make this materially more useful?

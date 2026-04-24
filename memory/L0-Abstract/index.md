@@ -10,6 +10,15 @@
 
 ## 最新条目
 
+- [2026-04-24] **Work: Karpathy workflow guardrails integration** (tools): Implemented Ka…
+
+
+- [2026-04-24] **feat: Integrate Karpathy workflow guardrails** (tools): Plan for integ…
+
+
+- [2026-04-24] **Karpathy Guidelines 融入 GaleHarnessCLI 全流程 Guardrails** (tools): Karpathy guide…
+
+
 - [2026-04-24] **Fix 2.2.0 release missing compiled binary assets** (tools): Fixed GaleHarn…
 
 

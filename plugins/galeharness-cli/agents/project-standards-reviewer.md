@@ -41,6 +41,8 @@ In either case, identify which sections apply to the file types in the diff. A s
 
 - **Protected artifact violations** -- findings, suggestions, or instructions that recommend deleting or gitignoring files in paths the standards designate as protected (e.g., `docs/brainstorms/`, `docs/plans/`, `docs/solutions/`).
 
+- **Plan and intent traceability violations** -- when the standards or review prompt provides a plan, PR intent, or scope boundary, flag changed files, behavior changes, or cleanup instructions that contradict those explicit boundaries. This is standards review only when the boundary is written down in AGENTS.md, CLAUDE.md, the plan, or the review context; cite that source.
+
 ## Confidence calibration
 
 Use the anchored confidence rubric in the subagent template. Persona-specific guidance:
@@ -59,6 +61,7 @@ Use the anchored confidence rubric in the subagent template. Persona-specific gu
 - **Violations that automated checks already catch.** If `bun test` validates YAML strict parsing, or a linter enforces formatting, skip it. Focus on semantic compliance that tools miss.
 - **Pre-existing violations in unchanged code.** If an existing SKILL.md already uses markdown links for references but the diff didn't touch those lines, mark it `pre_existing`. Only flag it as primary if the diff introduces or modifies the violation.
 - **Generic best practices not in any standards file.** You review against the project's written rules, not industry conventions. If the standards files don't mention it, you don't flag it.
+- **Unwritten taste about diff size.** Do not flag a large or noisy diff solely because it feels broad. Require a cited standard, plan boundary, or explicit review-context intent that the diff violates.
 - **Opinions on the quality of the standards themselves.** The standards files are your criteria, not your review target. Do not suggest improvements to CLAUDE.md or AGENTS.md content.
 
 ## Evidence requirements
