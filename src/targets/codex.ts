@@ -36,7 +36,6 @@ export async function writeCodexBundle(outputRoot: string, bundle: CodexBundle):
           platformCapabilities,
           agentInstructions: bundle.agentInstructions,
         }),
-        true,
       )
     }
   }

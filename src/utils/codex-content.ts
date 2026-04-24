@@ -1,5 +1,6 @@
 import type { CodexEmbeddedAgentInstruction } from "../types/codex"
 import { DEFAULT_PLATFORM_CAPABILITIES, type PlatformCapabilities } from "../types/platform-capabilities"
+import { formatFrontmatter, parseFrontmatter } from "./frontmatter"
 
 export type CodexInvocationTargets = {
   promptTargets: Record<string, string>
@@ -18,6 +19,8 @@ type CodexEmbeddedAgentState = {
   sections: Map<string, string>
 }
 
+const CODEX_DESCRIPTION_MAX_LENGTH = 1024
+
 /**
  * Transform Claude Code content to Codex-compatible content.
  *
@@ -31,11 +34,14 @@ type CodexEmbeddedAgentState = {
  * 4. Claude config paths: .claude/ -> .codex/
  */
 export function transformContentForCodex(
-  body: string,
+  content: string,
   targets?: CodexInvocationTargets,
   options: CodexTransformOptions = {},
 ): string {
-  let result = body
+  const hasFrontmatter = content.startsWith("---\n") || content.startsWith("---\r\n")
+  const parsed = hasFrontmatter ? parseFrontmatter(content) : null
+
+  let result = parsed ? parsed.body : content
   const promptTargets = targets?.promptTargets ?? {}
   const skillTargets = targets?.skillTargets ?? {}
   const unknownSlashBehavior = options.unknownSlashBehavior ?? "prompt"
@@ -100,7 +106,16 @@ export function transformContentForCodex(
     result = `${result.trimEnd()}\n\n## Embedded Agent Instructions\n\n${[...embeddedState.sections.values()].join("\n\n")}`
   }
 
-  return result
+  if (!parsed) {
+    return result
+  }
+
+  const frontmatter = { ...parsed.data }
+  if (typeof frontmatter.description === "string") {
+    frontmatter.description = truncateCodexDescription(frontmatter.description)
+  }
+
+  return formatFrontmatter(frontmatter, result)
 }
 
 function lookupAgentInstruction(
@@ -158,6 +173,8 @@ function sanitizeModelOverrideInstructions(body: string, capabilities: PlatformC
 
   return body
     .replace(/^\s*model:\s*["']?[A-Za-z0-9._/-]+["']?\s*$/gm, "")
+    .replace(/`model:\s*"(?:haiku|sonnet|opus|inherit|claude-[^"]+)"`/gi, "the current global model")
+    .replace(/`model:\s*'(?:haiku|sonnet|opus|inherit|claude-[^']+)'`/gi, "the current global model")
     .replace(/`?model`?\s*:\s*["'](?:haiku|sonnet|opus|inherit|claude-[^"']+)["']/gi, "the current global model")
     .replace(/model:\s*(?:haiku|sonnet|opus|inherit|claude-[A-Za-z0-9._/-]+)/gi, "the current global model")
     .replace(/pass\s+the current global model/gi, "use the current global model")
@@ -179,4 +196,12 @@ export function normalizeCodexName(value: string): string {
     .replace(/-+/g, "-")
     .replace(/^-+|-+$/g, "")
   return normalized || "item"
+}
+
+function truncateCodexDescription(description: string): string {
+  if (description.length <= CODEX_DESCRIPTION_MAX_LENGTH) {
+    return description
+  }
+
+  return `${description.slice(0, CODEX_DESCRIPTION_MAX_LENGTH - 3).trimEnd()}...`
 }
