@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v2.4.0...cli-v2.5.0) (2026-04-24)
+
+
+### Features
+
+* **memory:** 迁移 Gale-managed HKTMemory 到公共知识库 ([da1cb06](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/da1cb06a9a230e1326325697a2c12ac9c5e653e6))
+
 ## [2.4.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v2.3.0...cli-v2.4.0) (2026-04-24)
 
 
