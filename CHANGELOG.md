@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.3.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v2.2.0...cli-v2.3.0) (2026-04-24)
+
+
+### Features
+
+* **memory:** add Gale task memory helper ([4e4e80b](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/4e4e80b16b62f284626aa951ea2f85ee9f7f9287))
+* **memory:** add Gale task memory helper ([e88fb73](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/e88fb73de8478f5e561a24ecf89b348bca7f25f6))
+* **morph:** add iOS Morph-X workflow ([f7130ef](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/f7130ef0d4c8898a6864d41c2a1487b2244f13e4))
+* **morph:** 新增 iOS Morph-X 工作流 ([bdaee16](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/bdaee1647d986c6846fe6b35256cda3e5e6b6d23))
+
+
+### Bug Fixes
+
+* **cli:** restore Linux release install path ([1ecaab6](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/1ecaab6629e2537bc071e73045ea3937fd3d219a))
+* **cli:** restore release binary install path ([0fc030a](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/0fc030aa5d1fc035ce4dce9023d504a54cc2f66b))
+* **cli:** restore release binary install path ([fa2513d](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/fa2513d87526288b24cc8b42a242c4bc302065c3))
+* **release:** include gale-memory binary ([a452aa5](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/a452aa57800f25f7038a86c79e91cc4a286ac3a6))
+* **release:** include gale-memory binary ([4bff6e1](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/4bff6e1116d43dfe9aca826c914bda5c1d4b034d))
+* **update:** point self-update at coding CLI repository ([c4abd94](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/c4abd943c90715f6e1f8bd9a112264edbd2f5c13))
+
 ## [2.2.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v2.1.0...cli-v2.2.0) (2026-04-24)
 
 
