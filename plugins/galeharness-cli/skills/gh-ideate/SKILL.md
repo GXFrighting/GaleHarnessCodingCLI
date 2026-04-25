@@ -33,7 +33,7 @@ Interpret any provided argument as optional context. It may be:
 - a constraint such as `low-complexity quick wins`
 - a volume hint such as `top 3`, `100 ideas`, or `raise the bar`
 
-If no argument is provided, proceed with open-ended ideation.
+If no argument is provided, treat the subject as unsettled and run the subject-identification gate before any dispatch.
 
 ## Core Principles
 
@@ -81,7 +81,30 @@ If continuing:
 - preserve previous idea statuses
 - update the existing file instead of creating a duplicate
 
-#### 0.2 Interpret Focus and Volume
+#### 0.2 Subject-Identification Gate
+
+Before interpreting focus, volume, or issue-tracker intent, check whether the subject of ideation is identifiable. The repo can ground a settled subject, but being in a repo does not turn vague prompts like `improvements`, `ideas`, `quick wins`, `things to fix`, or an empty prompt into a coherent topic. Downstream agents need to know what they are ideating about before they scan or generate.
+
+**Subject identifiability test:** would a reader, seeing only the prompt, know what subject the agent should ideate on? Judge what the words refer to, not phrase length. `browser sniff` can be identifiable if it names a feature or subsystem; `quick wins` is vague because it only names a quality.
+
+If the prompt explicitly asks the agent to choose the focus, such as `surprise me`, `pick for me`, or `you decide`, mark the run as **surprise-me mode** immediately and use the Surprise me routing below. Do not ask the user to confirm the same choice again.
+
+If the subject is vague, ask one scope question using the blocking question tool when available:
+
+- **Stem:** "What should the agent ideate about?"
+- **Options:**
+  - "Specify a subject the agent should ideate on"
+  - "Surprise me — let the agent decide what to focus on"
+  - "Cancel — let me rephrase"
+
+Routing:
+- **Specify** -> accept the user's follow-up as the subject and re-apply the identifiability test once. If it is still ambiguous, ask once more with "Surprise me" still available. Do not drift into solution direction, audience, success criteria, or constraints; those belong to `gh:brainstorm`.
+- **Surprise me** -> mark the run as **surprise-me mode**. This is a first-class mode, not a fallback. If CWD is inside a git repo, route deterministically to repo-grounded ideation and let the codebase supply the substance. If CWD is not inside a git repo, require at least one piece of substance before dispatching: a URL, a short description, a draft, or pasted material. If the user cannot provide substance outside a repo, end cleanly and ask them to re-run with material.
+- **Cancel** -> exit cleanly so the user can rephrase.
+
+If judgment leaves real doubt in a repo on a short phrase, do one cheap check before asking: search filenames or README/docs for the phrase. If it has repo footprint, treat it as identifiable; otherwise ask the scope question.
+
+#### 0.3 Interpret Focus and Volume
 
 Infer three things from the argument:
 
@@ -89,11 +112,11 @@ Infer three things from the argument:
 - **Volume override** - any hint that changes candidate or survivor counts
 - **Issue-tracker intent** - whether the user wants issue/bug data as an input source
 
-Issue-tracker intent triggers when the argument's primary intent is about analyzing issue patterns: `bugs`, `github issues`, `open issues`, `issue patterns`, `what users are reporting`, `bug reports`, `issue themes`.
+Issue-tracker intent requires explicit tracker/report phrasing. Trigger only when the argument's primary intent is about analyzing issue patterns from an issue tracker: `github issues`, `open issues`, `issue patterns`, `issue themes`, `what users are reporting`, or `bug reports`.
 
-Do NOT trigger on arguments that merely mention bugs as a focus: `bug in auth`, `fix the login issue`, `the signup bug` — these are focus hints, not requests to analyze the issue tracker.
+Do NOT trigger on arguments that merely mention bugs as a focus: `bug in auth`, `fix the login issue`, `the signup bug`, `top 3 bugs in authentication` — these are regular bug-focused ideation prompts, not requests to analyze the issue tracker. A bare `bugs` prompt is vague subject input handled by Phase 0.2, not issue intelligence.
 
-When combined (e.g., `top 3 bugs in authentication`): detect issue-tracker intent first, volume override second, remainder is the focus hint. The focus narrows which issues matter; the volume override controls survivor count.
+When combined with explicit tracker/report wording (e.g., `top 3 issue themes in authentication`, `biggest bug reports about checkout`), detect issue-tracker intent first, volume override second, and treat the remainder as the focus hint. The focus narrows which issues matter; the volume override controls survivor count.
 
 Default volume:
 - each ideation sub-agent generates about 8-10 ideas (yielding ~30 raw ideas across agents, ~20-25 after dedupe)
@@ -104,6 +127,7 @@ Honor clear overrides such as:
 - `100 ideas`
 - `go deep`
 - `raise the bar`
+- tactical scope signals such as `quick wins`, `polish`, `typos`, `small fixes`, or `cleanup`; these lower the Phase 2 meeting-test floor without removing the warrant requirement
 
 Use reasonable interpretation rather than formal parsing.
 
@@ -161,7 +185,7 @@ Run agents in parallel in the **foreground** (do not use background dispatch —
 
 2. **Learnings search** — dispatch `galeharness-cli:learnings-researcher` with a brief summary of the ideation focus.
 
-3. **Issue intelligence** (conditional) — if issue-tracker intent was detected in Phase 0.2, dispatch `galeharness-cli:issue-intelligence-analyst` with the focus hint. If a focus hint is present, pass it so the agent can weight its clustering toward that area. Run this in parallel with agents 1 and 2.
+3. **Issue intelligence** (conditional) — if issue-tracker intent was detected in Phase 0.3, dispatch `galeharness-cli:issue-intelligence-analyst` with the focus hint. If a focus hint is present, pass it so the agent can weight its clustering toward that area. Run this in parallel with agents 1 and 2.
 
    If the agent returns an error (gh not installed, no remote, auth failure), log a warning to the user ("Issue analysis unavailable: {reason}. Proceeding with standard ideation.") and continue with the existing two-agent grounding.
 
@@ -197,11 +221,20 @@ Assign each sub-agent a different ideation frame as a **starting bias, not a con
 - **When issue-tracker intent is active and themes were returned:** Each high/medium-confidence theme becomes a frame. Pad with default frames if fewer than 3 cluster-derived frames. Cap at 4 total.
 - **Default frames (no issue-tracker intent):** (1) user/operator pain and friction, (2) inversion, removal, or automation of a painful step, (3) assumption-breaking or reframing, (4) leverage and compounding effects.
 
-Ask each sub-agent to return a compact structure per idea: title, summary, why_it_matters, evidence/grounding hooks, optional boldness or focus_fit signal.
+Ask each sub-agent to return a compact structure per idea: title, summary, warrant, why_it_matters, meeting_test, optional boldness or focus_fit signal.
+
+**Per-idea warrant contract:** every candidate carries articulated warrant tagged with exactly one of:
+- `direct:` quoted line, specific file, named issue, or explicit user-provided context
+- `external:` named prior art, domain research, or adjacent pattern with source
+- `reasoned:` written-out first-principles argument for why this move likely applies
+
+Warrant is required, not optional. If a sub-agent cannot articulate warrant of at least one type, the idea should not surface. The warrant must support the actual move, not merely decorate it. In surprise-me mode, the warrant may also justify why the agent selected that subject from Phase 1 material.
+
+Apply the meeting-test as a default floor: would this idea warrant team discussion? If not, it should not surface. Waive only the ambition floor for tactical focus signals from Phase 0.3; do not waive grounding or warrant. Stay within the subject's identity. Product expansions, retirements, and architectural pivots are fair game when warrant supports them, but subject-replacement moves are out.
 
 After all sub-agents return:
 1. Merge and dedupe into one master candidate list.
-2. Synthesize cross-cutting combinations -- scan for ideas from different frames that combine into something stronger (expect 3-5 additions at most).
+2. Synthesize cross-cutting combinations -- scan for ideas from different frames that combine into something stronger (expect 3-5 additions at most; in surprise-me mode, spend extra attention on combinations where different frames converged on the same subject).
 3. If a focus was provided, weight the merged list toward it without excluding stronger adjacent ideas.
 4. Spread ideas across multiple dimensions when justified: workflow/DX, reliability, extensibility, missing capabilities, docs/knowledge compounding, quality/maintenance, leverage on future work.
 

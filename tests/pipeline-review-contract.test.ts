@@ -285,6 +285,32 @@ describe("Karpathy workflow guardrails contract", () => {
     expect(capture).toContain("Confirmed requirements, deliberate non-goals, explicit assumptions, success criteria")
   })
 
+  test("gh:brainstorm inherits interaction rules in universal flow and probes rigor gaps selectively", async () => {
+    const content = await readRepoFile("plugins/galeharness-cli/skills/gh-brainstorm/SKILL.md")
+    const universal = await readRepoFile(
+      "plugins/galeharness-cli/skills/gh-brainstorm/references/universal-brainstorming.md",
+    )
+
+    expect(content).toContain("These rules apply to every brainstorm")
+    expect(content).toContain("including the universal non-software flow")
+    expect(content).toContain("one-question-per-turn")
+    expect(content).toContain("default to the platform's blocking question tool")
+    expect(universal).toContain("parent `gh-brainstorm/SKILL.md`")
+    expect(universal).toContain("one-question-per-turn")
+    expect(universal).toContain("does not relax them")
+    expect(universal).toContain("silently skipping questions")
+
+    for (const lens of ["Evidence gap", "Specificity gap", "Counterfactual gap", "Attachment gap", "Durability gap"]) {
+      expect(content).toContain(lens)
+    }
+
+    expect(content).toContain("user-facing checklist")
+    expect(content).toContain("Probe rigor gaps before Phase 2")
+    expect(content).toContain("separate short prose probe")
+    expect(content).toContain("not a menu or fixed questionnaire")
+    expect(content).toContain("record it as an explicit assumption")
+  })
+
   test("gh:plan requires complexity justification and classified uncertainty", async () => {
     const content = await readRepoFile("plugins/galeharness-cli/skills/gh-plan/SKILL.md")
 
@@ -310,6 +336,72 @@ describe("Karpathy workflow guardrails contract", () => {
       expect(content).toContain("Execution note")
       expect(content).toContain("Verification")
     }
+  })
+
+  test("preserves review diff hygiene guardrail outside brainstorm and ideate edits", async () => {
+    const review = await readRepoFile("plugins/galeharness-cli/skills/gh-review/SKILL.md")
+
+    expect(review).toContain("diff-hygiene anchor")
+    expect(review).toContain("Classify diff-hygiene findings")
+    expect(review).toContain("every substantive changed file and behavior change should trace")
+    expect(review).toContain("pre-existing dead code or unrelated quality issues should be reported, not silently fixed")
+  })
+})
+
+describe("gh:ideate rigor contract", () => {
+  test("settles subject before focus dispatch and keeps surprise-me deterministic", async () => {
+    const content = await readRepoFile("plugins/galeharness-cli/skills/gh-ideate/SKILL.md")
+
+    const subjectIdx = content.indexOf("#### 0.2 Subject-Identification Gate")
+    const focusIdx = content.indexOf("#### 0.3 Interpret Focus and Volume")
+    const hktIdx = content.indexOf("#### 0.5 HKTMemory Retrieve")
+    expect(subjectIdx).toBeGreaterThan(0)
+    expect(subjectIdx).toBeLessThan(focusIdx)
+    expect(focusIdx).toBeLessThan(hktIdx)
+
+    expect(content).toContain("being in a repo does not turn vague prompts")
+    expect(content).toContain("What should the agent ideate about?")
+    expect(content).toContain("Surprise me — let the agent decide what to focus on")
+    expect(content).toContain("mark the run as **surprise-me mode** immediately")
+    expect(content).toContain("Do not ask the user to confirm the same choice again")
+    expect(content).toContain("This is a first-class mode")
+    expect(content).toContain("route deterministically to repo-grounded ideation")
+    expect(content).toContain("require at least one piece of substance")
+  })
+
+  test("narrows issue-tracker intent and preserves HKT/Gale anchors", async () => {
+    const content = await readRepoFile("plugins/galeharness-cli/skills/gh-ideate/SKILL.md")
+
+    expect(content).toContain("Issue-tracker intent requires explicit tracker/report phrasing")
+    expect(content).toContain("top 3 bugs in authentication")
+    expect(content).toContain("regular bug-focused ideation prompts")
+    expect(content).toContain("gale-task log skill_started --skill gh:ideate")
+    expect(content).toContain("HKTMemory Retrieve")
+    expect(content).toContain("HKTMemory Store")
+    expect(content).toContain("galeharness-cli:learnings-researcher")
+    expect(content).toContain("galeharness-cli:issue-intelligence-analyst")
+  })
+
+  test("requires warrant on candidates and filters unsupported survivors", async () => {
+    const content = await readRepoFile("plugins/galeharness-cli/skills/gh-ideate/SKILL.md")
+    const post = await readRepoFile(
+      "plugins/galeharness-cli/skills/gh-ideate/references/post-ideation-workflow.md",
+    )
+
+    expect(content).toContain("Per-idea warrant contract")
+    expect(content).toContain("direct:")
+    expect(content).toContain("external:")
+    expect(content).toContain("reasoned:")
+    expect(content).toContain("Warrant is required, not optional")
+    expect(content).toContain("meeting-test")
+    expect(content).toContain("subject-replacement moves are out")
+
+    expect(post).toContain("unjustified — no articulated warrant")
+    expect(post).toContain("unsupported — the stated warrant does not actually support the claimed move")
+    expect(post).toContain("subject-replacement")
+    expect(post).toContain("below ambition floor")
+    expect(post).toContain("**Warrant:**")
+    expect(post).toContain("Do **not** skip brainstorming and go straight to planning")
   })
 })
 
