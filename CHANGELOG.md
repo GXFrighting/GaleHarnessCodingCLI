@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.6.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v2.5.0...cli-v2.6.0) (2026-04-25)
+
+
+### Features
+
+* **workflow:** 强化 brainstorm 和 ideate 严谨性护栏 ([ed089e5](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/ed089e5ff6c2b95a2c4171be49ce80c50201d7fb))
+
+
+### Bug Fixes
+
+* **test:** normalize agent reference paths on Windows ([a2c7124](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/a2c71240905cdb5de365d36697baaa576954f11e))
+* **test:** 修复 agent 引用 contract 测试的 Windows 路径归一化 ([915a8cc](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/915a8ccf0580c206533e84f21e2cffd2663206fc))
+* **windows-scan:** make compatibility scan side-effect-free ([c6faf31](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/c6faf31637515ca4d3ac8bc2d72cf82eb45fe5b8))
+* **windows-scan:** 修复 Windows 兼容性扫描脚本的导入副作用 ([b37ec53](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/b37ec53ccf10088b94bb1b56a7653cc5cd9d6e8c))
+
 ## [2.5.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v2.4.0...cli-v2.5.0) (2026-04-24)
 
 
