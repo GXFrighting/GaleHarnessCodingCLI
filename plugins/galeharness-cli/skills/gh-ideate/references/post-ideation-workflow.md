@@ -18,8 +18,12 @@ Rejection criteria:
 - too expensive relative to likely value
 - already covered by existing workflows or docs
 - interesting but better handled as a brainstorm variant, not a product improvement
+- unjustified — no articulated warrant tagged `direct:`, `external:`, or `reasoned:`
+- unsupported — the stated warrant does not actually support the claimed move
+- subject-replacement — abandons or replaces the subject of ideation rather than operating on it
+- below ambition floor — fails the meeting-test, except when Phase 0.3 detected tactical focus signals
 
-Score survivors using a consistent rubric weighing: groundedness in the current repo, expected value, novelty, pragmatism, leverage on future work, implementation burden, and overlap with stronger ideas.
+Score survivors using a consistent rubric weighing: groundedness in the current repo, warrant strength (`direct:` > `external:` > `reasoned:`, all else equal), expected value, novelty, pragmatism, leverage on future work, implementation burden, and overlap with stronger ideas.
 
 Target output:
 - keep 5-7 survivors by default
@@ -34,6 +38,7 @@ Present only the surviving ideas in structured form:
 
 - title
 - description
+- warrant (`direct:`, `external:`, or `reasoned:`)
 - rationale
 - downsides
 - confidence score
@@ -91,7 +96,8 @@ focus: <optional focus hint>
 
 ### 1. <Idea Title>
 **Description:** [Concrete explanation]
-**Rationale:** [Why this improves the project]
+**Warrant:** [`direct:` / `external:` / `reasoned:` — the actual basis, quoted or cited]
+**Rationale:** [How the warrant connects to the move's significance]
 **Downsides:** [Tradeoffs or costs]
 **Confidence:** [0-100%]
 **Complexity:** [Low / Medium / High]

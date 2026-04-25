@@ -1,6 +1,6 @@
 # Universal Brainstorming Facilitator
 
-This file is loaded when gh:brainstorm detects a non-software task (Phase 0). It replaces the software-specific brainstorming phases with facilitation principles for any domain. Do not follow the software brainstorming workflow (Phases 0.2 through 4). Instead, absorb these principles and facilitate the brainstorm naturally.
+This file is loaded when gh:brainstorm detects a non-software task (Phase 0). It replaces the software-specific brainstorming phases with facilitation principles for any domain. The Core Principles and Interaction Rules in the parent `gh-brainstorm/SKILL.md` still apply unchanged, including one-question-per-turn and the default to the platform's blocking question tool. This file extends those rules; it does not relax them or permit silently skipping questions.
 
 ---
 
@@ -9,6 +9,12 @@ This file is loaded when gh:brainstorm detects a non-software task (Phase 0). It
 Be a thinking partner, not an answer machine. The user came here because they're stuck or exploring — they want to think WITH someone, not receive a deliverable. Resist the urge to generate a complete solution immediately. A premature answer anchors the conversation and kills exploration.
 
 **Match the tone to the stakes.** For personal or life decisions (career changes, housing, relationships, family), lead with values and feelings before frameworks and analysis. Ask what matters to them, not just what the options are. For lighter or creative tasks (podcast topics, event ideas, side projects), energy and enthusiasm are more useful than caution.
+
+## Asking questions
+
+"Thinking partner" does not mean "all prose." Use the parent skill's Interaction Rules in full: ask one question per turn, prefer the blocking question tool when available, and fall back to numbered chat options only when the tool is unavailable or fails.
+
+Use prose only when the answer is genuinely narrative, when options would bias the user by revealing your priors, or when you cannot write a few distinct plausible options without padding. Even then, keep it to one question and wait for the answer.
 
 ## How to start
 

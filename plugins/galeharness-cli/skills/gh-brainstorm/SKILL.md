@@ -29,10 +29,13 @@ This skill does not implement code. It explores, clarifies, and documents decisi
 
 ## Interaction Rules
 
-1. **Ask one question at a time** - Do not batch several unrelated questions into one message.
+These rules apply to every brainstorm, including the universal non-software flow routed to `references/universal-brainstorming.md`.
+
+1. **Ask one question at a time** - One question per turn, even when related sub-questions feel tempting. Pick the single most useful question and wait for the answer.
 2. **Prefer single-select multiple choice** - Use single-select when choosing one direction, one priority, or one next step.
 3. **Use multi-select rarely and intentionally** - Use it only for compatible sets such as goals, constraints, non-goals, or success criteria that can all coexist. If prioritization matters, follow up by asking which selected item is primary.
-4. **Use the platform's question tool when available** - When asking the user a question, prefer the platform's blocking question tool if one exists (`AskUserQuestion` in Claude Code, `request_user_input` in Codex, `ask_user` in Gemini, `ask_user` in Pi (requires the `pi-ask-user` extension)). If the tool is unavailable, do not proceed silently — present numbered options directly in chat and wait for the user's reply before proceeding, and state that the tool is unavailable.
+4. **Default to the platform's blocking question tool** - When asking the user a question, prefer the platform's blocking question tool if one exists (`AskUserQuestion` in Claude Code, `request_user_input` in Codex, `ask_user` in Gemini, `ask_user` in Pi (requires the `pi-ask-user` extension)). Use numbered chat options only when no blocking tool exists or the call fails. Do not proceed silently or treat tool inconvenience as permission to skip the question.
+5. **Use prose only for genuinely open probes** - Drop the blocking tool only when the answer is inherently narrative, a menu would leak your priors, or you cannot write distinct plausible options without padding. This includes the rigor probes in Phase 1.3. Rule 1 still applies: one prose probe per turn.
 
 ## Output Guidance
 
@@ -86,7 +89,7 @@ Before proceeding to Phase 0.2, classify whether this is a software task. The ke
 
 **Neither** (respond directly, skip all brainstorming phases) -- the input is a quick-help request, error message, factual question, or single-step task that doesn't need a brainstorm.
 
-**If non-software brainstorming is detected:** Read `references/universal-brainstorming.md` and use those facilitation principles to brainstorm with the user naturally. Do not follow the software brainstorming phases below.
+**If non-software brainstorming is detected:** Read `references/universal-brainstorming.md` and use those facilitation principles. Do not follow the software brainstorming phases below, but the Core Principles and Interaction Rules above still apply unchanged, including one-question-per-turn and the default to the platform's blocking question tool.
 
 #### 0.2 Assess Whether Brainstorming Is Needed
 
@@ -225,16 +228,22 @@ If nothing obvious appears after a short scan, say so and continue. Two rules go
 
 #### 1.2 Product Pressure Test
 
-Before generating approaches, challenge the request to catch misframing. Match depth to scope:
+Before generating approaches, challenge the request to catch misframing and scan the user's opening for rigor gaps. Match depth to scope.
 
-Use this as a thinking checkpoint, not a debate club. The output of the pressure test should sharpen the requirements by separating confirmed user intent from explicit assumptions, non-goals, success criteria, and open questions.
+Use this as a thinking checkpoint, not a debate club or a user-facing checklist. Note which gaps actually exist, then raise only those gaps during Phase 1.3 as short prose probes folded into the normal dialogue. A concrete, well-framed opening may need zero probes; a fuzzy one may need several. The output of the pressure test should sharpen the requirements by separating confirmed user intent from explicit assumptions, non-goals, success criteria, and open questions.
 
 **Lightweight:**
 - Is this solving the real user problem?
 - Are we duplicating something that already covers this?
 - Is there a clearly better framing with near-zero extra cost?
 
-**Standard:**
+**Standard — scan for these rigor gaps:**
+- **Evidence gap.** The opening asserts want or need but does not point to observable behavior, such as time spent, money paid, workarounds built, abandoned tools, or repeated manual effort.
+- **Specificity gap.** The opening describes the beneficiary so broadly that planning would have to silently invent who they are and what changes for them.
+- **Counterfactual gap.** The opening does not show what users do today when the problem appears, or what changes if nothing ships.
+- **Attachment gap.** The opening treats a solution shape as the requirement before the value behind that shape has been tested against smaller forms.
+
+Plus these synthesis questions the agent weighs internally:
 - Is this the right problem, or a proxy for a more important one?
 - What user or business outcome actually matters here?
 - What happens if we do nothing?
@@ -248,6 +257,7 @@ Use this as a thinking checkpoint, not a debate club. The output of the pressure
 - Does this move the product toward that, or is it only a local patch?
 
 **Deep — product** — Deep questions plus:
+- **Durability gap.** The opening's value proposition rests on a current state of the world that may shift within the horizon the user cares about.
 - What's the single sharpest user outcome this earns, and what evidence or assumption supports that outcome?
 - What adjacent product could we accidentally build instead, and why is that the wrong one?
 - What would have to be true in the world for this to fail?
@@ -261,6 +271,7 @@ Follow the Interaction Rules above. Use the platform's blocking question tool wh
 **Guidelines:**
 - Ask what the user is already thinking before offering your own ideas. This surfaces hidden context and prevents fixation on AI-generated framings.
 - Start broad (problem, users, value) then narrow (constraints, exclusions, edge cases)
+- **Probe rigor gaps before Phase 2.** Phase 1 cannot end with unprobed scope-appropriate rigor gaps found in Phase 1.2. Each gap fires selectively as a separate short prose probe, not a menu or fixed questionnaire. Standard brainstorms scan evidence, specificity, counterfactual, and attachment; Deep-product adds durability. Ask only about gaps that are actually present. Examples: evidence — "What's the most concrete thing someone has already done because of this problem?" specificity — "Who have you actually seen hit this, and what changes for them if we solve it?" counterfactual — "What happens today when this comes up, and what does that cost?" attachment — "Before we choose a shape, what's the smallest version that would still prove the bet?" durability — "What near-term shift could make this less valuable, and how does the idea hold up?" If the answer reveals uncertainty, record it as an explicit assumption rather than turning it into a confirmed requirement.
 - Clarify the problem frame, validate assumptions, and ask about success criteria
 - Make requirements concrete enough that planning will not need to invent behavior
 - Surface dependencies or prerequisites only when they materially affect scope
