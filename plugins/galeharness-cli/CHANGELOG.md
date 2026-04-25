@@ -9,6 +9,13 @@ All notable changes to GaleHarnessCLI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/galeharness-cli-v2.5.0...galeharness-cli-v2.6.0) (2026-04-25)
+
+
+### Features
+
+* **workflow:** 强化 brainstorm 和 ideate 严谨性护栏 ([ed089e5](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/ed089e5ff6c2b95a2c4171be49ce80c50201d7fb))
+
 ## [2.5.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/galeharness-cli-v2.4.0...galeharness-cli-v2.5.0) (2026-04-24)
 
 
