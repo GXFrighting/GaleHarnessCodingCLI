@@ -6,6 +6,7 @@
   },
   "exclude": [
     "scripts/release/**",
+    ".worktrees/**",
     "vendor/**"
   ]
 }
