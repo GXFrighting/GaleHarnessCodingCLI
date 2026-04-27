@@ -9,6 +9,13 @@ All notable changes to GaleHarnessCLI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/galeharness-cli-v2.6.0...galeharness-cli-v2.7.0) (2026-04-27)
+
+
+### Features
+
+* store HKT session transcripts on skill completion ([#81](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/issues/81)) ([5ac3c54](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/5ac3c544a1f2401675bd9da72e55ba3ef7f8dd4d))
+
 ## [2.6.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/galeharness-cli-v2.5.0...galeharness-cli-v2.6.0) (2026-04-25)
 
 

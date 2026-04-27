@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.7.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v2.6.0...cli-v2.7.0) (2026-04-27)
+
+
+### Features
+
+* **repo-health:** add advisory repository health checker ([8eade82](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/8eade82559c4e5376d66b7f2d331869775790f18))
+* **repo-health:** add advisory repository health checker ([7b8330c](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/7b8330c088df6775073d79b8aa648f01f585de16))
+* store HKT session transcripts on skill completion ([#81](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/issues/81)) ([5ac3c54](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/commit/5ac3c544a1f2401675bd9da72e55ba3ef7f8dd4d))
+
 ## [2.6.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v2.5.0...cli-v2.6.0) (2026-04-25)
 
 
