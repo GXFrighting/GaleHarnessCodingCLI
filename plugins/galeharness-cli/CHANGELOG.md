@@ -9,6 +9,22 @@ All notable changes to GaleHarnessCLI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.0](https://github.com/GXFrighting/GaleHarnessCodingCLI/compare/galeharness-cli-v2.7.0...galeharness-cli-v2.8.0) (2026-04-27)
+
+
+### Features
+
+* **memory:** add Gale task memory helper ([4e4e80b](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/4e4e80b16b62f284626aa951ea2f85ee9f7f9287))
+* **memory:** add Gale task memory helper ([e88fb73](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/e88fb73de8478f5e561a24ecf89b348bca7f25f6))
+* **memory:** 迁移 Gale-managed HKTMemory 到公共知识库 ([da1cb06](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/da1cb06a9a230e1326325697a2c12ac9c5e653e6))
+* **morph:** add iOS Morph-X workflow ([f7130ef](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/f7130ef0d4c8898a6864d41c2a1487b2244f13e4))
+* **morph:** 新增 iOS Morph-X 工作流 ([bdaee16](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/bdaee1647d986c6846fe6b35256cda3e5e6b6d23))
+* store HKT session transcripts on skill completion ([#81](https://github.com/GXFrighting/GaleHarnessCodingCLI/issues/81)) ([5ac3c54](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/5ac3c544a1f2401675bd9da72e55ba3ef7f8dd4d))
+* **workflow:** integrate Karpathy guardrails ([a277942](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/a277942d85770d40a13907eec980efc13f9236ea))
+* **workflows:** 更新审查调试和演示工作流 ([d933e51](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/d933e519fa9bdfc657dd1e1f382699f70c851b71))
+* **workflow:** 强化 brainstorm 和 ideate 严谨性护栏 ([ed089e5](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/ed089e5ff6c2b95a2c4171be49ce80c50201d7fb))
+* **workflow:** 融入 Karpathy 全流程 guardrails ([c93891b](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/c93891be3e55a6697815c6efccf8ea65302d656f))
+
 ## [2.7.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/galeharness-cli-v2.6.0...galeharness-cli-v2.7.0) (2026-04-27)
 
 

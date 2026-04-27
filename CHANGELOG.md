@@ -1,5 +1,40 @@
 # Changelog
 
+## [2.8.0](https://github.com/GXFrighting/GaleHarnessCodingCLI/compare/cli-v2.7.0...cli-v2.8.0) (2026-04-27)
+
+
+### Features
+
+* **converters:** 增加平台能力清单 ([06bd092](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/06bd0928fae22cb61c4504b2d2de7bb432423305))
+* **memory:** add Gale task memory helper ([4e4e80b](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/4e4e80b16b62f284626aa951ea2f85ee9f7f9287))
+* **memory:** add Gale task memory helper ([e88fb73](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/e88fb73de8478f5e561a24ecf89b348bca7f25f6))
+* **memory:** 迁移 Gale-managed HKTMemory 到公共知识库 ([da1cb06](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/da1cb06a9a230e1326325697a2c12ac9c5e653e6))
+* **morph:** add iOS Morph-X workflow ([f7130ef](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/f7130ef0d4c8898a6864d41c2a1487b2244f13e4))
+* **morph:** 新增 iOS Morph-X 工作流 ([bdaee16](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/bdaee1647d986c6846fe6b35256cda3e5e6b6d23))
+* **release:** build binaries for all platforms ([41e43a1](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/41e43a11ddf49089a8912fb98abc2d08e9280a3a))
+* **release:** 支持全平台 release 二进制 ([63369d0](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/63369d0738a8ddd1d9d572987d7e099e37ebe5f1))
+* **repo-health:** add advisory repository health checker ([8eade82](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/8eade82559c4e5376d66b7f2d331869775790f18))
+* **repo-health:** add advisory repository health checker ([7b8330c](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/7b8330c088df6775073d79b8aa648f01f585de16))
+* store HKT session transcripts on skill completion ([#81](https://github.com/GXFrighting/GaleHarnessCodingCLI/issues/81)) ([5ac3c54](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/5ac3c544a1f2401675bd9da72e55ba3ef7f8dd4d))
+* **workflow:** integrate Karpathy guardrails ([a277942](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/a277942d85770d40a13907eec980efc13f9236ea))
+* **workflows:** 更新审查调试和演示工作流 ([d933e51](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/d933e519fa9bdfc657dd1e1f382699f70c851b71))
+* **workflow:** 强化 brainstorm 和 ideate 严谨性护栏 ([ed089e5](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/ed089e5ff6c2b95a2c4171be49ce80c50201d7fb))
+* **workflow:** 融入 Karpathy 全流程 guardrails ([c93891b](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/c93891be3e55a6697815c6efccf8ea65302d656f))
+
+
+### Bug Fixes
+
+* **cli:** restore Linux release install path ([1ecaab6](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/1ecaab6629e2537bc071e73045ea3937fd3d219a))
+* **cli:** restore release binary install path ([0fc030a](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/0fc030aa5d1fc035ce4dce9023d504a54cc2f66b))
+* **cli:** restore release binary install path ([fa2513d](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/fa2513d87526288b24cc8b42a242c4bc302065c3))
+* **release:** include gale-memory binary ([a452aa5](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/a452aa57800f25f7038a86c79e91cc4a286ac3a6))
+* **release:** include gale-memory binary ([4bff6e1](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/4bff6e1116d43dfe9aca826c914bda5c1d4b034d))
+* **test:** normalize agent reference paths on Windows ([a2c7124](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/a2c71240905cdb5de365d36697baaa576954f11e))
+* **test:** 修复 agent 引用 contract 测试的 Windows 路径归一化 ([915a8cc](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/915a8ccf0580c206533e84f21e2cffd2663206fc))
+* **update:** point self-update at coding CLI repository ([c4abd94](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/c4abd943c90715f6e1f8bd9a112264edbd2f5c13))
+* **windows-scan:** make compatibility scan side-effect-free ([c6faf31](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/c6faf31637515ca4d3ac8bc2d72cf82eb45fe5b8))
+* **windows-scan:** 修复 Windows 兼容性扫描脚本的导入副作用 ([b37ec53](https://github.com/GXFrighting/GaleHarnessCodingCLI/commit/b37ec53ccf10088b94bb1b56a7653cc5cd9d6e8c))
+
 ## [2.7.0](https://github.com/wangrenzhu-ola/GaleHarnessCodingCLI/compare/cli-v2.6.0...cli-v2.7.0) (2026-04-27)
 
 
